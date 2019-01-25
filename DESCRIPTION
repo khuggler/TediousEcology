@@ -1,8 +1,9 @@
 Package: TediousEcology
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Title: Data Formatting for Various Analyses in Ecology
+Version: 0.1
+Authors@R: c(person("Katey", "Huggler", email = "khuggler@uwyo.edu", role = c("cre", "aut")),
+              person("Matthew M.", "Hayes", email = "mhayes1@uwyo.edu", role = "aut"))
+Description: This package contains functions for downloading, formatting, and organizig collar data, formatting data for survival analysis of adult and neonatal animals.
 Depends: R (>= 3.5.2)
 License: What license is it under?
 Encoding: UTF-8

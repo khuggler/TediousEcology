@@ -8,3 +8,4 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Maintainer: 'Katey Huggler' <khuggler@uwyo.edu>
+RoxygenNote: 6.1.1

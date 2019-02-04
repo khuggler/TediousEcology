@@ -2,4 +2,5 @@
 
 export(AdultAnnualSurv)
 export(AdultSeasonalSurv)
+export(CollarHistory)
 export(NeoSurvData)

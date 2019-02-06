@@ -4,7 +4,7 @@
 \alias{CollarHistory}
 \title{Conversion of adult capture data into capture history data}
 \usage{
-CollarHistory(capdat, format)
+CollarHistory(capdat, dateformat)
 }
 \arguments{
 \item{capdat}{data.frame with all the capture information}

@@ -9,7 +9,7 @@
 #' @examples
 #' \donttest{Hist<-CollarHistory(capdat = yourdata, format = "%m/%d/%Y)}
 
-CollarHistory<-function(capdat, format){
+CollarHistory<-function(capdat, dateformat){
 
   dat<-read.csv(capdat,stringsAsFactors = F)
   dat$CaptureDate<-as.character(as.Date(dat$CaptureDate,dateformat))

@@ -20,7 +20,7 @@ Returns a data.frame with all gps data, AnimalID, Sex, and Species
 Merge raw GPS Data with Animal IDs, Sex, and Species
 }
 \examples{
-\donttest{CleanData<-CleanGPSData(gps = yourgpsdata, capdat = yourcapturedata, dateformat = "\%Y-\%m-\%d")}
+\donttest{CleanData<-CleanGPSData(gps = yourgpsdata, capdat = yourcapturedata, dateformat = \%Y-\%m-\%d)}
 }
 \keyword{ID,}
 \keyword{animal}

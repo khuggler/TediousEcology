@@ -7,7 +7,7 @@
 #' @keywords capture, animal ID, history
 #' @export
 #' @examples
-#' \donttest{Hist<-CollarHistory(capdat = yourdata, format = "%m/%d/%Y)}
+#' \donttest{Hist<-CollarHistory(capdat = yourdata, format = %m/%d/%Y)}
 
 CollarHistory<-function(capdat, dateformat){
 

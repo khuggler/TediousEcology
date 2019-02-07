@@ -7,7 +7,7 @@
 #' @keywords capture, animal ID, gps, append
 #' @export
 #' @examples
-#' \donttest{CleanData<-CleanGPSData(gps = yourgpsdata, capdat = yourcapturedata, dateformat = "%Y-%m-%d")}
+#' \donttest{CleanData<-CleanGPSData(gps = yourgpsdata, capdat = yourcapturedata, dateformat = %Y-%m-%d)}
 
 CleanGPSData<-function(gps, capdat, dateformat){
 

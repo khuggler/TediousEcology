@@ -1,6 +1,14 @@
-#' @title Merge Animal IDs and Sex, and Species to GPSData
+#' @title Wrapper function with CombDat and CollarHistory that Merge Animal IDs and Sex, and Species to GPSData
 #' @description Merge raw GPS Data with Animal IDs, Sex, and Species
-#' @param gps gps data in the form of a data.frame or SpatialPointsDataFrame
+#' @param vecdata Logical. TRUE/FALSE. Whether vecdata is needed to be downloaded
+#' @param vecpath path where vec data is located
+#' @param usernames character vector of usernames to download
+#' @param passwords character vector of passwords in same order as usernames
+#' @param tempdir temporary directory for data to download (can be desktop)
+#' @param ST Logical. TRUE/FALSE. Whether you need SirTrack data
+#' @param STUser SirTrack Username
+#' @param STPass SirTrack Password
+#' @param cType "ATS/IRID" or "ATS/GSTAR"
 #' @param capdat data.frame with all the capture information
 #' @param dateformat format of TelemDate in gps data
 #' @return Returns a data.frame with all gps data, AnimalID, Sex, and Species
@@ -9,7 +17,25 @@
 #' @examples
 #' \donttest{CleanData<-CleanGPSData(gps = yourgpsdata, capdat = yourcapturedata, dateformat = %Y-%m-%d)}
 
-CleanGPSData<-function(gps, capdat, dateformat){
+CleanGPSData<-function(vecdata, vecpath, usernames, passwords, tempdir, ST, STUser, STPass,cType, capdat, dateformat){
+
+  if(vecdata == TRUE){
+gps<-Part::CombDat(vecpath= vecpath,
+                         ATSUsers = usernames,
+                         ATSPass = passwords,
+                         tempdir = tempdir,
+                         ST=ST,
+                         STUser= STUser,
+                         STPass= STPass)
+  }
+  if(vecdata == FALSE){
+    gps<-Part::ColDownload(username = username,
+                           password = password,
+                           dirdown = tempdir,
+                           cType = cType
+
+    )
+  }
 
 gps$TelemDate<-as.POSIXct(gps$TelemDate, format = "%Y-%m-%d %H:%M:%S", tz = "GMT")
 gps$Date<-as.Date(gps$TelemDate, format = dateformat, tz = "MST")

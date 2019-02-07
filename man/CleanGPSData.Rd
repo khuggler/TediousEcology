@@ -2,12 +2,29 @@
 % Please edit documentation in R/CleanGPSData.R
 \name{CleanGPSData}
 \alias{CleanGPSData}
-\title{Merge Animal IDs and Sex, and Species to GPSData}
+\title{Wrapper function with CombDat and CollarHistory that Merge Animal IDs and Sex, and Species to GPSData}
 \usage{
-CleanGPSData(gps, capdat, dateformat)
+CleanGPSData(vecdata, vecpath, usernames, passwords, tempdir, ST, STUser,
+  STPass, cType, capdat, dateformat)
 }
 \arguments{
-\item{gps}{gps data in the form of a data.frame or SpatialPointsDataFrame}
+\item{vecdata}{Logical. TRUE/FALSE. Whether vecdata is needed to be downloaded}
+
+\item{vecpath}{path where vec data is located}
+
+\item{usernames}{character vector of usernames to download}
+
+\item{passwords}{character vector of passwords in same order as usernames}
+
+\item{tempdir}{temporary directory for data to download (can be desktop)}
+
+\item{ST}{Logical. TRUE/FALSE. Whether you need SirTrack data}
+
+\item{STUser}{SirTrack Username}
+
+\item{STPass}{SirTrack Password}
+
+\item{cType}{"ATS/IRID" or "ATS/GSTAR"}
 
 \item{capdat}{data.frame with all the capture information}
 

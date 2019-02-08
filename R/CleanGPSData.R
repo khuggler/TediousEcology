@@ -29,8 +29,8 @@ gps<-Part::CombDat(vecpath= vecpath,
                          STPass= STPass)
   }
   if(vecdata == FALSE){
-    gps<-Part::ColDownload(username = username,
-                           password = password,
+    gps<-Part::ColDownload(username = usernames,
+                           password = passwords,
                            dirdown = tempdir,
                            cType = cType
 
@@ -76,6 +76,7 @@ for(i in 1:nrow(x)){
 
     c<-cap[cap$UAID == xxx[1,1],]
 
+    #ss<-as.data.frame(ss)
     if(nrow(ss)==0){next}
     if(nrow(ss)>0){
       ss$AID<-xxx[1,1]

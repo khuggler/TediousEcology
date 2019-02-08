@@ -2,6 +2,7 @@
 
 export(AdultAnnualSurv)
 export(AdultSeasonalSurv)
+export(AppendAID)
 export(CleanGPSData)
 export(CollarHistory)
 export(NeoSurvData)

@@ -2,18 +2,18 @@
 #
 #' @description Convert capture data into a record of every serial number and start and end dates of every individual captured
 #' @param capdat data.frame with all the capture information
-#' @param dateformat format of CaptureDate and MortalityDate
+#' @param df format of CaptureDate and MortalityDate
 #' @return Returns a data.frame with start and end date of every individual serial number along with an assigned animal ID)
 #' @keywords capture, animal ID, history
 #' @export
 #' @examples
 #' \donttest{Hist<-CollarHistory(capdat = yourdata, format = %m/%d/%Y)}
 
-CollarHistory<-function(capdat, dateformat){
+CollarHistory<-function(capdat, df){
 
   dat<-read.csv(capdat,stringsAsFactors = F)
-  dat$CaptureDate<-as.character(as.Date(dat$CaptureDate,dateformat))
-  dat$MortalityDate<-as.Date(dat$MortalityDate,dateformat)
+  dat$CaptureDate<-as.character(as.Date(dat$CaptureDate,df))
+  dat$MortalityDate<-as.Date(dat$MortalityDate,df)
 
   dat$Uni<-paste(dat$New.Serial.Number,dat$CaptureDate,dat$Mortality.,sep='_')
 

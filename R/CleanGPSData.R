@@ -40,7 +40,7 @@ gps<-Part::CombDat(vecpath= vecpath,
 gps$TelemDate<-as.POSIXct(gps$TelemDate, format = "%Y-%m-%d %H:%M:%S", tz = "GMT")
 gps$Date<-as.Date(gps$TelemDate, format = dateformat, tz = "MST")
 
-x<-CollarHistory(capdat = capdat, dateformat = '%m/%d/%Y')
+x<-CollarHistory(capdat = capdat, dateformat = '%Y-%m-%d')
 x$Ser1Start<-as.Date(x$Ser1Start,dateformat)
 x$Ser1End<-as.Date(x$Ser1End,dateformat)
 x$Ser2Start<-as.Date(x$Ser2Start,dateformat)

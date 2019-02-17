@@ -63,6 +63,7 @@ AdultAnnualSurv<-function(data, format, uaidcol, mortcol, yearstart, yearend, ca
       }
       if(sub[p,]$Status == 0){
         sub<-sub
+
       }
     r<-rbind(sub, r)
     }

@@ -30,7 +30,7 @@ AdultAnnualSurv<-function(data, format, uaidcol, mortcol, yearstart, yearend, ca
   uni<-unique(data[,uaidcol])
 
   for(k in 1:length(uni)){
-    sub<-data[data[UAID] == uni[k],]
+    sub<-data[data[,uaidcol] == uni[k],]
     date<-as.Date(max(sub[,mortcol], na.rm=T), format = format, origin = sub[,mortcol])
 
     x<-nrow(hist)

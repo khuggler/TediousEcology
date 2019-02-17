@@ -4,7 +4,8 @@
 #' that contains start dates and mortality dates of individual animals and transform it into the proper format required by package survival
 #' to model annual survival.
 #' @param data data.frame that contains a column of unique animal identifier, start date, mortality date, and cause of mortality
-#' @param uni vector of unique animal identifiers
+#' @param format format of mortcol
+#' @param uaidcol name of column where unique animal identifiers are located
 #' @param mortcol name of column that contains the date of mortality
 #' @param yearstart year desired to begin modeling survival (e.g. beginning year of study)
 #' @param yearend year desired to end modeling survival
@@ -16,7 +17,7 @@
 #' \donttest{AdultSurv<-AdultAnnualSurv(data = yourdata, uni = uniquevector, mortcol = "MortalityDate", yearstart = 2015, yearend = 2019 , cause = "CaptureMort")}
 #'
 
-AdultAnnualSurv<-function(data, uni, mortcol, yearstart, yearend, cause){
+AdultAnnualSurv<-function(data, format, uaidcol, mortcol, yearstart, yearend, cause){
   data[,mortcol]<-as.Date(data[,mortcol], format = format)
   Year<-yearstart:yearend
   hist<-data.frame(Year = Year, StartDate = paste("01/01/", Year, sep = ""), EndDate = paste("12/31/", Year, sep = ""))
@@ -25,6 +26,8 @@ AdultAnnualSurv<-function(data, uni, mortcol, yearstart, yearend, cause){
 
   d<-data.frame()
   z<-data.frame()
+
+  uni<-unique(data[,uaidcol])
 
   for(k in 1:length(uni)){
     sub<-data[data[UAID] == uni[k],]

@@ -48,7 +48,20 @@ AdultAnnualSurv<-function(data, format, uaidcol, mortcol, yearstart, yearend, ca
     }
     z<-rbind(d, z)
     z<-z[!duplicated(z[,c(1:4)]),]
-  }
 
-  return(z)
-}
+    ###### Remove rest of rows after an animal dies
+    u<-unique(z$AID)
+
+    r<-data.frame()
+    for(k in 1:length(u)){
+      sub<-z[z$AID == u[k],]
+    for(p in 1:nrow(sub)){
+      if(sub[p,]$Status == 1){
+        sub<-sub[p:nrow(p),]
+      }
+      r<-rbind(sub, r)
+    }
+      }
+    }
+      return(r)
+    }

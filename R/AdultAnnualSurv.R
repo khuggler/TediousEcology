@@ -6,6 +6,7 @@
 #' @param data data.frame that contains a column of unique animal identifier, start date, mortality date, and cause of mortality
 #' @param format format of mortcol
 #' @param uaidcol name of column where unique animal identifiers are located
+#' @param capcol name of column where capture date is stored
 #' @param mortcol name of column that contains the date of mortality
 #' @param yearstart year desired to begin modeling survival (e.g. beginning year of study)
 #' @param yearend year desired to end modeling survival
@@ -17,7 +18,7 @@
 #' \donttest{AdultSurv<-AdultAnnualSurv(data = yourdata, uni = uniquevector, mortcol = "MortalityDate", yearstart = 2015, yearend = 2019 , cause = "CaptureMort")}
 #'
 
-AdultAnnualSurv<-function(data, format, uaidcol, mortcol, yearstart, yearend, cause){
+AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, yearend, cause){
   data[,mortcol]<-as.Date(data[,mortcol], format = format)
   Year<-yearstart:yearend
   hist<-data.frame(Year = Year, StartDate = paste("01/01/", Year, sep = ""), EndDate = paste("12/31/", Year, sep = ""))
@@ -31,17 +32,29 @@ AdultAnnualSurv<-function(data, format, uaidcol, mortcol, yearstart, yearend, ca
 
   for(k in 1:length(uni)){
     sub<-data[data[,uaidcol] == uni[k],]
-    date<-as.Date(max(sub[,mortcol], na.rm=T), format = format, origin = sub[,mortcol])
-
+    date<-ifelse(is.na(unique(sub[nrow(sub),mortcol])) %in% FALSE,
+                 as.character(max(sub[,mortcol], na.rm=T)), NA)
+    if(!is.na(date)){
+      date<-as.Date(date, format = "%Y-%m-%d")
+    }
+    if(is.na(date)){
+      date<-Sys.Date()
+    }
+    capdate<-as.Date(sub[,capcol], format = format, origin = sub[,capcol])
     x<-nrow(hist)
 
     for(l in 1:x){
       xxx<-hist[l,]
       m<-ifelse(date >= xxx[,2] & date <= xxx[,3], as.character(difftime(date, xxx[,2], units = "days")/30.4375), 12)
       m<-as.numeric(m)
-      Stat<-ifelse(m ==12, 0, 1)
+      rem<-ifelse(capdate >= xxx[,2] & capdate <= xxx[,3], 0, 1)
+      c<-length(capdate)
+      Yr<-strftime(xxx[,2], format = "%Y")
+      remove<-ifelse(sum(rem) == c & Yr != yearend ,1, 0)
+      Stat<-ifelse(m == 12, 0,
+                   ifelse(m < 12 & date == Sys.Date(), 0, 1))
       All<-data.frame(AID = sub$UAID[1], Year = strftime(xxx[,2], format = "%Y"),
-                      StartDate = xxx[,2], EndDate = xxx[,3], Time= m,
+                      StartDate = xxx[,2], EndDate = xxx[,3], Time= m, Remove = remove,
                       Status = ifelse(Stat == 1 & sub$X %in% cause, 0, Stat))
 
       d<-rbind(d, All)
@@ -54,22 +67,23 @@ AdultAnnualSurv<-function(data, format, uaidcol, mortcol, yearstart, yearend, ca
   u<-unique(z$AID)
   r<-data.frame()
   fin<-data.frame()
-
+  e<-data.frame()
     for(m in 1:length(u)){
       sub<-z[z$AID == u[m],]
 
     #for(p in 1:nrow(sub)){
       if(sum(sub$Status) == 0){
-        q<-sub
+        e<-sub
       }
     if(sum(sub$Status) > 0){
       g<-which(sub$Status == 1)
       y<-sub[1:g,]
     }
 
-    r<-rbind(q, y)
+    r<-rbind(e, y)
     fin<-rbind(r, fin)
     fin<-fin[!duplicated(fin[,c(1:4)]),]
+    fin<-fin[fin$Remove == 0,]
     #}
       }
       return(fin)

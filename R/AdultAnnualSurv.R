@@ -12,7 +12,6 @@
 #' @param yearend year desired to end modeling survival
 #' @param cause vector of causes that require censoring (e.g. collar_failure, capturemort, etc.)
 #' @param plot logical. TRUE/FALSE. If TRUE, function will generate bar plot of yearly survival
-#' @param cols chracter vector of colors to plot bars in barplot
 #' @param title desired title of survival plot (character)
 #' @return Returns a data.frame with animal ID, start date of modeling, end date of modeling, status of animal (alive = 0, dead = 1), and number of months alive during time period
 #' @keywords adult, annual, survival, kaplan-meier, analysis
@@ -21,7 +20,7 @@
 #' \donttest{AdultSurv<-AdultAnnualSurv(data = yourdata, uni = uniquevector, mortcol = "MortalityDate", yearstart = 2015, yearend = 2019 , cause = "CaptureMort")}
 #'
 
-AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, yearend, cause, plot, cols,title){
+AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, yearend, cause, plot,title){
   data[,mortcol]<-as.Date(data[,mortcol], format = format)
   Year<-yearstart:yearend
   hist<-data.frame(Year = Year, StartDate = paste("01/01/", Year, sep = ""), EndDate = paste("12/31/", Year, sep = ""))
@@ -110,7 +109,10 @@ AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, year
     }
     csurv<-data.frame(Year = yearend:yearstart, Surv = cumsurv$surv)
     csurv<-csurv[order(csurv$Year),]
-    barplot(csurv$Surv, col = c('red', 'blue', 'green', 'yellow', 'purple'), ylim = c(0,1), names.arg = csurv$Year, border = NA, main = title)
+    library(RColorBrewer)
+    n<-length(unique(csurv$Year))
+    cols<-brewer.pal(n = n, name = "Set1")
+    barplot(csurv$Surv, col = cols, ylim = c(0,1), names.arg = csurv$Year, border = NA, main = title)
   }
       return(fin)
     }

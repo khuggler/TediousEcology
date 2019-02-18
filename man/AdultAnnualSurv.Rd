@@ -4,7 +4,8 @@
 \alias{AdultAnnualSurv}
 \title{Conversion of adult capture data into the correct format for modeling annual survival}
 \usage{
-AdultAnnualSurv(data, format, uaidcol, mortcol, yearstart, yearend, cause)
+AdultAnnualSurv(data, format, uaidcol, capcol, mortcol, yearstart, yearend,
+  cause)
 }
 \arguments{
 \item{data}{data.frame that contains a column of unique animal identifier, start date, mortality date, and cause of mortality}
@@ -12,6 +13,8 @@ AdultAnnualSurv(data, format, uaidcol, mortcol, yearstart, yearend, cause)
 \item{format}{format of mortcol}
 
 \item{uaidcol}{name of column where unique animal identifiers are located}
+
+\item{capcol}{name of column where capture date is stored}
 
 \item{mortcol}{name of column that contains the date of mortality}
 

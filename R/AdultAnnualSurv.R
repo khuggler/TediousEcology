@@ -114,5 +114,5 @@ AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, year
     cols<-brewer.pal(n = n, name = "Set1")
     barplot(csurv$Surv, col = cols, ylim = c(0,1), names.arg = csurv$Year, border = NA, main = title)
   }
-      return(fin)
+      return(list(fin, csurv))
     }

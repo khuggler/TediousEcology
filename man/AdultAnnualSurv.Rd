@@ -5,7 +5,7 @@
 \title{Conversion of adult capture data into the correct format for modeling annual survival}
 \usage{
 AdultAnnualSurv(data, format, uaidcol, capcol, mortcol, yearstart, yearend,
-  cause, plot, cols, names, title)
+  cause, plot, cols, title)
 }
 \arguments{
 \item{data}{data.frame that contains a column of unique animal identifier, start date, mortality date, and cause of mortality}
@@ -27,8 +27,6 @@ AdultAnnualSurv(data, format, uaidcol, capcol, mortcol, yearstart, yearend,
 \item{plot}{logical. TRUE/FALSE. If TRUE, function will generate bar plot of yearly survival}
 
 \item{cols}{chracter vector of colors to plot bars in barplot}
-
-\item{names}{character vector of label names}
 
 \item{title}{desired title of survival plot (character)}
 }

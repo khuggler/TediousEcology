@@ -5,7 +5,7 @@
 \title{Conversion of adult capture data into the correct format for modeling annual survival}
 \usage{
 AdultAnnualSurv(data, format, uaidcol, capcol, mortcol, yearstart, yearend,
-  cause)
+  cause, plot, cols, names, title)
 }
 \arguments{
 \item{data}{data.frame that contains a column of unique animal identifier, start date, mortality date, and cause of mortality}
@@ -23,6 +23,14 @@ AdultAnnualSurv(data, format, uaidcol, capcol, mortcol, yearstart, yearend,
 \item{yearend}{year desired to end modeling survival}
 
 \item{cause}{vector of causes that require censoring (e.g. collar_failure, capturemort, etc.)}
+
+\item{plot}{logical. TRUE/FALSE. If TRUE, function will generate bar plot of yearly survival}
+
+\item{cols}{chracter vector of colors to plot bars in barplot}
+
+\item{names}{character vector of label names}
+
+\item{title}{desired title of survival plot (character)}
 }
 \value{
 Returns a data.frame with animal ID, start date of modeling, end date of modeling, status of animal (alive = 0, dead = 1), and number of months alive during time period

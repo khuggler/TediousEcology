@@ -11,6 +11,10 @@
 #' @param yearstart year desired to begin modeling survival (e.g. beginning year of study)
 #' @param yearend year desired to end modeling survival
 #' @param cause vector of causes that require censoring (e.g. collar_failure, capturemort, etc.)
+#' @param plot logical. TRUE/FALSE. If TRUE, function will generate bar plot of yearly survival
+#' @param cols chracter vector of colors to plot bars in barplot
+#' @param names character vector of label names
+#' @param title desired title of survival plot (character)
 #' @return Returns a data.frame with animal ID, start date of modeling, end date of modeling, status of animal (alive = 0, dead = 1), and number of months alive during time period
 #' @keywords adult, annual, survival, kaplan-meier, analysis
 #' @export
@@ -18,7 +22,7 @@
 #' \donttest{AdultSurv<-AdultAnnualSurv(data = yourdata, uni = uniquevector, mortcol = "MortalityDate", yearstart = 2015, yearend = 2019 , cause = "CaptureMort")}
 #'
 
-AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, yearend, cause){
+AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, yearend, cause, plot, cols, names, title){
   data[,mortcol]<-as.Date(data[,mortcol], format = format)
   Year<-yearstart:yearend
   hist<-data.frame(Year = Year, StartDate = paste("01/01/", Year, sep = ""), EndDate = paste("12/31/", Year, sep = ""))
@@ -63,7 +67,7 @@ AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, year
     z<-z[!duplicated(z[,c(1:4)]),]
 }
 
-###### Remove rest of rows after an animal dies
+###### Remove rest of rows after an animal dies or is censored #######
   u<-unique(z$AID)
   r<-data.frame()
   fin<-data.frame()
@@ -85,6 +89,29 @@ AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, year
     fin<-fin[!duplicated(fin[,c(1:4)]),]
     fin<-fin[fin$Remove == 0,]
     #}
-      }
+    }
+  if(plot == TRUE){
+    surv<-survival::survfit(survival::Surv(time = s$Time, event = s$Status)~ s$Year)
+
+    summ<-summary(surv)
+    cols<-lapply(c(2:6, 8:11), function(x) summ[x])
+    tbl<-do.call(data.frame, cols)
+
+    unistrat<-as.character(unique(tbl$strata))
+
+    cumsurv<-data.frame()
+
+    for (h in 1:length(unistrat)){
+      subsurv<-tbl[tbl$strata == unistrat[h],]
+      row<-nrow(subsurv)
+      subsurv<-subsurv[row,]
+
+      cumsurv<-rbind(subsurv, cumsurv)
+
+    }
+    csurv<-data.frame(Year = yearend:yearstart, Surv = cumsurv$surv)
+    csurv<-csurv[order(csurv$Year),]
+    barplot(csurv$Surv, col = cols, ylim = c(0,1), names.arg = csurv$Year, border = NA, main = title)
+  }
       return(fin)
     }

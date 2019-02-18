@@ -90,7 +90,7 @@ AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, year
     #}
     }
   if(plot == TRUE){
-    surv<-survival::survfit(survival::Surv(time = s$Time, event = s$Status)~ s$Year)
+    surv<-survival::survfit(survival::Surv(time = fin$Time, event = fin$Status)~ fin$Year)
 
     summ<-summary(surv)
     cols<-lapply(c(2:6, 8:11), function(x) summ[x])

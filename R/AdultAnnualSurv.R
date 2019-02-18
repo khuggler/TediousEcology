@@ -110,7 +110,7 @@ AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, year
     }
     csurv<-data.frame(Year = yearend:yearstart, Surv = cumsurv$surv)
     csurv<-csurv[order(csurv$Year),]
-    barplot(csurv$Surv, col = cols, ylim = c(0,1), names.arg = csurv$Year, border = NA, main = title)
+    barplot(csurv$Surv, col = as.character(cols), ylim = c(0,1), names.arg = csurv$Year, border = NA, main = title)
   }
       return(fin)
     }

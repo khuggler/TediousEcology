@@ -56,6 +56,7 @@ for(i in 1:length(uni)){
 }
 
 s$Hour<-strftime(s$TelemDate, format = "%H")
+s$Hour<-as.numeric(s$Hour)
 agg<-aggregate(s$HrMR, by=list(s$Hour), FUN = mean, na.rm=T)
 plot(agg$Group.1, agg$x, type = "l")
 

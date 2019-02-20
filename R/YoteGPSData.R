@@ -103,6 +103,7 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
 
     }
     s$Hour<-strftime(s$TelemDate, format = "%H")
+    s$Hour<-as.numeric(s$Hour)
     agg<-aggregate(s$HrMR, by=list(s$Hour), FUN = mean, na.rm=T)
     plot(agg$Group.1, agg$x, type = "l", ylim = c(0.3, 1.0))
 

@@ -85,8 +85,10 @@ for(i in 1:nrow(dat)){
     dat$UAID[i]<-maxN
     maxN<-maxN+1
   }
+
 }
-return(dat)
 write.csv(dat, fileout, row.names = F)
+
+return(dat)
 }
 

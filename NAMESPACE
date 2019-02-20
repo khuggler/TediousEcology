@@ -3,6 +3,7 @@
 export(AdultAnnualSurv)
 export(AdultSeasonalSurv)
 export(AppendAID)
+export(AppendMR)
 export(CleanGPSData)
 export(CollarHistory)
 export(ElkMR)

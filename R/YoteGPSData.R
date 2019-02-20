@@ -21,7 +21,7 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
   yote<-read.csv(yotedat, stringsAsFactors = F)
 
   gps$TelemDate<-as.POSIXct(gps$TelemDate, format = "%Y-%m-%d %H:%M:%S", tz = "GMT")
-  gps$Date<-as.Date(gps$TelemDate, format = dateformat, tz = "MST")
+  gps$Date<-as.Date(gps$TelemDate, format = "%Y-%m-%d", tz = "MST")
 
 
   coykeep<-c('39287', '39242', '39235', '39257','39218', '39252', '39255', '39240', '39254', '39245','39248','39247','39253','39237','39239',

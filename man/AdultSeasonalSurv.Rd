@@ -6,7 +6,7 @@
 \usage{
 AdultSeasonalSurv(data, uni, UAIDcol, startcol, mortcol, yearstart,
   yearend, seasons = c("winter", "summer"), winterstart, winterend,
-  cause)
+  cause, format)
 }
 \arguments{
 \item{data}{data.frame that contains a column of unique animal identifier, start date, mortality date, and cause of mortality}
@@ -28,6 +28,8 @@ AdultSeasonalSurv(data, uni, UAIDcol, startcol, mortcol, yearstart,
 \item{winterend}{month in numeric format that is desired for winter to end (e.g. 05)}
 
 \item{cause}{vector of causes that require censoring (e.g. collar_failure, capturemort, etc.)}
+
+\item{format}{format of startcol and mortcols}
 }
 \value{
 Returns a data.frame with animal ID, Year of survival, start date of modeling, end date of modeling, time alive (months), and status of animal (alive/censored = 0, dead = 1)

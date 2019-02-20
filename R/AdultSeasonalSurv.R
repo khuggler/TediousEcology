@@ -13,13 +13,14 @@
 #' @param winterstart month in numeric format that is desired to start winter (e.g. 11)
 #' @param winterend month in numeric format that is desired for winter to end (e.g. 05)
 #' @param cause vector of causes that require censoring (e.g. collar_failure, capturemort, etc.)
+#' @param format format of startcol and mortcols
 #' @return Returns a data.frame with animal ID, Year of survival, start date of modeling, end date of modeling, time alive (months), and status of animal (alive/censored = 0, dead = 1)
 #' @keywords adult, seasonal, winter, summer, survival, kaplan-meier, analysis
 #' @export
 #' @examples
 #' \donttest{AdultSeasonal<-AdultSeasonalSurv(data = data, startcol = 'CaptureDate',uni = uni, UAIDcol = "UAID", mortcol = 'MortalityDate', yearstart = 2015, yearend = 2019, seasons = c('winter', 'summer'), winterstart = 11, winterend = 05, cause = c("CollarFailure", 'CaptureMort'))}
 
-AdultSeasonalSurv<-function(data, uni, UAIDcol, startcol, mortcol, yearstart, yearend, seasons = c('winter', 'summer'), winterstart, winterend, cause){
+AdultSeasonalSurv<-function(data, uni, UAIDcol, startcol, mortcol, yearstart, yearend, seasons = c('winter', 'summer'), winterstart, winterend, cause, format){
   data[,mortcol]<-as.Date(data[,mortcol], format = format)
   Year<-yearstart:yearend
   season<-seasons

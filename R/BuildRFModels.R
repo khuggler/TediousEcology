@@ -4,13 +4,14 @@
 #' @param ncpu number of cpus to parallelize on
 #' @param withold percent of data (decimal format) to withold for training model (default 0.25)
 #' @param trees number of trees (maximum) to attempt to split on
+#' @param raspath path to raster stack
 #' @param studypath path to study area polygon (where you want to define availability)
 #' @param pathout path to where predicted RF map should be written
 #' @return Returns a list object with RFData necessary to predict probably of use in RF models (elk, coyotes, and mountain lions)
 #' @keywords elk, coyote, mountain lion, random forest, extract, raster, sample
 #' @export
 
-BuildRFModels<-function(data, ncpu, withold, trees, pathout){
+BuildRFModels<-function(data, ncpu, withold, trees, raspath, pathout){
   library(randomForest)
   library(snow)
   library(parallel)
@@ -23,6 +24,9 @@ BuildRFModels<-function(data, ncpu, withold, trees, pathout){
   pred.names<-c('Elevation', 'Slope', 'TPI', 'TRASP', 'TRI', 'PercentShrub', 'Roughness',
                 'PrimaryRd', 'SecondaryRd', 'TWI', 'NLCD', 'PercentSage', 'BigSage', 'SageHeight')
   cbind(pred.names,predictorNames)
+
+rasstack<-rasstack<-stack(raspath)
+names(rasstack)<-c('Elevation', 'NLCD', 'Land', 'Roughness', 'Slope', 'TPI', 'TRASP', 'TRI', 'BigSage', 'PercentSage', 'PercentShrub', 'SageHeight', 'PrimaryRd', 'SecondaryRd', 'TWI')
 
 
   #################################################

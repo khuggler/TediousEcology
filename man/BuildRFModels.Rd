@@ -4,7 +4,7 @@
 \alias{BuildRFModels}
 \title{Stack and extract all spatial data to elk, coyotes, and mountain lions (RF Encounter)}
 \usage{
-BuildRFModels(data, ncpu, withold, trees, pathout)
+BuildRFModels(data, ncpu, withold, trees, raspath, pathout)
 }
 \arguments{
 \item{data}{data to be used to build RF model}
@@ -14,6 +14,8 @@ BuildRFModels(data, ncpu, withold, trees, pathout)
 \item{withold}{percent of data (decimal format) to withold for training model (default 0.25)}
 
 \item{trees}{number of trees (maximum) to attempt to split on}
+
+\item{raspath}{path to raster stack}
 
 \item{pathout}{path to where predicted RF map should be written}
 

@@ -11,13 +11,13 @@ ReproStatus(gps, startdates, enddates, neodat, subspp, subsex)
 
 \item{startdates}{vector (date format) of the start dates to subset GPS data}
 
+\item{enddates}{vector (date format) of the end dates to subset GPS data}
+
 \item{neodat}{path to neonate database}
 
 \item{subspp}{what species to subset}
 
 \item{subsex}{what sex to subset}
-
-\item{endates}{vector (date format) of the end dates to subset GPS data}
 }
 \value{
 Returns a data.frame with all gps data, AnimalID, Sex, and Species, and Reproductive Status (Repro or Non-Repro)

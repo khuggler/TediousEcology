@@ -18,12 +18,13 @@ names(rasstack)<-c('Elevation', 'NLCD', 'Land', 'Roughness', 'Slope', 'TPI', 'TR
 study<-readOGR(studypath)
 study<-spTransform(study, proj4string(rasstack))
 
+elk<-elkdata[complete.cases(elkdata$Easting),]
 random<-spsample(study, nrow(elk), type = "random")
 random.ex<-data.frame(extract(rasstack, random))
 random.ex$AID<-elk$AID
 random.ex$Used<-0
 
-elk<-elkdata[complete.cases(elkdata$Easting),]
+
 coordinates(elk)<-c('Easting', 'Northing')
 proj4string(elk)<-'+proj=utm +zone=12 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 elk<-spTransform(elk, proj4string(rasstack))

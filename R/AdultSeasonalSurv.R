@@ -21,6 +21,7 @@
 
 AdultSeasonalSurv<-function(data, uni, UAIDcol, startcol, mortcol, yearstart, yearend, seasons = c('winter', 'summer'), winterstart, winterend, cause, dateformat){
   data[,mortcol]<-as.Date(data[,mortcol], format = dateformat)
+  data[,startcol]<-as.Date(data[,startcol], format = dateformat)
   Year<-yearstart:yearend
   season<-seasons
   c<-expand.grid(Year,seasons,KEEP.OUT.ATTRS = F)

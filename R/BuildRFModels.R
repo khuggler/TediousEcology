@@ -5,11 +5,12 @@
 #' @param withold percent of data (decimal format) to withold for training model (default 0.25)
 #' @param trees number of trees (maximum) to attempt to split on
 #' @param studypath path to study area polygon (where you want to define availability)
+#' @param pathout path to where predicted RF map should be written
 #' @return Returns a list object with RFData necessary to predict probably of use in RF models (elk, coyotes, and mountain lions)
 #' @keywords elk, coyote, mountain lion, random forest, extract, raster, sample
 #' @export
 
-BuildRFModels<-function(data, ncpu, withold, trees){
+BuildRFModels<-function(data, ncpu, withold, trees, pathout){
   library(randomForest)
   library(snow)
   library(parallel)
@@ -92,7 +93,7 @@ BuildRFModels<-function(data, ncpu, withold, trees){
 
   spplot(LionMap)
 
-  writeRaster(LionMap, pathout, format = "HFA")
+  writeRaster(LionMap, pathout, format = "HFA", overwrite = TRUE)
   return(conf)
 
 }

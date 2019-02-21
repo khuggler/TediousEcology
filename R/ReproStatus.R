@@ -2,7 +2,7 @@
 #' @description Merge cleaned GPS data with the reproductive status of animals at each fix
 #' @param gps data.frame of gps data
 #' @param startdates vector (date format) of the start dates to subset GPS data
-#' @param endates vector (date format) of the end dates to subset GPS data
+#' @param enddates vector (date format) of the end dates to subset GPS data
 #' @param neodat path to neonate database
 #' @param subspp what species to subset
 #' @param subsex what sex to subset

@@ -13,13 +13,15 @@
 #' @param winterend month in numeric format that is desired for winter to end (e.g. 05)
 #' @param cause vector of causes that require censoring (e.g. collar_failure, capturemort, etc.)
 #' @param dateformat format of startcol and mortcols
+#' @param plot Logical. TRUE/FALSE. Whether a barplot of cumulative survival is desired
+#' @param title desired title of plot
 #' @return Returns a data.frame with animal ID, Year of survival, start date of modeling, end date of modeling, time alive (months), and status of animal (alive/censored = 0, dead = 1)
 #' @keywords adult, seasonal, winter, summer, survival, kaplan-meier, analysis
 #' @export
 #' @examples
 #' \donttest{AdultSeasonal<-AdultSeasonalSurv(data = data, startcol = 'CaptureDate',uni = uni, UAIDcol = "UAID", mortcol = 'MortalityDate', yearstart = 2015, yearend = 2019, seasons = c('winter', 'summer'), winterstart = 11, winterend = 05, cause = c("CollarFailure", 'CaptureMort'))}
 
-AdultSeasonalSurv<-function(data, uni, UAIDcol, startcol, mortcol, yearstart, yearend, seasons = c('winter', 'summer'), winterstart, winterend, cause, dateformat){
+AdultSeasonalSurv<-function(data, uni, UAIDcol, startcol, mortcol, yearstart, yearend, seasons = c('winter', 'summer'), winterstart, winterend, cause, dateformat, plot, title){
   data[,mortcol]<-as.Date(data[,mortcol], format = dateformat)
   data[,startcol]<-as.Date(data[,startcol], format = dateformat)
   Year<-yearstart:yearend
@@ -75,6 +77,39 @@ AdultSeasonalSurv<-function(data, uni, UAIDcol, startcol, mortcol, yearstart, ye
     z<-z[!duplicated(z[,c(1:4)]),]
   }
 
+  if(plot == TRUE){
+    surs<-survival::survfit(survival::Surv(time = z$Time, event = z$Status)~z$SeasonYr)
+
+    summ<-summary(surs)
+    cols<-lapply(c(2:6, 8:11), function(x) summ[x])
+    tbl<-do.call(data.frame, cols)
+
+    unistrat<-as.character(unique(tbl$strata))
+
+    cumsurv<-data.frame()
+
+    for (h in 1:length(unistrat)){
+      subsurv<-tbl[tbl$strata == unistrat[h],]
+      row<-nrow(subsurv)
+      subsurv<-subsurv[row,]
+      subsurv$strata<-as.character(subsurv$strata)
+      subsurv$SeasonYear<-strsplit(subsurv$strata, split = "=")[[1]][2]
+      subsurv$Season<-strsplit(subsurv$SeasonYear, split = "_")[[1]][1]
+      subsurv$Year<-strsplit(subsurv$strata, split = "_")[[1]][2]
+
+      cumsurv<-rbind(subsurv, cumsurv)
+      cumsurv<-cumsurv[order(cumsurv$Year),]
+
+    }
+
+    #library(RColorBrewer)
+    #n<-length(unique(cumsurv$Season))
+    #cols<-brewer.pal(n = n, name = "Set1")
+    barplot(cumsurv$surv, col = c("blue", "red"), ylim = c(0,1),
+            names.arg = cumsurv$SeasonYear, border = NA, main = title, beside = TRUE)
+
+
+  }
   return(z)
 }
 

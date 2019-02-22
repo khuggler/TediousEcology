@@ -6,7 +6,7 @@
 \usage{
 AdultSeasonalSurv(data, uni, UAIDcol, startcol, mortcol, yearstart,
   yearend, seasons = c("winter", "summer"), winterstart, winterend,
-  cause, dateformat)
+  cause, dateformat, plot, title)
 }
 \arguments{
 \item{data}{data.frame that contains a column of unique animal identifier, start date, mortality date, and cause of mortality}
@@ -30,6 +30,10 @@ AdultSeasonalSurv(data, uni, UAIDcol, startcol, mortcol, yearstart,
 \item{cause}{vector of causes that require censoring (e.g. collar_failure, capturemort, etc.)}
 
 \item{dateformat}{format of startcol and mortcols}
+
+\item{plot}{Logical. TRUE/FALSE. Whether a barplot of cumulative survival is desired}
+
+\item{title}{desired title of plot}
 }
 \value{
 Returns a data.frame with animal ID, Year of survival, start date of modeling, end date of modeling, time alive (months), and status of animal (alive/censored = 0, dead = 1)

@@ -12,8 +12,8 @@
 CollarHistory<-function(capdat, df){
 
   dat<-read.csv(capdat,stringsAsFactors = F)
-  dat$CaptureDate<-as.Date(dat$CaptureDate,df)
-  dat$MortalityDate<-as.Date(dat$MortalityDate,df)
+  dat$CaptureDate<-as.Date(dat$CaptureDate,tryFormats = c('%m/%d/%Y', '%Y-%m-%d'))
+  dat$MortalityDate<-as.Date(dat$MortalityDate,tryFormats = c('%m/%d/%Y', '%Y-%m-%d'))
 
   dat$Uni<-paste(dat$New.Serial.Number,dat$CaptureDate,dat$Mortality.,sep='_')
 

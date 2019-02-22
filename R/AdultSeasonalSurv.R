@@ -76,7 +76,7 @@ AdultSeasonalSurv<-function(data, uni, UAIDcol, startcol, mortcol, yearstart, ye
     z<-rbind(d, z)
     z<-z[!duplicated(z[,c(1:4)]),]
   }
-
+cumsurv<-data.frame()
   if(plot == TRUE){
     surs<-survival::survfit(survival::Surv(time = z$Time, event = z$Status)~z$SeasonYr)
 
@@ -105,11 +105,14 @@ AdultSeasonalSurv<-function(data, uni, UAIDcol, startcol, mortcol, yearstart, ye
     #library(RColorBrewer)
     #n<-length(unique(cumsurv$Season))
     #cols<-brewer.pal(n = n, name = "Set1")
-    barplot(cumsurv$surv, col = c("blue", "red"), ylim = c(0,1),
+    cumsurv$Year<-as.numeric(cumsurv$Year)
+    cumsurv<-cumsurv[order(cumsurv$Year, cumsurv$Season),]
+    cumsurv<-cumsurv[complete.cases(cumsurv$surv),]
+    barplot(cumsurv$surv, col = c("red", "blue"), ylim = c(0,1),
             names.arg = cumsurv$SeasonYear, border = NA, main = title, beside = TRUE)
 
 
   }
-  return(z)
+  return(list(cumsurv, z))
 }
 

@@ -4,13 +4,11 @@
 \alias{AdultAnnualSurv}
 \title{Conversion of adult capture data into the correct format for modeling annual survival}
 \usage{
-AdultAnnualSurv(data, format, uaidcol, capcol, mortcol, yearstart, yearend,
-  cause, plot, title)
+AdultAnnualSurv(data, dateformat, uaidcol, capcol, mortcol, yearstart,
+  yearend, cause, plot, title)
 }
 \arguments{
 \item{data}{data.frame that contains a column of unique animal identifier, start date, mortality date, and cause of mortality}
-
-\item{format}{format of mortcol}
 
 \item{uaidcol}{name of column where unique animal identifiers are located}
 
@@ -27,6 +25,8 @@ AdultAnnualSurv(data, format, uaidcol, capcol, mortcol, yearstart, yearend,
 \item{plot}{logical. TRUE/FALSE. If TRUE, function will generate bar plot of yearly survival}
 
 \item{title}{desired title of survival plot (character)}
+
+\item{format}{format of mortcol}
 }
 \value{
 Returns a data.frame with animal ID, start date of modeling, end date of modeling, status of animal (alive = 0, dead = 1), and number of months alive during time period

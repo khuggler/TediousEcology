@@ -20,8 +20,8 @@
 #' \donttest{AdultSurv<-AdultAnnualSurv(data = yourdata, uni = uniquevector, mortcol = "MortalityDate", yearstart = 2015, yearend = 2019 , cause = "CaptureMort")}
 #'
 
-AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, yearend, cause, plot,title){
-  data[,mortcol]<-as.Date(data[,mortcol], format = format)
+AdultAnnualSurv<-function(data, dateformat, uaidcol,capcol, mortcol, yearstart, yearend, cause, plot,title){
+  data[,mortcol]<-as.Date(data[,mortcol], format = dateformat)
   Year<-yearstart:yearend
   hist<-data.frame(Year = Year, StartDate = paste("01/01/", Year, sep = ""), EndDate = paste("12/31/", Year, sep = ""))
   hist$StartDate<-as.Date(hist$StartDate, format = "%m/%d/%Y")
@@ -42,7 +42,7 @@ AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, year
     if(is.na(date)){
       date<-Sys.Date()
     }
-    capdate<-as.Date(sub[,capcol], format = format, origin = sub[,capcol])
+    capdate<-as.Date(sub[,capcol], tryFormats = c('%Y-%m-%d', '%m/%d/%Y'), origin = sub[,capcol])
     x<-nrow(hist)
 
     for(l in 1:x){
@@ -70,6 +70,8 @@ AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, year
   r<-data.frame()
   fin<-data.frame()
   e<-data.frame()
+  y<-data.frame()
+
     for(m in 1:length(u)){
       sub<-z[z$AID == u[m],]
 
@@ -82,8 +84,9 @@ AdultAnnualSurv<-function(data, format, uaidcol,capcol, mortcol, yearstart, year
       y<-sub[1:g,]
     }
 
-    r<-rbind(e, y)
+    r<-rbind(e, r)
     fin<-rbind(r, fin)
+
     fin<-fin[!duplicated(fin[,c(1:4)]),]
     fin<-fin[fin$Remove == 0,]
     #}

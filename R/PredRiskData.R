@@ -28,7 +28,7 @@ PredRiskData<-function(clustpath, subset, startdates, enddates,raspath, studypat
 
 
   deer<-read.csv(dbpath, stringsAsFactors = F)
-  deer$MortalityDate<-as.Date(deer$MortalityDate, format= "%m/%d/%Y")
+  deer$MortalityDate<-as.Date(deer$MortalityDate, tryFormats = c("%m/%d/%Y", "%Y-%m-%d"))
   cause<-c('Lion', "Lion ", "Predation")
   deer<-deer[deer$X %in% cause,]
   deer<-deer[deer$Species == "MD",]
@@ -44,7 +44,8 @@ PredRiskData<-function(clustpath, subset, startdates, enddates,raspath, studypat
   allkill<-rbind(clust, deer)
   allkill$Month<-as.numeric(strftime(allkill$Date, format = "%m"))
   allkill$Season<-ifelse(allkill$Month >= 5 & allkill$Month <= 10, "Summer", "Winter")
-
+  allkill$Month<-as.character(allkill$Month)
+  allkill$Season<-as.character(allkill$Season)
 ################################################
 ##### sample rnadom locations #####
 ###############################################

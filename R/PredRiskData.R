@@ -68,6 +68,7 @@ PredRiskData<-function(clustpath, subset, startdates, enddates,raspath, studypat
 
   uni<-unique(allkill$ID)
   d<-data.frame()
+  random<-data.frame()
   for(i in 1:nrow(allkill)){
     sub<-allkill[i,]
     random<-spsample(study, n = nsamps, type = "random")
@@ -78,10 +79,27 @@ PredRiskData<-function(clustpath, subset, startdates, enddates,raspath, studypat
     random$ID<-rep(sub$ID, nsamps)
 
     random<-data.frame(random)
+    names(random)[6:7]<-c('Easting', 'Northing')
     d<-rbind(random, d)
 
   }
 
+if(nsamps == 1){
+  for(i in 1:nrow(allkill)){
+    sub<-allkill[i,]
+    random<-spsample(study, n = nsamps, type = "random")
+    random$Date<-sub$Date
+    random$Sex<-sub$Sex
+    random$Season<-sub$Season
+    random$Kill<-0
+    random$ID<-sub$ID
+
+    random<-data.frame(random)
+    names(random)[6:7]<-c('Easting', 'Northing')
+    d<-rbind(random, d)
+
+  }
+}
   d<-d[,c(1:7)]
   allkill<-allkill[,c(1,2,4,5,6,7,8)]
   names(allkill)[6:7]<-c('x', 'y')
@@ -98,7 +116,7 @@ PredRiskData<-function(clustpath, subset, startdates, enddates,raspath, studypat
   killdata<-data.frame(killdata)
   killdata<-cbind(killdata, killex)
 
-write.csv(killdata, pathout , row.names = F)
+write.csv(killdata, pathout, row.names = F)
 
 return(killdata)
 

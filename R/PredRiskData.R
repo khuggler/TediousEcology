@@ -43,7 +43,7 @@ PredRiskData<-function(clustpath, subset, startdates, enddates,raspath, studypat
 
   allkill<-rbind(clust, deer)
   allkill$Month<-as.numeric(strftime(allkill$Date, format = "%m"))
-  allkill$Season<-ifelse(allkill$Month >= 05 & allkill$Month <= 10, "Summer", "Winter")
+  allkill$Season<-ifelse(allkill$Month >= 5 & allkill$Month <= 10, "Summer", "Winter")
 
 ################################################
 ##### sample rnadom locations #####

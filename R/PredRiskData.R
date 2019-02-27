@@ -1,6 +1,7 @@
 #' @title BuildRF model of predation risk
 #' @description Build random forest model to predict probability of kill
 #' @param clustpath path to cluster data
+#' @param dbpath path to adult capture database
 #' @param subset Logical TRUE/FALSE. Whether or not data should be subset to a certaind date range
 #' @param startdates vector of desired start dates
 #' @param enddates vector of desired end dates
@@ -12,7 +13,7 @@
 #' @keywords mountain lion, predation risk, deer
 #' @export
 
-PredRiskData<-function(clustpath, subset, startdates, enddates,raspath, studypath, nsamps, pathout){
+PredRiskData<-function(clustpath, dbpath, subset, startdates, enddates,raspath, studypath, nsamps, pathout){
   clust<-read.csv(clustpath, stringsAsFactors = F)
   clust$Date.<-as.Date(clust$Date., format = "%m/%d/%Y")
 

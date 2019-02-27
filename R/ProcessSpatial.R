@@ -116,6 +116,12 @@ endCluster()
 whole.stack<-stack(whole.stack, sec.road)
 writeRaster(sec.road, 'C:/Users/khuggler/Box Sync/DEER/Data/SpatialData/Rasters/Dist2SecRoads.img', format = "HFA", overwrite = TRUE)
 
+names(whole.stack)[[13]]<-'Dist2PrimRoads'
+names(whole.stack)[[14]]<-'Dist2SecRoads'
+
+writeRaster(whole.stack, filename = "C:/Users/khuggler/Box Sync/DEER/Data/SpatialData/Rasters/RasterStack.img", format = "HFA",
+            bylayer = TRUE, suffix = names(whole.stack), progress = "text")
+
 return(whole.stack)
 }
 

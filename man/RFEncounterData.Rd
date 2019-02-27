@@ -13,7 +13,7 @@ RFEncounterData(elkdata, liondata, coyotedata, raspath, studypath)
 
 \item{coyotedata}{object of data.frame of coyote GPS data}
 
-\item{raspath}{path to raster stack}
+\item{raspath}{path to raster folder}
 
 \item{studypath}{path to study area polygon (where you want to define availability)}
 }

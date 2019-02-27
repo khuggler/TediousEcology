@@ -3,7 +3,7 @@
 #' @param elkdata object of data.frame of elk GPS data
 #' @param liondata object of data.frame of lion GPS data
 #' @param coyotedata object of data.frame of coyote GPS data
-#' @param raspath path to raster stack
+#' @param raspath path to raster folder
 #' @param studypath path to study area polygon (where you want to define availability)
 #' @return Returns a list object with RFData necessary to predict probably of use in RF models (elk, coyotes, and mountain lions)
 #' @keywords elk, coyote, mountain lion, random forest, extract, raster, sample
@@ -12,8 +12,17 @@
 
 RFEncounterData<-function(elkdata, liondata, coyotedata, raspath, studypath){
 library(raster)
-rasstack<-stack(raspath)
-names(rasstack)<-c('Elevation', 'NLCD', 'Land', 'Roughness', 'Slope', 'TPI', 'TRASP', 'TRI', 'BigSage', 'PercentSage', 'PercentShrub', 'SageHeight', 'PrimaryRd', 'SecondaryRd', 'TWI')
+  files<-unzip(raspath, files = NULL)
+  files<-grep(".img$", files, value = TRUE)
+
+  r<-list()
+  for(i in 1:length(files)){
+    tempras<-raster(files[i])
+    r[[i]]<-assign(names(tempras), tempras)
+
+    stack<-lapply(r, stack)
+    rasstack<-stack(stack)
+  }
 
 study<-readOGR(studypath)
 study<-spTransform(study, proj4string(rasstack))

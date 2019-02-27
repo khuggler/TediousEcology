@@ -7,7 +7,7 @@
 #' @keywords spatial data, raster, stack
 #' @export
 
-ProcessSpatial<-function(raspath,sagepath ){
+ProcessSpatial<-function(raspath,sagepath, studypath){
   library(raster)
   library(rgdal)
 

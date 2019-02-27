@@ -4,7 +4,7 @@
 \alias{ProcessSpatial}
 \title{Process all spatial data for analyses}
 \usage{
-ProcessSpatial(raspath, sagepath)
+ProcessSpatial(raspath, sagepath, studypath)
 }
 \arguments{
 \item{raspath}{path to rasters already clipped to study area}

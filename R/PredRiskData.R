@@ -50,8 +50,18 @@ PredRiskData<-function(clustpath, subset, startdates, enddates,raspath, studypat
 ##### sample rnadom locations #####
 ###############################################
   library(rgdal)
-  rasstack<-stack(raspath)
-  names(rasstack)<-c('Elevation', 'NLCD', 'Land', 'Roughness', 'Slope', 'TPI', 'TRASP', 'TRI', 'BigSage', 'PercentSage', 'PercentShrub', 'SageHeight', 'PrimaryRd', 'SecondaryRd', 'TWI')
+  files<-unzip(raspath, files = NULL)
+  files<-grep(".img$", files, value = TRUE)
+
+  r<-list()
+  for(i in 1:length(files)){
+    tempras<-raster(files[i])
+    r[[i]]<-assign(names(tempras), tempras)
+
+    stack<-lapply(r, stack)
+    rasstack<-stack(stack)
+  }
+
   study<-readOGR(studypath)
   study<-spTransform(study, proj4string(rasstack))
 

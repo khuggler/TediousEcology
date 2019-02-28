@@ -20,30 +20,99 @@ BuildPredRiskModel<-function(pred.data, ncpu, withold,method, combine.data){
 
   pr<-read.csv(pred.data,stringsAsFactors = F) ### Extracted data for Used and aVailable points
   pr$RasterStack_NLCD_11_30<-as.factor(pr$RasterStack_NLCD_11_30)
+  pr$NewKill<-ifelse(pr$Kill == 1 & pr$Season == "Winter", 2, ifelse(pr$Kill == 1 & pr$Season == "Summer", 3, pr$Kill))
+  pr<-pr[complete.cases(pr),]
 
   SummerAll<-pr[pr$Season == "Summer",]
   WinterAll<-pr[pr$Season == "Winter",]
 
-  pred.names<-(names(pr[,c(9:15, 17:22)]))
+  pred.names<-(names(pr[,c(9:15, 17:23)]))
 
-  pr<-pr[complete.cases(pr),]
-  p<-boot.fun(data = pr, sampsize = 0.8, n.boot = 500, mtry = 4, cutoff = 0.75)
+  #### Summer and Winter Models Separately ####
+  sum<-TediousEcology::boot.fun(data = SummerAll, prop = 0.8, n.boot = 500, samplesize = c(50, 10), mtry = 4, cutoff = 0.75, pred.names = pred.names, cat.column = "Kill")
 
-  agg<-aggregate(p$KillPred, by = list(p$ID, p$Kill, p$Season), FUN = mean, na.rm =TRUE)
-  agg$SD<-aggregate(p$KillPred, by = list(p$ID, p$Kill, p$Season), FUN = sd, na.rm = TRUE)[,3]
-  agg$SE<-aggregate(p$KillPred, by = list(p$ID, p$Kill, p$Season), FUN = function(x) sd(x)/sqrt(length(x)))[,3]
-  names(agg)<-c('ID', 'Kill','Season', 'KillPrediction', 'SD', 'SE')
+  sumagg<-aggregate(sum$KillPred, by = list(sum$ID, sum$Kill), FUN = mean, na.rm =TRUE)
+  sumagg$SD<-aggregate(sum$KillPred, by = list(sum$ID, sum$Kill), FUN = sd, na.rm = TRUE)[,3]
+  sumagg$SE<-aggregate(sum$KillPred, by = list(sum$ID, sum$Kill), FUN = function(x) sd(x)/sqrt(length(x)))[,3]
+  names(sumagg)<-c('ID', 'Kill','KillPrediction', 'SD', 'SE')
+
 
   library(easyGgplot2)
-  vplot<-ggplot2.violinplot(data = agg, xName = 'Kill', yName = 'KillPrediction',addDot = TRUE, dotSize = 0.5, dotPosition = "center",
-                            groupName = 'Season', groupColors = c('#999999','#E69F00'), position = position_dodge())
+  library(ggpubr)
+  print(sumplot<-ggplot2.violinplot(data = sumagg, xName = 'Kill', yName = 'KillPrediction',addDot = TRUE, dotSize = 0.5, dotPosition = "center"))
 
-  print(vplot<-vplot + theme(panel.grid.major = element_line(linetype = "blank"),
+
+  print(sumplot<-sumplot + theme(panel.grid.major = element_line(linetype = "blank"),
+                             panel.grid.minor = element_line(linetype = "blank"),
+                             panel.background = element_rect(fill = NA)) +labs(title = "Summer"))
+
+
+
+  ### Winter ###
+  win<-TediousEcology::boot.fun(data = WinterAll, prop = 0.8, n.boot = 500, mtry = 4, samplesize = c(50,10), cutoff = 0.75, pred.names = pred.names, cat.column = "Kill")
+
+  winagg<-aggregate(win$KillPred, by = list(win$ID, win$Kill), FUN = mean, na.rm =TRUE)
+  winagg$SD<-aggregate(win$KillPred, by = list(win$ID, win$Kill), FUN = sd, na.rm = TRUE)[,3]
+  winagg$SE<-aggregate(win$KillPred, by = list(win$ID, win$Kill), FUN = function(x) sd(x)/sqrt(length(x)))[,3]
+  names(winagg)<-c('ID', 'Kill','KillPrediction', 'SD', 'SE')
+
+
+  print(winplot<-ggplot2.violinplot(data = winagg, xName = 'Kill', yName = 'KillPrediction',addDot = TRUE, dotSize = 0.5, dotPosition = "center"))
+
+
+  print(winplot<-winplot + theme(panel.grid.major = element_line(linetype = "blank"),
+                             panel.grid.minor = element_line(linetype = "blank"),
+                             panel.background = element_rect(fill = NA)) +labs(title = "Winter"))
+
+  print(season.plot<-ggarrange(sumplot, winplot))
+
+  dev.off()
+  all.season<-TediousEcology::boot.fun(data = pr, prop = 0.8, n.boot = 500, mtry = 4, samplesize = c(50,10), cutoff = 0.75, pred.names = pred.names, cat.column = "Kill")
+
+  all.agg<-aggregate(all.season$KillPred, by = list(all.season$ID, all.season$Kill, all.season$Season), FUN = mean, na.rm =TRUE)
+  all.agg$SD<-aggregate(all.season$KillPred, by = list(all.season$ID, all.season$Kill, all.season$Season), FUN = sd, na.rm = TRUE)[,3]
+  all.agg$SE<-aggregate(all.season$KillPred, by = list(all.season$ID, all.season$Kill, all.season$Season), FUN = function(x) sd(x)/sqrt(length(x)))[,3]
+  names(all.agg)<-c('ID', 'Kill','Season', 'KillPrediction', 'SD', 'SE')
+
+print(vplot<-ggplot2.violinplot(data = all.agg, xName = 'Kill', yName = 'KillPrediction',addDot = TRUE, dotSize = 0.5, dotPosition = "center",
+groupName = 'Season', groupColors = c('firebrick3', 'dodgerblue4')))
+
+print(vplot<-vplot + theme(panel.grid.major = element_line(linetype = "blank"),
                        panel.grid.minor = element_line(linetype = "blank"),
                        panel.background = element_rect(fill = NA)) +labs(title = "Distribution of Kill Site Predictions"))
 
+####### Test for differences in Winter and Summer ###########
+dev.off()
 
-  ################### Create training and test data ###############
+new.dat<-pr[pr$NewKill >0, ]
+winsum<-TediousEcology::boot.fun(data = new.dat, prop = 0.8, n.boot = 500, samplesize = c(1,1), mtry = 4, cutoff = 0.75, pred.names = pred.names, cat.column = "NewKill")
+
+winsumagg<-aggregate(winsum$KillPred, by = list(winsum$ID, winsum$NewKill), FUN = mean, na.rm =TRUE)
+winsumagg$SD<-aggregate(winsum$KillPred, by = list(winsum$ID, winsum$NewKill), FUN = sd, na.rm = TRUE)[,3]
+winsumagg$SE<-aggregate(winsum$KillPred, by = list(winsum$ID, winsum$NewKill), FUN = function(x) sd(x)/sqrt(length(x)))[,3]
+names(winsumagg)<-c('ID', 'Kill','KillPrediction', 'SD', 'SE')
+
+
+print(winsumplot<-ggplot2.violinplot(data = winsumagg, xName = 'Kill', yName = 'KillPrediction',addDot = TRUE, dotSize = 0.5, dotPosition = "center"))
+
+
+print(winsumplot<-winsumplot + theme(panel.grid.major = element_line(linetype = "blank"),
+                               panel.grid.minor = element_line(linetype = "blank"),
+                               panel.background = element_rect(fill = NA)) +labs(title = "Distribution of Winter and Summer Kill Site"))
+
+
+######################## Run a Model with just geomorphic variables ##############################
+
+
+
+
+
+
+
+
+
+
+################### Create training and test data ###############
   p=withold
   TrainUse<-SummerAll[SummerAll$Kill == 1,]
   n.train = as.integer(nrow(TrainUse)*p)

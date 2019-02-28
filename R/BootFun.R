@@ -44,13 +44,20 @@ boot.fun<-function(data, prop, n.boot, mtry, cutoff,samplesize, pred.names, cat.
   rf<-randomForest(trainset[, pred.names], as.factor(trainset[,cat.column]), sampsize = samplesize, mtry = mtry, cutoff = c(cutoff, 1-cutoff))
   varImpPlot(rf)
 
+  #TestPred<-predict(rf, testset)
+  #testset[,cat.column]<-as.factor(testset[,cat.column])
+  #caret::confusionMatrix(TestPred, testset[,cat.column])
+
+  testset$NewPred<-predict(rf, testset)
   testset$KillPred<-predict(rf, testset, type = "prob")[,2]
   testset$AvailPred<-predict(rf, testset, type = "prob")[,1]
 
 
   fin<-rbind(testset, fin)
+
   }
-  return(fin)
+  conf<-caret::confusionMatrix(fin$NewPred, as.factor(fin[,cat.column]))
+  return(list(fin, conf))
 }
 
 

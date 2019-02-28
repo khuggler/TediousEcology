@@ -10,7 +10,7 @@
 #' @return Returns a data.frame object with predictions of kill sites and available points
 #' @keywords mountain lion, prediction, kill site, random forest
 #' @export
-boot.fun<-function(data, sampsize, n.boot, mtry, cutoff, pred.names,catcolumn){
+boot.fun<-function(data, sampsize, n.boot, mtry, cutoff, pred.names,cat.column){
   x<-data.frame()
   uni<-data.frame(unique(data$ID))
   ss<-floor(nrow(uni)*sampsize)

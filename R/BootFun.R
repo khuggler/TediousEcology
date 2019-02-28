@@ -39,7 +39,7 @@ boot.fun<-function(data, sampsize, n.boot, mtry, cutoff, pred.names,cat.column){
   testset<-data[!(data$ID %in% unix),]
 
   #### build RF model on data ####
-  rf<-randomForest(trainset[, pred.names], as.factor(trainset[,catcolumn]), sampsize =c(50, 10), mtry = mtry, cutoff = c(cutoff, 1-cutoff))
+  rf<-randomForest(trainset[, pred.names], as.factor(trainset[,cat.column]), sampsize =c(50, 10), mtry = mtry, cutoff = c(cutoff, 1-cutoff))
   varImpPlot(rf)
 
   testset$KillPred<-predict(rf, testset, type = "prob")[,2]

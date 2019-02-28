@@ -1,19 +1,20 @@
 #' @title Boostrap random samples of data for RF models
 #' @description Build random forest models on bootstrapped samples of data
 #' @param data.frame of killsite data
-#' @param sampsize proportion of data (unique Ids) to be taken for training data
+#' @param prop proportion of data (unique Ids) to be taken for training data
 #' @param n.boot number of bootstrapped samples to take
 #' @param mtry desired mtry to test in RF models
 #' @param cutoff parameter of cutoff to be used in RF models
+#' @param samplesize vector of sample sizes for data ex. c(50, 10)
 #' @param pred.names names of predictor variables to be included in the model
 #' @param cat.column column name of the category to be predicted
 #' @return Returns a data.frame object with predictions of kill sites and available points
 #' @keywords mountain lion, prediction, kill site, random forest
 #' @export
-boot.fun<-function(data, sampsize, n.boot, mtry, cutoff, pred.names,cat.column){
+boot.fun<-function(data, prop, n.boot, mtry, cutoff,samplesize, pred.names, cat.column){
   x<-data.frame()
   uni<-data.frame(unique(data$ID))
-  ss<-floor(nrow(uni)*sampsize)
+  ss<-floor(nrow(uni)*prop)
 
   for(k in 1:n.boot){
   unix<-sample(uni$unique.data.ID., ss, replace =TRUE)
@@ -31,6 +32,7 @@ boot.fun<-function(data, sampsize, n.boot, mtry, cutoff, pred.names,cat.column){
 
   uni<-unique(d$k)
   fin<-data.frame()
+
   for(i in 1:length(uni)){
   ##### Create Train and Test Sets #####
   subsub<-d[d$k == uni[i],]
@@ -39,7 +41,7 @@ boot.fun<-function(data, sampsize, n.boot, mtry, cutoff, pred.names,cat.column){
   testset<-data[!(data$ID %in% unix),]
 
   #### build RF model on data ####
-  rf<-randomForest(trainset[, pred.names], as.factor(trainset[,cat.column]), sampsize =c(50, 10), mtry = mtry, cutoff = c(cutoff, 1-cutoff))
+  rf<-randomForest(trainset[, pred.names], as.factor(trainset[,cat.column]), sampsize = samplesize, mtry = mtry, cutoff = c(cutoff, 1-cutoff))
   varImpPlot(rf)
 
   testset$KillPred<-predict(rf, testset, type = "prob")[,2]

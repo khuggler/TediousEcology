@@ -6,10 +6,11 @@
 #' @param mtry desired mtry to test in RF models
 #' @param cutoff parameter of cutoff to be used in RF models
 #' @param pred.names names of predictor variables to be included in the model
+#' @param cat.column column name of the category to be predicted
 #' @return Returns a data.frame object with predictions of kill sites and available points
 #' @keywords mountain lion, prediction, kill site, random forest
 #' @export
-boot.fun<-function(data, sampsize, n.boot, mtry, cutoff, pred.names){
+boot.fun<-function(data, sampsize, n.boot, mtry, cutoff, pred.names,catcolumn){
   x<-data.frame()
   uni<-data.frame(unique(data$ID))
   ss<-floor(nrow(uni)*sampsize)
@@ -38,7 +39,7 @@ boot.fun<-function(data, sampsize, n.boot, mtry, cutoff, pred.names){
   testset<-data[!(data$ID %in% unix),]
 
   #### build RF model on data ####
-  rf<-randomForest(trainset[, pred.names], as.factor(trainset$Kill), sampsize =c(50, 10), mtry = mtry, cutoff = c(cutoff, 1-cutoff))
+  rf<-randomForest(trainset[, pred.names], as.factor(trainset[,catcolumn]), sampsize =c(50, 10), mtry = mtry, cutoff = c(cutoff, 1-cutoff))
   varImpPlot(rf)
 
   testset$KillPred<-predict(rf, testset, type = "prob")[,2]

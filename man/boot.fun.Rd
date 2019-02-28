@@ -4,7 +4,7 @@
 \alias{boot.fun}
 \title{Boostrap random samples of data for RF models}
 \usage{
-boot.fun(data, sampsize, n.boot, mtry, cutoff, pred.names)
+boot.fun(data, sampsize, n.boot, mtry, cutoff, pred.names, catcolumn)
 }
 \arguments{
 \item{sampsize}{proportion of data (unique Ids) to be taken for training data}
@@ -18,6 +18,8 @@ boot.fun(data, sampsize, n.boot, mtry, cutoff, pred.names)
 \item{pred.names}{names of predictor variables to be included in the model}
 
 \item{data.frame}{of killsite data}
+
+\item{cat.column}{column name of the category to be predicted}
 }
 \value{
 Returns a data.frame object with predictions of kill sites and available points

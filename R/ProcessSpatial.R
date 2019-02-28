@@ -79,6 +79,7 @@ prim.road<-projectRaster(from = proaddist, to = whole.stac, progress = "text")
 endCluster()
 
 whole.stack<-stack(whole.stac, prim.road)
+names(whole.stack)[[14]]<-'Dist2PrimRoads'
 writeRaster(prim.road, 'C:/Users/khuggler/Box Sync/DEER/Data/SpatialData/Rasters/Dist2PrimRoads.img', format = "HFA", overwrite = TRUE)
 
 ### Secondary Roads ###
@@ -114,13 +115,12 @@ sec.road<-projectRaster(from = secroaddist, to = whole.stack, progress = "text")
 endCluster()
 
 whole.stack<-stack(whole.stack, sec.road)
+names(whole.stack)[[15]]<-'Dist2SecRoads'
 writeRaster(sec.road, 'C:/Users/khuggler/Box Sync/DEER/Data/SpatialData/Rasters/Dist2SecRoads.img', format = "HFA", overwrite = TRUE)
 
-names(whole.stack)[[13]]<-'Dist2PrimRoads'
-names(whole.stack)[[14]]<-'Dist2SecRoads'
 
 writeRaster(whole.stack, filename = "C:/Users/khuggler/Box Sync/DEER/Data/SpatialData/Rasters/RasterStack.img", format = "HFA",
-            bylayer = TRUE, suffix = names(whole.stack), progress = "text")
+          bylayer = TRUE, suffix = names(whole.stack), progress = "text", overwrite =TRUE)
 
 return(whole.stack)
 }

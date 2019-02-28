@@ -38,6 +38,7 @@ boot.fun<-function(data, sampsize, n.boot, mtry, cutoff){
 
   #### build RF model on data ####
   rf<-randomForest(trainset[, pred.names], as.factor(trainset$Kill), sampsize =c(50, 10), mtry = mtry, cutoff = c(cutoff, 1-cutoff))
+  varImpPlot(rf)
 
   testset$KillPred<-predict(rf, testset, type = "prob")[,2]
   testset$AvailPred<-predict(rf, testset, type = "prob")[,1]

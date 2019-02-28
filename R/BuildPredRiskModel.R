@@ -19,17 +19,29 @@ BuildPredRiskModel<-function(pred.data, ncpu, withold,method, combine.data){
   library(pROC)
 
   pr<-read.csv(pred.data,stringsAsFactors = F) ### Extracted data for Used and aVailable points
-  pr$NLCD<-as.factor(pr$NLCD)
+  pr$RasterStack_NLCD_11_30<-as.factor(pr$RasterStack_NLCD_11_30)
 
   SummerAll<-pr[pr$Season == "Summer",]
   WinterAll<-pr[pr$Season == "Winter",]
 
-  predictorNames <-c('Elevation', 'Slope', 'TPI', 'TRASP', 'TRI', 'PercentShrub', 'Roughness',
-                      'SecondaryRd', 'NLCD', 'PercentSage', 'BigSage', 'SageHeight')
+  pred.names<-(names(pr[,c(9:15, 17:22)]))
 
-  pred.names<-c('Elevation', 'Slope', 'TPI', 'TRASP', 'TRI', 'PercentShrub', 'Roughness',
-                'SecondaryRd', 'NLCD', 'PercentSage', 'BigSage', 'SageHeight')
-  cbind(pred.names,predictorNames)
+  pr<-pr[complete.cases(pr),]
+  p<-boot.fun(data = pr, sampsize = 0.8, n.boot = 500, mtry = 4, cutoff = 0.75)
+
+  agg<-aggregate(p$KillPred, by = list(p$ID, p$Kill, p$Season), FUN = mean, na.rm =TRUE)
+  agg$SD<-aggregate(p$KillPred, by = list(p$ID, p$Kill, p$Season), FUN = sd, na.rm = TRUE)[,3]
+  agg$SE<-aggregate(p$KillPred, by = list(p$ID, p$Kill, p$Season), FUN = function(x) sd(x)/sqrt(length(x)))[,3]
+  names(agg)<-c('ID', 'Kill','Season', 'KillPrediction', 'SD', 'SE')
+
+  library(easyGgplot2)
+  vplot<-ggplot2.violinplot(data = agg, xName = 'Kill', yName = 'KillPrediction',addDot = TRUE, dotSize = 0.5, dotPosition = "center",
+                            groupName = 'Season', groupColors = c('#999999','#E69F00'), position = position_dodge())
+
+  print(vplot<-vplot + theme(panel.grid.major = element_line(linetype = "blank"),
+                       panel.grid.minor = element_line(linetype = "blank"),
+                       panel.background = element_rect(fill = NA)) +labs(title = "Distribution of Kill Site Predictions"))
+
 
   ################### Create training and test data ###############
   p=withold

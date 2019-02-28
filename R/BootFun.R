@@ -5,10 +5,11 @@
 #' @param n.boot number of bootstrapped samples to take
 #' @param mtry desired mtry to test in RF models
 #' @param cutoff parameter of cutoff to be used in RF models
+#' @param pred.names names of predictor variables to be included in the model
 #' @return Returns a data.frame object with predictions of kill sites and available points
 #' @keywords mountain lion, prediction, kill site, random forest
 #' @export
-boot.fun<-function(data, sampsize, n.boot, mtry, cutoff){
+boot.fun<-function(data, sampsize, n.boot, mtry, cutoff, pred.names){
   x<-data.frame()
   uni<-data.frame(unique(data$ID))
   ss<-floor(nrow(uni)*sampsize)

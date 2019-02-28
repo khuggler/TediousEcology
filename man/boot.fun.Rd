@@ -4,7 +4,7 @@
 \alias{boot.fun}
 \title{Boostrap random samples of data for RF models}
 \usage{
-boot.fun(data, sampsize, n.boot, mtry, cutoff)
+boot.fun(data, sampsize, n.boot, mtry, cutoff, pred.names)
 }
 \arguments{
 \item{sampsize}{proportion of data (unique Ids) to be taken for training data}
@@ -14,6 +14,8 @@ boot.fun(data, sampsize, n.boot, mtry, cutoff)
 \item{mtry}{desired mtry to test in RF models}
 
 \item{cutoff}{parameter of cutoff to be used in RF models}
+
+\item{pred.names}{names of predictor variables to be included in the model}
 
 \item{data.frame}{of killsite data}
 }

@@ -16,17 +16,22 @@ BuildRFModels<-function(data, ncpu, withold, trees, raspath, pathout){
   library(snow)
   library(parallel)
 
-  data$NLCD<-as.factor(data$NLCD)
+  files<-unzip(raspath, files = NULL)
+  files<-grep(".img$", files, value = TRUE)
 
-  predictorNames <-c('Elevation', 'Slope', 'TPI', 'TRASP', 'TRI', 'PercentShrub', 'Roughness',
-                     'PrimaryRd', 'SecondaryRd', 'TWI', 'NLCD', 'PercentSage', 'BigSage', 'SageHeight')
+  r<-list()
+  for(i in 1:length(files)){
+    tempras<-raster(files[i])
+    r[[i]]<-assign(names(tempras), tempras)
 
-  pred.names<-c('Elevation', 'Slope', 'TPI', 'TRASP', 'TRI', 'PercentShrub', 'Roughness',
-                'PrimaryRd', 'SecondaryRd', 'TWI', 'NLCD', 'PercentSage', 'BigSage', 'SageHeight')
-  cbind(pred.names,predictorNames)
+    stack<-lapply(r, stack)
+    rasstack<-stack(stack)
+  }
 
-rasstack<-rasstack<-stack(raspath)
-names(rasstack)<-c('Elevation', 'NLCD', 'Land', 'Roughness', 'Slope', 'TPI', 'TRASP', 'TRI', 'BigSage', 'PercentSage', 'PercentShrub', 'SageHeight', 'PrimaryRd', 'SecondaryRd', 'TWI')
+
+  data$RasterStack_NLCD_11_30<-as.factor(data$RasterStack_NLCD_11_30)
+
+  pred.names<-(names(data[,c(1:15)]))
 
 
   #################################################

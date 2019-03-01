@@ -1,6 +1,7 @@
 #' @title Boostrap random samples of data for RF models
 #' @description Build random forest models on bootstrapped samples of data
 #' @param data.frame of killsite data
+#' @param idcol name of column to loop through
 #' @param prop proportion of data (unique Ids) to be taken for training data
 #' @param n.boot number of bootstrapped samples to take
 #' @param mtry desired mtry to test in RF models
@@ -11,13 +12,14 @@
 #' @return Returns a data.frame object with predictions of kill sites and available points
 #' @keywords mountain lion, prediction, kill site, random forest
 #' @export
-boot.fun<-function(data, prop, n.boot, mtry, cutoff,samplesize, pred.names, cat.column){
+boot.fun<-function(data, idcol, prop, n.boot, mtry, cutoff,samplesize, pred.names, cat.column){
   x<-data.frame()
-  uni<-data.frame(unique(data$ID))
+  uni<-data.frame(unique(data[,idcol]))
+  names(uni)<-'UniqueID'
   ss<-floor(nrow(uni)*prop)
 
   for(k in 1:n.boot){
-  unix<-sample(uni$unique.data.ID., ss, replace =TRUE)
+  unix<-sample(uni$UniqueID, ss, replace =TRUE)
   x<-rbind(unix,x)
   }
 

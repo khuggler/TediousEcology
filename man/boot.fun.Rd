@@ -4,10 +4,12 @@
 \alias{boot.fun}
 \title{Boostrap random samples of data for RF models}
 \usage{
-boot.fun(data, prop, n.boot, mtry, cutoff, samplesize, pred.names,
+boot.fun(data, idcol, prop, n.boot, mtry, cutoff, samplesize, pred.names,
   cat.column)
 }
 \arguments{
+\item{idcol}{name of column to loop through}
+
 \item{prop}{proportion of data (unique Ids) to be taken for training data}
 
 \item{n.boot}{number of bootstrapped samples to take}

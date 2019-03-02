@@ -65,6 +65,7 @@ ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex){
     asub$ReproStatus <- ifelse(end < asub$Date, "NonRepro", "Repro")
     asub$ReproStatus<-ifelse(asub$PregStat == 0, "NonRepro", asub$ReproStatus)
     asub$Keep<-ifelse(asub$AllCatch == 0 & asub$ReproStatus == "NonRepro", 0, 1)
+    asub<-asub[asub$Keep ==1,]
 
     new.dat<-rbind(new.dat, asub)
 

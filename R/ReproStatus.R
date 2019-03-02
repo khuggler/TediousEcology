@@ -4,6 +4,7 @@
 #' @param startdates vector (date format) of the start dates to subset GPS data
 #' @param enddates vector (date format) of the end dates to subset GPS data
 #' @param neodat path to neonate database
+#' @param capdat path to capture database
 #' @param subspp what species to subset
 #' @param subsex what sex to subset
 #' @return Returns a data.frame with all gps data, AnimalID, Sex, and Species, and Reproductive Status (Repro or Non-Repro)
@@ -12,7 +13,7 @@
 #' @examples
 #' \donttest{ReproData<-ReproStatus(gps = yourgpsdata, startdates = c('2017-05-01', '2018-05-01'), enddates = c('2017-09-01', '2018-09-01'), neodat = yourpath, subspp = "MD", subsex = "F")}
 
-ReproStatus<-function(gps, startdates, enddates, neodat, subspp, subsex){
+ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex){
 
   sub<-gps[gps$Date >= startdates[1] & gps$Date <= enddates[1] | gps$Date >= startdates[2] & gps$Date <= enddates[2],]
   sub<-sub[sub$Spp %in% subspp & sub$Sex %in% subsex,]
@@ -28,14 +29,22 @@ ReproStatus<-function(gps, startdates, enddates, neodat, subspp, subsex){
   neo$Year<-strftime(neo$StartDate, format = "%Y")
   neo$AIDYr<-paste(neo$MomAID, neo$Year, sep = "_")
 
+  cap<-read.csv(capdat, stringsAsFactors = F) ######
+  cap$CaptureDate<-as.Date(cap$CaptureDate, tryFormats = c("%m/%d/%Y", "%Y-%m-%d"))
+  cap$Month<-strftime(cap$CaptureDate, format = "%m")
+  cap$Year<-strftime(cap$CaptureDate, format = "%Y")
+  cap$MoYr<-paste(cap$Month, cap$Year, sep = "_")
+
+  cap<-cap[cap$MoYr == "04_2017" | cap$MoYr == "04_2018",]
+  cap$AIDYr<-paste(cap$UAID, cap$Year, sep = "_")
 
   uni<-unique(sub$AIDYr)
-
   new.dat<-NULL
 
   for(z in 1:length(uni)){
     asub<-sub[sub$AIDYr == uni[z],]
     neosub<-neo[neo$AIDYr == uni[z],]
+    capsub<-cap[cap$AIDYr == uni[z],]
 
     if(nrow(neosub) > 1){
       end<-max(neosub$EndDate)
@@ -49,9 +58,16 @@ ReproStatus<-function(gps, startdates, enddates, neodat, subspp, subsex){
       end<-NA
     }
 
+    asub$FetusNumber<-capsub$Number.Fetus
+    asub$PregStat<-capsub$Pregnant
+    asub$AllCatch<-ifelse(nrow(neosub) < capsub$Number.Fetus,0,1)
+    asub$NeoCatch<-ifelse(nrow(neosub)> 0, 1, 0)
     asub$ReproStatus <- ifelse(end < asub$Date, "NonRepro", "Repro")
+    asub$ReproStatus<-ifelse(asub$PregStat == 0, "NonRepro", asub$ReproStatus)
+    asub$Keep<-ifelse(asub$AllCatch == 0 & asub$ReproStatus == "NonRepro", 0, 1)
 
     new.dat<-rbind(new.dat, asub)
+
 
     print(z)
 

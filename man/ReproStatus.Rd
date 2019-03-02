@@ -4,7 +4,7 @@
 \alias{ReproStatus}
 \title{Function to append Reproductive Status of an animal to at each fix of GPS data}
 \usage{
-ReproStatus(gps, startdates, enddates, neodat, subspp, subsex)
+ReproStatus(gps, startdates, enddates, neodat, capdat, subspp, subsex)
 }
 \arguments{
 \item{gps}{data.frame of gps data}
@@ -14,6 +14,8 @@ ReproStatus(gps, startdates, enddates, neodat, subspp, subsex)
 \item{enddates}{vector (date format) of the end dates to subset GPS data}
 
 \item{neodat}{path to neonate database}
+
+\item{capdat}{path to capture database}
 
 \item{subspp}{what species to subset}
 

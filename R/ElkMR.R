@@ -58,7 +58,11 @@ ElkMR<-function(gps, startdates, enddates, subspp, subsex){
   agg<-aggregate(s$HrMR, by=list(s$Hour), FUN = mean, na.rm=T)
   plot(agg$Group.1, agg$x, type = "l")
 
-  s$act.cat<-ifelse(s$Hour >= 5 & s$Hour <= 8 | s$Hour >= 17 & s$Hour <= 21, "High", "Low")
+  quant<-quantile(s$HrMR, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 1), na.rm=T)
+  quant<-as.numeric(quant[6])
+
+  s$act.cat<-ifelse(s$HrMR >= quant, "High", "Low")
+
 
   return(s)
   }

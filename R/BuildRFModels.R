@@ -31,7 +31,7 @@ BuildRFModels<-function(data, ncpu, withold, trees, raspath, pathout){
 
   data$RasterStack_NLCD_11_30<-as.factor(data$RasterStack_NLCD_11_30)
 
-  pred.names<-(names(data[,c(1:15)]))
+  pred.names<-(names(data[,c(1:7, 9:15)]))
 
 
   #################################################

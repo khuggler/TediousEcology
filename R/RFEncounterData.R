@@ -72,8 +72,8 @@ coordinates(coyotedata)<-c('Easting', 'Northing')
 proj4string(coyotedata)<-'+proj=utm +zone=12 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 yote<-spTransform(coyotedata, proj4string(rasstack))
 
-used.ex<-data.frame(extract(rasstack, coyotedata))
-used.ex$AID<-coyotedata$AID
+used.ex<-data.frame(extract(rasstack, yote))
+used.ex$AID<-yote$AID
 
 used.ex$Used<-1
 

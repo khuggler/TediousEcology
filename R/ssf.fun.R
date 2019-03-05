@@ -12,7 +12,6 @@
 ssf.fun<-function(data, datecol,idcol, plot, pathout){
   library(ggplot2)
   library(RStoolbox)
-  library(animove)
   library(survival)
   library(MASS)
   library(lubridate)
@@ -21,7 +20,7 @@ ssf.fun<-function(data, datecol,idcol, plot, pathout){
   library(pbs)
   library(circular)
   library(CircStats)
-  library(ssf)
+  #library(ssf)
   library(amt)
   library(move)
   library(tibble)

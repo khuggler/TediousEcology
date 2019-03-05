@@ -168,7 +168,7 @@ ssf.fun<-function(data, datecol,idcol, plot, pathout){
   ssf.df$timestamp<-ssf.df$t1_
   ssf.df %>% select('lat', utm.easting, x1_, x2_, y1_, y2_, 'long', utm.northing) %>% head
 
-  write.csv(pathout, row.names = F)
+  write.csv(ssf.df,pathout, row.names = F)
 
  return(ssf.df)
 

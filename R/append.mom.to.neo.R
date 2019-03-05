@@ -9,7 +9,7 @@
 
 append.mom.to.neo<-function(neopath, mompath, pathout){
 
-neo<-read.csv(nepath, stringsAsFactors = F) ## read in neonates
+neo<-read.csv(neopath, stringsAsFactors = F) ## read in neonates
 mom<-read.csv(mompath, stringsAsFactors = F) ## read in moms
 
 neo$StartDate<-as.Date(neo$StartDate, tryFormats = c("%m/%d/%Y", '%Y-%m-%d'))

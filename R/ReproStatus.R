@@ -67,7 +67,7 @@ ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex, 
     asub$ReproStatus<-ifelse(asub$PregStat == 0, "NonRepro", asub$ReproStatus)
     asub$Keep<-ifelse(asub$AllCatch == 0 & asub$ReproStatus == "NonRepro", 0, 1)
 
-    if(subset = TRUE){
+    if(subset == TRUE){
     asub<-asub[asub$Keep ==1,]
     }
 

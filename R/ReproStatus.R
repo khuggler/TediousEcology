@@ -7,13 +7,14 @@
 #' @param capdat path to capture database
 #' @param subspp what species to subset
 #' @param subsex what sex to subset
+#' @param subset TRUE/FALSE. Whether or not function should remove non-repro animals
 #' @return Returns a data.frame with all gps data, AnimalID, Sex, and Species, and Reproductive Status (Repro or Non-Repro)
 #' @keywords neonate, gps, reproductive
 #' @export
 #' @examples
 #' \donttest{ReproData<-ReproStatus(gps = yourgpsdata, startdates = c('2017-05-01', '2018-05-01'), enddates = c('2017-09-01', '2018-09-01'), neodat = yourpath, subspp = "MD", subsex = "F")}
 
-ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex){
+ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex, subset){
 
   sub<-gps[gps$Date >= startdates[1] & gps$Date <= enddates[1] | gps$Date >= startdates[2] & gps$Date <= enddates[2],]
   sub<-sub[sub$Spp %in% subspp & sub$Sex %in% subsex,]
@@ -65,7 +66,10 @@ ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex){
     asub$ReproStatus <- ifelse(end < asub$Date, "NonRepro", "Repro")
     asub$ReproStatus<-ifelse(asub$PregStat == 0, "NonRepro", asub$ReproStatus)
     asub$Keep<-ifelse(asub$AllCatch == 0 & asub$ReproStatus == "NonRepro", 0, 1)
+
+    if(subset = TRUE){
     asub<-asub[asub$Keep ==1,]
+    }
 
     new.dat<-rbind(new.dat, asub)
 

@@ -4,7 +4,8 @@
 \alias{ReproStatus}
 \title{Function to append Reproductive Status of an animal to at each fix of GPS data}
 \usage{
-ReproStatus(gps, startdates, enddates, neodat, capdat, subspp, subsex)
+ReproStatus(gps, startdates, enddates, neodat, capdat, subspp, subsex,
+  subset)
 }
 \arguments{
 \item{gps}{data.frame of gps data}
@@ -20,6 +21,8 @@ ReproStatus(gps, startdates, enddates, neodat, capdat, subspp, subsex)
 \item{subspp}{what species to subset}
 
 \item{subsex}{what sex to subset}
+
+\item{subset}{TRUE/FALSE. Whether or not function should remove non-repro animals}
 }
 \value{
 Returns a data.frame with all gps data, AnimalID, Sex, and Species, and Reproductive Status (Repro or Non-Repro)

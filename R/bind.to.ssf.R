@@ -49,6 +49,8 @@ bind.to.ssf<-function(ssfdata, orig.data){
     dsub$NeoCatch<-orig.sub$NeoCatch[1]
     dsub$ReproStatus<-orig.sub$ReproStatus[1]
     dsub$Keep<-orig.sub$Keep[1]
+    dsub$birth.date<-orig.sub$birth.date[1]
+    dsub$days.to.part<-orig.sub$days.to.part[1]
 
     print(l)
     x<-rbind(dsub, x)

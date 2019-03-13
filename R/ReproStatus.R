@@ -49,14 +49,17 @@ ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex, 
 
     if(nrow(neosub) > 1){
       end<-max(neosub$EndDate)
+      start<-max(neosub$StartDate)-1
     }
 
     if(nrow(neosub) == 1){
       end<-neosub$EndDate
+      start<-neosub$StartDate-1
     }
 
     if(nrow(neosub) == 0){
       end<-NA
+      start<-NA
     }
 
     asub$FetusNumber<-capsub$Number.Fetus
@@ -66,6 +69,8 @@ ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex, 
     asub$ReproStatus <- ifelse(end < asub$Date, "NonRepro", "Repro")
     asub$ReproStatus<-ifelse(asub$PregStat == 0, "NonRepro", asub$ReproStatus)
     asub$Keep<-ifelse(asub$AllCatch == 0 & asub$ReproStatus == "NonRepro", 0, 1)
+    asub$birth.date<-start
+    asub$days.to.part<-as.numeric(difftime(asub$Date, start, units = "days"))
 
     if(subset == TRUE){
     asub<-asub[asub$Keep ==1,]

@@ -4,7 +4,8 @@
 \alias{BuildRFModels}
 \title{Stack and extract all spatial data to elk, coyotes, and mountain lions (RF Encounter)}
 \usage{
-BuildRFModels(data, ncpu, withold, trees, raspath, pathout)
+BuildRFModels(data, ncpu, withold, trees, raspath, pathout, subset,
+  catname)
 }
 \arguments{
 \item{data}{data to be used to build RF model}
@@ -18,6 +19,10 @@ BuildRFModels(data, ncpu, withold, trees, raspath, pathout)
 \item{raspath}{path to raster stack}
 
 \item{pathout}{path to where predicted RF map should be written}
+
+\item{subset}{Logical. TRUE/FALSE. Whether to subset the data into categories}
+
+\item{catname}{name of category to split on}
 
 \item{studypath}{path to study area polygon (where you want to define availability)}
 }

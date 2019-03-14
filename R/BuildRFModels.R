@@ -7,11 +7,13 @@
 #' @param raspath path to raster stack
 #' @param studypath path to study area polygon (where you want to define availability)
 #' @param pathout path to where predicted RF map should be written
+#' @param subset Logical. TRUE/FALSE. Whether to subset the data into categories
+#' @param catname name of category to split on
 #' @return Returns a list object with RFData necessary to predict probably of use in RF models (elk, coyotes, and mountain lions)
 #' @keywords elk, coyote, mountain lion, random forest, extract, raster, sample
 #' @export
 
-BuildRFModels<-function(data, ncpu, withold, trees, raspath, pathout){
+BuildRFModels<-function(data, ncpu, withold, trees, raspath, pathout, subset, catname){
   library(randomForest)
   library(snow)
   library(parallel)
@@ -33,10 +35,15 @@ BuildRFModels<-function(data, ncpu, withold, trees, raspath, pathout){
 
   pred.names<-(names(data[,c(1:7, 9:15)]))
 
+  if(subset == TRUE){
+    data<-data[data$act.cat == catname,]
+
+  }
+
 
   #################################################
   #### Create Training Data
-  #########################################
+  #################################################
   factor_Used<-as.factor(data$Used)
   fincpu<-ncpu
   cluster<-snow::makeCluster(fincpu)

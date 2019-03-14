@@ -49,7 +49,7 @@ elkrf<-rbind(random.ex, used.ex)
 random<-spsample(study, nrow(liondata), type = "random")
 random.ex<-data.frame(extract(rasstack, random))
 random.ex$AID<-liondata$AID
-random.ex$act.cat<-liondata$act.act
+random.ex$act.cat<-liondata$act.cat
 random.ex$Used<-0
 
 lion<-liondata[complete.cases(liondata$Easting),]

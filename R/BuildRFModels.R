@@ -35,6 +35,8 @@ BuildRFModels<-function(data, ncpu, withold, trees, raspath, pathout, subset, ca
 
   pred.names<-(names(data[,c(1:7, 9:15)]))
 
+  data<-data[data$RasterStack_PercentSage < 100,]
+
   if(subset == TRUE){
     data<-data[data$act.cat == catname,]
 
@@ -89,7 +91,7 @@ BuildRFModels<-function(data, ncpu, withold, trees, raspath, pathout, subset, ca
   result.predicted.prob <- predict(LionRF_tune, TestData, type="prob") # Prediction
   result.roc <- roc(TestData$Used, result.predicted.prob[,2]) # Draw ROC curve.
   plot(result.roc, print.thres="best", print.thres.best.method="closest.topleft")
-  result.coords <- coords(result.roc, "best", best.method="closest.topleft", ret=c("threshold", "accuracy"))
+  result.coords <- pROC::coords(result.roc, "best", best.method="closest.topleft", ret=c("threshold", "accuracy"))
   print(result.coords)
 
   LionRF_tune

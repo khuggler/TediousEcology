@@ -153,7 +153,7 @@ ssf.fun<-function(data, datecol,idcol, plot, pathout){
       d %>%
         track_resample(rate = hours(1), tolerance = minutes(15)) %>%
         filter_min_n_burst(min_n = 3) %>%
-        steps_by_burst() %>% random_steps()
+        steps_by_burst() %>% random_steps() ## can specify number of random steps desired
     })) %>% select(id, ssf) %>% unnest()
 
 

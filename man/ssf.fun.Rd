@@ -4,7 +4,7 @@
 \alias{ssf.fun}
 \title{build ssf with deer data}
 \usage{
-ssf.fun(data, datecol, idcol, plot, pathout)
+ssf.fun(data, datecol, idcol, plot, pathout, nsamps)
 }
 \arguments{
 \item{data}{deer data}
@@ -16,6 +16,8 @@ ssf.fun(data, datecol, idcol, plot, pathout)
 \item{plot}{TRUE/FALSE whether plots should be generated}
 
 \item{pathout}{path to where ssf data should be written}
+
+\item{nsamps}{number of random points for every step}
 }
 \value{
 Returns a data.frame object with all sampled ssf data

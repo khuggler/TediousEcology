@@ -5,11 +5,12 @@
 #' @param idcol name of column where aid is stored
 #' @param plot TRUE/FALSE whether plots should be generated
 #' @param pathout path to where ssf data should be written
+#' @param nsamps number of random points for every step
 #' @return Returns a data.frame object with all sampled ssf data
 #' @keywords ssf, step selection, sample, distribution
 #' @export
 
-ssf.fun<-function(data, datecol,idcol, plot, pathout){
+ssf.fun<-function(data, datecol,idcol, plot, pathout, nsamps){
   library(ggplot2)
   library(RStoolbox)
   library(survival)
@@ -29,6 +30,7 @@ ssf.fun<-function(data, datecol,idcol, plot, pathout){
   library(ggmap)
   library(purrr)
 
+  data<-data[data$HDOP < 12,]
 
   deer7<-data %>% filter(AID == "7")
   z<-(calc_zoom(Longitude, Latitude, deer7))
@@ -61,7 +63,7 @@ ssf.fun<-function(data, datecol,idcol, plot, pathout){
   trk<-trk%>%
     mutate(
       week=week(t_),
-      month = month(t_, label=TRUE),
+      month = month(t_),
       year=year(t_),
       hour = hour(t_)
     )
@@ -72,6 +74,8 @@ ssf.fun<-function(data, datecol,idcol, plot, pathout){
 
   if(plot == TRUE){
 
+    api<-'AIzaSyBDm3ST6ENqWojHznMUb2-PY2-5m6mgRt4'
+    ggmap::register_google(api)
   map <- get_map(location = c(lon = mean(deer7$Longitude),
                               lat = mean(deer7$Latitude)), zoom = 12,
                  maptype = "hybrid", source = "google")
@@ -153,7 +157,7 @@ ssf.fun<-function(data, datecol,idcol, plot, pathout){
       d %>%
         track_resample(rate = hours(1), tolerance = minutes(15)) %>%
         filter_min_n_burst(min_n = 3) %>%
-        steps_by_burst() %>% random_steps() ## can specify number of random steps desired
+        steps_by_burst() %>% random_steps(nsamps) ## can specify number of random steps desired
     })) %>% select(id, ssf) %>% unnest()
 
 

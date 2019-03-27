@@ -4,10 +4,10 @@
 \alias{ssf.fun}
 \title{build ssf with deer data}
 \usage{
-ssf.fun(data, datecol, idcol, plot, pathout, nsamps)
+ssf.fun(dat, datecol, idcol, plot, pathout, nsamps)
 }
 \arguments{
-\item{data}{deer data}
+\item{dat}{deer data}
 
 \item{datecol}{name of column where telemdate is stored}
 

@@ -1,6 +1,6 @@
 #' @title build ssf with deer data
 #' @description  sample available points from distribution for ssf data
-#' @param data deer data
+#' @param dat deer data
 #' @param datecol name of column where telemdate is stored
 #' @param idcol name of column where aid is stored
 #' @param plot TRUE/FALSE whether plots should be generated
@@ -10,7 +10,7 @@
 #' @keywords ssf, step selection, sample, distribution
 #' @export
 
-ssf.fun<-function(data, datecol,idcol, plot, pathout, nsamps){
+ssf.fun<-function(dat, datecol,idcol, plot, pathout, nsamps){
   library(ggplot2)
   library(RStoolbox)
   library(survival)
@@ -30,18 +30,18 @@ ssf.fun<-function(data, datecol,idcol, plot, pathout, nsamps){
   library(ggmap)
   library(purrr)
 
-  data<-data[data$HDOP < 12,]
+  dat<-dat[dat$HDOP < 12,]
 
-  deer7<-data %>% filter(AID == "7")
-  z<-(calc_zoom(Longitude, Latitude, deer7))
+  #deer7<-data %>% filter(AID == "7")
+  #z<-(calc_zoom(Longitude, Latitude, deer7))
 
   ### Create tracks in AMT package ###
-  spatial.dat<-data
+  spatial.dat<-dat
   coordinates(spatial.dat)<-c('Longitude', 'Latitude')
   proj<-'+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
   proj4string(spatial.dat)<-proj
 
-  trk <- mk_track(data, .x=Longitude, .y=Latitude, .t=TelemDate, id = AID,
+  trk <- mk_track(dat, .x=Longitude, .y=Latitude, .t=TelemDate, id = AID,
                   crs = CRS(proj))
 
   geo.proj<-'+proj=utm +zone=12 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
@@ -142,7 +142,7 @@ ssf.fun<-function(data, datecol,idcol, plot, pathout, nsamps){
   ##### Prepping SSF data #####
 
   (timestats<-trk %>% nest(-id) %>% mutate(sr = map(data, summarize_sampling_rate)) %>%
-     select(id, sr) %>% unnest)
+     dplyr::select(id, sr) %>% unnest)
 
   trk<-trk %>% group_by(id) %>% mutate(dt_ = t_ - lag(t_, default = NA))
 
@@ -150,7 +150,7 @@ ssf.fun<-function(data, datecol,idcol, plot, pathout, nsamps){
   #### Re sample tracks and append bursts to each id #####
 
  trk %>% nest(-id) %>% mutate(sr = map(.$data, summarize_sampling_rate)) %>%
-    select(id, sr) %>% unnest()
+    dplyr::select(id, sr) %>% unnest()
 
   ssfdat<- trk %>% nest(-id) %>%
     mutate(ssf = map(data, function(d){
@@ -158,7 +158,7 @@ ssf.fun<-function(data, datecol,idcol, plot, pathout, nsamps){
         track_resample(rate = hours(1), tolerance = minutes(15)) %>%
         filter_min_n_burst(min_n = 3) %>%
         steps_by_burst() %>% random_steps(nsamps) ## can specify number of random steps desired
-    })) %>% select(id, ssf) %>% unnest()
+    })) %>% dplyr::select(id, ssf) %>% unnest()
 
 
   ssfdat$utm.easting<-ssfdat$x2_
@@ -169,7 +169,7 @@ ssf.fun<-function(data, datecol,idcol, plot, pathout, nsamps){
   ssf.df <- data.frame(spTransform(ssfdat2, CRS("+proj=longlat +datum=WGS84")))
   names(ssf.df)[c(13,16,17)] <-c("AID", "long", "lat")
   ssf.df$timestamp<-ssf.df$t1_
-  ssf.df %>% select('lat', utm.easting, x1_, x2_, y1_, y2_, 'long', utm.northing) %>% head
+  ssf.df %>% dplyr::select('lat', utm.easting, x1_, x2_, y1_, y2_, 'long', utm.northing) %>% head
 
   write.csv(ssf.df,pathout, row.names = F)
 

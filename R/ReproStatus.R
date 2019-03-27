@@ -22,7 +22,7 @@ ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex, 
   sub$AIDYr<-paste(sub$AID, sub$Year, sep = "_")
 
   neo<-read.csv(neodat, stringsAsFactors = F)
-  neo$StartDate<-as.Date(neo$StartDate, format = "%Y-%m-%d")
+  neo$StartDate<-as.Date(neo$StartDate, tryFormats = c("%Y-%m-%d", "%m/%d/%Y"))
   p<-Sys.Date()
   neo$EndDate<-as.Date(neo$EndDate, format = "%m/%d/%Y")
   neo$EndDate<-ifelse(is.na(neo$EndDate), as.character(p), as.character(neo$EndDate))

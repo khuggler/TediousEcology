@@ -17,7 +17,7 @@
 #' @examples
 #' \donttest{CleanData<-CleanGPSData(gps = yourgpsdata, capdat = yourcapturedata, dateformat = %Y-%m-%d)}
 
-CleanGPSData<-function(vecdata, vecpath, usernames, passwords, tempdir, ST, STUser, STPass,cType, capdat, dateformat){
+clean.gps<-function(vecdata, vecpath, usernames, passwords, tempdir, ST, STUser, STPass,cType, capdat, dateformat){
 
   if(vecdata == TRUE){
 gps<-Part::CombDat(vecpath= vecpath,

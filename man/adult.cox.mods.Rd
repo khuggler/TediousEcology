@@ -5,7 +5,8 @@
 \title{Stack and extract all spatial data to elk, coyotes, and mountain lions (RF Encounter)}
 \usage{
 adult.cox.mods(data, uni, uaidcol, startcol, mortcol, yearstart, yearend,
-  seasons, winterstart, winterend, cause, plot, title)
+  seasons, winterstart, winterend, cause, plot, title, grossweightcol,
+  maxthickcol, bcscol, seasoncol)
 }
 \arguments{
 \item{data}{to be used to build RF model}
@@ -33,6 +34,14 @@ adult.cox.mods(data, uni, uaidcol, startcol, mortcol, yearstart, yearend,
 \item{plot}{duh}
 
 \item{title}{duh}
+
+\item{grossweightcol}{name of column where gross weight is stored}
+
+\item{maxthickcol}{name of column where max thickness is stored}
+
+\item{bcscol}{name of column where bcs is stored}
+
+\item{seasoncol}{name of column where season (Fall/Spring) is located}
 }
 \value{
 Returns a list object with RFData necessary to predict probably of use in RF models (elk, coyotes, and mountain lions)

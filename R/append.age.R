@@ -37,9 +37,9 @@ for(k in 1:length(uni)){
   sub$new.age<-sub$age + sub$diff
 
   new.data<-rbind(new.data, sub)
-  new.data<-new.data[,c(1:58, 62)]
+  new.dat<-new.data[,c(1:58, 62)]
 
   write.csv(pathout, row.names = F)
 }
-return(new.data)
+return(new.dat)
 }

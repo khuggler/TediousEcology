@@ -5,6 +5,7 @@
 #' @param data data.frame that contains a column of unique animal identifier, start date, mortality date, and cause of mortality
 #' @param uni vector of unique animal identifiers
 #' @param UAIDcol name of column where unique animals ids are stored
+#' @param startcol name of column with capture date
 #' @param mortcol name of column that contains the date of mortality
 #' @param yearstart year desired to begin modeling survival (e.g. beginning year of study)
 #' @param yearend year desired to end modeling survival

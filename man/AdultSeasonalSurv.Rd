@@ -15,6 +15,8 @@ AdultSeasonalSurv(data, uni, UAIDcol, startcol, mortcol, yearstart,
 
 \item{UAIDcol}{name of column where unique animals ids are stored}
 
+\item{startcol}{name of column with capture date}
+
 \item{mortcol}{name of column that contains the date of mortality}
 
 \item{yearstart}{year desired to begin modeling survival (e.g. beginning year of study)}

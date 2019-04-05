@@ -44,9 +44,6 @@ Convert capture and cause-specific mortality data of adults into the proper form
 that contains start dates and mortality dates of individual animals and transform it into the proper format required by package survival
 to model seasonal survival. Then, add covariates of choice for coxph models.
 }
-\examples{
-\donttest{AdultSeasonal<-AdultSeasonalSurv(data = data, startcol = 'CaptureDate',uni = uni, UAIDcol = "UAID", mortcol = 'MortalityDate', yearstart = 2015, yearend = 2019, seasons = c('winter', 'summer'), winterstart = 11, winterend = 05, cause = c("CollarFailure", 'CaptureMort'))}
-}
 \keyword{adult,}
 \keyword{analysis}
 \keyword{kaplan-meier,}

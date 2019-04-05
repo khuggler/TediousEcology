@@ -29,9 +29,6 @@ Returns original capture data.frame with appending columns of IFBFat metrics
 \description{
 Convert measurements of max thickness and body condition score into IFBFat metric
 }
-\examples{
-\donttest{IFBFat<-AdultSeasonalSurv(x = data, weight = 'lbs', GrossweightColName = "Gross.Weight..lb", maxthickName = "MaxThickness", bcsName = "Body.Condition.Score", FetNum = 1.692, Season = "Fall"}
-}
 \keyword{IFBFat,}
 \keyword{adult,}
 \keyword{body}

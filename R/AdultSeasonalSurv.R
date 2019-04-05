@@ -23,8 +23,8 @@
 #' \donttest{AdultSeasonal<-AdultSeasonalSurv(data = data, startcol = 'CaptureDate',uni = uni, UAIDcol = "UAID", mortcol = 'MortalityDate', yearstart = 2015, yearend = 2019, seasons = c('winter', 'summer'), winterstart = 11, winterend = 05, cause = c("CollarFailure", 'CaptureMort'))}
 
 AdultSeasonalSurv<-function(data, uni, UAIDcol, startcol, mortcol, yearstart, yearend, seasons = c('winter', 'summer'), winterstart, winterend, cause, dateformat, plot, title){
-  data[,mortcol]<-as.Date(data[,mortcol], format = dateformat)
-  data[,startcol]<-as.Date(data[,startcol], format = dateformat)
+  data[,mortcol]<-as.Date(data[,mortcol], tryFormats = c('%m/%d/%Y', '%Y-%m-%d'))
+  data[,startcol]<-as.Date(data[,startcol], tryFormats = c('%m/%d/%Y', '%Y-%m-%d'))
   Year<-yearstart:yearend
   season<-seasons
   c<-expand.grid(Year,seasons,KEEP.OUT.ATTRS = F)

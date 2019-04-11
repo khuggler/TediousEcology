@@ -9,15 +9,15 @@ adult.cox.mods(data, uni, uaidcol, startcol, mortcol, yearstart, yearend,
   maxthickcol, bcscol, seasoncol)
 }
 \arguments{
-\item{data}{to be used to build RF model}
+\item{data}{database with age column in it}
 
-\item{uni}{number of cpus to parallelize on}
+\item{uni}{vector of unique ids in which survival should be calculated}
 
-\item{uaidcol}{percent of data (decimal format) to withold for training model (default 0.25)}
+\item{uaidcol}{column where aids live}
 
-\item{startcol}{number of trees (maximum) to attempt to split on}
+\item{startcol}{name of column where capture date lives}
 
-\item{mortcol}{path to raster stack}
+\item{mortcol}{name of column where mortality date lives}
 
 \item{yearstart}{path to study area polygon (where you want to define availability)}
 

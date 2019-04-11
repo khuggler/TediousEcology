@@ -17,8 +17,8 @@
 #' @param maxthickcol name of column where max thickness is stored
 #' @param bcscol name of column where bcs is stored
 #' @param seasoncol name of column where season (Fall/Spring) is located
-#' @return Returns a list object with RFData necessary to predict probably of use in RF models (elk, coyotes, and mountain lions)
-#' @keywords elk, coyote, mountain lion, random forest, extract, raster, sample
+#' @return Returns a with survival data and appended ages and IFBFat
+#' @keywords IFBFat, age, adult, survival, seasonal
 #' @export
 
 

@@ -44,17 +44,13 @@ adult.coxph(data, uni, uaidcol, startcol, mortcol, yearstart, yearend,
 \item{seasoncol}{name of column where season (Fall/Spring) is located}
 }
 \value{
-Returns a list object with RFData necessary to predict probably of use in RF models (elk, coyotes, and mountain lions)
+Returns a with survival data and appended ages and IFBFat
 }
 \description{
 Create data with age and IFBFat to model survival
 }
-\keyword{coyote,}
-\keyword{elk,}
-\keyword{extract,}
-\keyword{forest,}
-\keyword{lion,}
-\keyword{mountain}
-\keyword{random}
-\keyword{raster,}
-\keyword{sample}
+\keyword{IFBFat,}
+\keyword{adult,}
+\keyword{age,}
+\keyword{seasonal}
+\keyword{survival,}

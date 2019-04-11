@@ -39,7 +39,7 @@ for(k in 1:length(uni)){
   new.data<-rbind(new.data, sub)
   new.dat<-new.data[,c(1:58, 62)]
 
-  write.csv(pathout, row.names = F)
+  write.csv(new.dat, pathout, row.names = F)
 }
 return(new.dat)
 }

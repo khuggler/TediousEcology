@@ -1,5 +1,5 @@
-#' @title Stack and extract all spatial data to elk, coyotes, and mountain lions (RF Encounter)
-#' @description Stack rasters and extract points data for elk, coyotes, and mountain lions
+#' @title Create data with age and IFBFat to model survival
+#' @description Create data with age and IFBFat to model survival
 #' @param data database with age column in it
 #' @param uni vector of unique ids in which survival should be calculated
 #' @param uaidcol column where aids live
@@ -22,7 +22,7 @@
 #' @export
 
 
-adult.cox.mods<-function(data, uni, uaidcol,startcol,mortcol, yearstart, yearend, seasons, winterstart, winterend, cause, plot, title, grossweightcol, maxthickcol, bcscol, seasoncol){
+adult.coxph<-function(data, uni, uaidcol,startcol,mortcol, yearstart, yearend, seasons, winterstart, winterend, cause, plot, title, grossweightcol, maxthickcol, bcscol, seasoncol){
 
   survdat<-TediousEcology::AdultSeasonalSurv(data = data, uni = uni, UAIDcol = UAIDcol, startcol = startcol, mortcol = mortcol, yearstart = yearstart,
                                              yearend = yearend, seasons = seasons, winterstart = winterstart, winterend = winterend,

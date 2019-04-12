@@ -2,39 +2,36 @@
 % Please edit documentation in R/IFBFat.R
 \name{IFBFat}
 \alias{IFBFat}
-\title{Stack and extract all spatial data to elk, coyotes, and mountain lions (RF Encounter)}
+\title{Calculate IFBFat}
 \usage{
 IFBFat(x, weight = "lbs", GrossweightColName = "Gross.Weight..lb.",
   maxthickName = "MaxThickness", bcsName = "Body.Condition.Score",
   FetNum = 1.692, season = "Fall")
 }
 \arguments{
-\item{x}{data to be used to build RF model}
+\item{x}{capture database}
 
-\item{weight}{number of cpus to parallelize on}
+\item{weight}{'lbs'}
 
-\item{maxthickName}{number of trees (maximum) to attempt to split on}
+\item{maxthickName}{name of column where max thickness is stored}
 
-\item{bcsName}{path to raster stack}
+\item{bcsName}{name of column where body condition score is stored}
 
 \item{FetNum}{path to study area polygon (where you want to define availability)}
 
-\item{season}{path to where predicted RF map should be written}
+\item{season}{name of column where season (Fall/Spring) is stored}
 
-\item{GrossewightColName}{percent of data (decimal format) to withold for training model (default 0.25)}
+\item{GrossewightColName}{name of column where gross weight is stored}
 }
 \value{
-Returns a list object with RFData necessary to predict probably of use in RF models (elk, coyotes, and mountain lions)
+Returns a original dataframe with appended columns of IFBFat and Scaled IFBFat
 }
 \description{
-Stack rasters and extract points data for elk, coyotes, and mountain lions
+Calculate IFBFat from weight, max thickness, body condition score, and fetal number.
 }
-\keyword{coyote,}
-\keyword{elk,}
-\keyword{extract,}
-\keyword{forest,}
-\keyword{lion,}
-\keyword{mountain}
-\keyword{random}
-\keyword{raster,}
-\keyword{sample}
+\keyword{IFBFat,}
+\keyword{body}
+\keyword{condition,}
+\keyword{max}
+\keyword{thicknes,}
+\keyword{weight}

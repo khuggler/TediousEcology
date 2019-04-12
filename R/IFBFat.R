@@ -1,14 +1,14 @@
-#' @title Stack and extract all spatial data to elk, coyotes, and mountain lions (RF Encounter)
-#' @description Stack rasters and extract points data for elk, coyotes, and mountain lions
-#' @param x data to be used to build RF model
-#' @param weight number of cpus to parallelize on
-#' @param GrossewightColName percent of data (decimal format) to withold for training model (default 0.25)
-#' @param maxthickName number of trees (maximum) to attempt to split on
-#' @param bcsName path to raster stack
+#' @title Calculate IFBFat
+#' @description Calculate IFBFat from weight, max thickness, body condition score, and fetal number.
+#' @param x capture database
+#' @param weight 'lbs'
+#' @param GrossewightColName name of column where gross weight is stored
+#' @param maxthickName name of column where max thickness is stored
+#' @param bcsName name of column where body condition score is stored
 #' @param FetNum path to study area polygon (where you want to define availability)
-#' @param season path to where predicted RF map should be written
-#' @return Returns a list object with RFData necessary to predict probably of use in RF models (elk, coyotes, and mountain lions)
-#' @keywords elk, coyote, mountain lion, random forest, extract, raster, sample
+#' @param season name of column where season (Fall/Spring) is stored
+#' @return Returns a original dataframe with appended columns of IFBFat and Scaled IFBFat
+#' @keywords IFBFat, body condition, max thicknes, weight
 #' @export
 
 IFBFat<-function(x,weight='lbs',

@@ -31,6 +31,7 @@ CollarHistory<-function(capdat, df){
   for(i in 1:length(unik)){
     sub<-dat[dat$Uni==unik[i],]
     sub<-sub[complete.cases(sub$CaptureDate),]
+    sub<-sub[!duplicated(sub),]
 
     sub2<-dat[dat$Old.Serial.Number==sub$New.Serial.Number[1]&dat$CaptureDate>sub$CaptureDate[1],]
 

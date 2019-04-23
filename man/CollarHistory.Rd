@@ -4,12 +4,10 @@
 \alias{CollarHistory}
 \title{Conversion of adult capture data into capture history data}
 \usage{
-CollarHistory(capdat, df)
+CollarHistory(capdat)
 }
 \arguments{
 \item{capdat}{data.frame with all the capture information}
-
-\item{df}{format of CaptureDate and MortalityDate}
 }
 \value{
 Returns a data.frame with start and end date of every individual serial number along with an assigned animal ID)

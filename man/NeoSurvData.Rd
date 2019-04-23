@@ -22,8 +22,8 @@ or current date if individual still alive (must be named EndDate and in Date for
 Returns a data.frame with original data.frame with a column of survival time (DiffTime) and indicator of whether event occurred (Indicator)
 }
 \description{
-Convert capture data of neonates into the proper format for conducting survival analysis. This function will return 2 columns of data: survival time of each in 
-whatever units desired (days, weeks, months, etc.) and an indicator column of whether the event (i.e. mortality) occurred in binary format. Further, this function allows the option to 
+Convert capture data of neonates into the proper format for conducting survival analysis. This function will return 2 columns of data: survival time of each in
+whatever units desired (days, weeks, months, etc.) and an indicator column of whether the event (i.e. mortality) occurred in binary format. Further, this function allows the option to
 use a cutoff age for modeling survival. For instance, in many cases survival of neonatal ungulates is modeled to 140 days.
 }
 \examples{

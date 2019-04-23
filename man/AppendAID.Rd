@@ -4,7 +4,7 @@
 \alias{AppendAID}
 \title{Append Animal IDs created from CollarHistory function to original capture database}
 \usage{
-AppendAID(capdat, capturedate, mortalitydate, dateformat, colhist, fileout)
+AppendAID(capdat, capturedate, mortalitydate, colhist, fileout)
 }
 \arguments{
 \item{capdat}{path to capture database}
@@ -12,8 +12,6 @@ AppendAID(capdat, capturedate, mortalitydate, dateformat, colhist, fileout)
 \item{capturedate}{name of column with capture date}
 
 \item{mortalitydate}{name of column with mortality date}
-
-\item{dateformat}{format of dates in database (character)}
 
 \item{colhist}{data.frame created from CollarHistory function}
 

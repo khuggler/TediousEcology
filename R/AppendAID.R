@@ -3,7 +3,6 @@
 #' @param capdat path to capture database
 #' @param capturedate name of column with capture date
 #' @param mortalitydate name of column with mortality date
-#' @param dateformat format of dates in database (character)
 #' @param colhist data.frame created from CollarHistory function
 #' @param fileout path to file and name of file where appended database shoudl be stored
 #' @return Returns a data.frame with original capture data.frame and a column appended with UAID
@@ -12,10 +11,10 @@
 #' @examples
 #' \donttest{DBWithAID<-AppendAID(capdat = 'C:/Users/khuggler/Box Sync/DEER/Data/CleanDatabase/DB_WithAID_02082019.csv', capturedate = "CaptureDate", mortalitydate = "MortalityDate", 'dateformat = "%m/%d/%Y', colhist = ColHist, fileout = 'C:/Users/khuggler/Box Sync/DEER/Data/CleanDatabase/DB_WithAID_02082019.csv')}
 
-AppendAID<-function(capdat, capturedate, mortalitydate, dateformat, colhist, fileout){
+AppendAID<-function(capdat, capturedate, mortalitydate,colhist, fileout){
 dat<-read.csv(capdat,stringsAsFactors = F)
-dat$CaptureDate<-as.Date(dat[,capturedate],dateformat)
-dat$MortalityDate<-as.Date(dat[,mortalitydate],dateformat)
+dat$CaptureDate<-as.Date(dat[,capturedate], tryFormats = c('%m/%d/%Y', '%Y-%m-%d'))
+dat$MortalityDate<-as.Date(dat[,mortalitydate],tryFormats = c('%m/%d/%Y', '%Y-%m-%d'))
 
 uaid<-colhist
 uaid$Ser1Start<-as.Date(uaid$Ser1Start,'%Y-%m-%d')

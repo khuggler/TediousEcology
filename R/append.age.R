@@ -2,12 +2,11 @@
 #' @description append ages of animals to databaes and calculate age for every capture event
 #' @param agepath path to where age table lives
 #' @param cappath path to where capture data lives
-#' @param pathout path to where new data.frame should be written
 #' @return Returns original capture data.frame with age column of each animal
 #' @keywords age, capture
 #' @export
 
-append.age<-function(agepath, cappath, pathout){
+append.age<-function(agepath, cappath){
 ### append AID to ages ###
 age<-read.csv(agepath, stringsAsFactors = F)
 age<-age[,c(1:11)]
@@ -39,7 +38,6 @@ for(k in 1:length(uni)){
   new.data<-rbind(new.data, sub)
   new.dat<-new.data[,c(1:58, 62)]
 
-  write.csv(new.dat, pathout, row.names = F)
 }
 return(new.dat)
 }

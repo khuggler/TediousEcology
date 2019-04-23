@@ -4,14 +4,12 @@
 \alias{append.age}
 \title{append ages and calculate new age for every capture event}
 \usage{
-append.age(agepath, cappath, pathout)
+append.age(agepath, cappath)
 }
 \arguments{
 \item{agepath}{path to where age table lives}
 
 \item{cappath}{path to where capture data lives}
-
-\item{pathout}{path to where new data.frame should be written}
 }
 \value{
 Returns original capture data.frame with age column of each animal

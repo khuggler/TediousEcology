@@ -40,7 +40,7 @@ gps<-Part::CombDat(vecpath= vecpath,
 gps$TelemDate<-as.POSIXct(gps$TelemDate, format = "%Y-%m-%d %H:%M:%S", tz = "GMT")
 gps$Date<-as.Date(gps$TelemDate, format = dateformat, tz = "MST")
 
-x<-TediousEcology::CollarHistory(capdat = capdat, df = '%m/%d/%Y')
+x<-TediousEcology::CollarHistory(capdat = capdat)
 x$Ser1Start<-as.Date(x$Ser1Start, "%Y-%m-%d")
 x$Ser1End<-as.Date(x$Ser1End,"%Y-%m-%d")
 x$Ser2Start<-as.Date(x$Ser2Start,"%Y-%m-%d")

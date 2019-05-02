@@ -57,11 +57,13 @@ for(i in 1:length(uni)){
 
 s$Hour<-strftime(s$TelemDate, format = "%H")
 s$Hour<-as.numeric(s$Hour)
-agg<-aggregate(s$HrMR, by=list(s$Hour), FUN = mean, na.rm=T)
-plot(agg$Group.1, agg$x, type = "l")
+agg<-aggregate(s$HrMR, by=list(s$AID, s$Hour), FUN = mean, na.rm=T)
+agg2<-aggregate(agg$x, by=list(agg$Group.2), FUN = mean, na.rm=T)
+plot(agg2$Group.1, agg2$x, type = "l")
 
-quant<-quantile(s$HrMR, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 1), na.rm=T)
-quant<-as.numeric(quant[6])
+quant<-quantile(s$HrMR, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75,0.8, 0.95, 0.99, 1), na.rm=T)
+
+quant<-as.numeric(quant[7])
 
 s$act.cat<-ifelse(s$HrMR >= quant, "High", "Low")
 

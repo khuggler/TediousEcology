@@ -24,10 +24,11 @@ ElkMR<-function(gps, startdates, enddates, subspp, subsex){
   coordinates(ek) <- c("Longitude", "Latitude")
   proj<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
   proj4string(ek)<-proj
-  ek<-sp::spTransform(ek, '+proj=utm +zone=12 +ellps=GRS80 +datum=NAD83 +units=m +no_defs')
+  ek<-sp::spTransform(ek, '+proj=utm +zone=12 +ellps=GRS80 +datum=WGS84 +units=m +no_defs')
   dimnames(ek@coords)[[2]]<- c('Easting', "Northing")
 
   ek<-data.frame(ek)
+  ek$AID<-as.character(ek$AID)
   ElkMR<-as.ltraj(xy = ek[, c("Easting", "Northing")], date = ek$TelemDate, id = ek$AID)
 
   ElkMR<-rbindlist(ElkMR, idcol = "id")
@@ -53,13 +54,17 @@ ElkMR<-function(gps, startdates, enddates, subspp, subsex){
     s<-rbind(sub, s)
 
   }
+  s<-s[s$HrMR < 1.2,]
+
   s$Hour<-strftime(s$TelemDate, format = "%H")
   s$Hour<-as.numeric(s$Hour)
-  agg<-aggregate(s$HrMR, by=list(s$Hour), FUN = mean, na.rm=T)
-  plot(agg$Group.1, agg$x, type = "l")
+
+  agg<-aggregate(s$HrMR, by=list(s$AID, s$Hour), FUN = mean, na.rm=T)
+  agg2<-aggregate(agg$x, by=list(agg$Group.2), FUN = mean, na.rm=T)
+  plot(agg2$Group.1, agg2$x, type = "l")
 
   quant<-quantile(s$HrMR, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 1), na.rm=T)
-  quant<-as.numeric(quant[6])
+  quant<-as.numeric(quant[7])
 
   s$act.cat<-ifelse(s$HrMR >= quant, "High", "Low")
 

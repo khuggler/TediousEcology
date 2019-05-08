@@ -82,7 +82,7 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
     YoteMR<-rbindlist(YoteMR, idcol = "id")
     ### Bind back to all coyote data ###
 
-    Yote<-Yote[order(Yote$AID),]
+    Yote<-Yote[order(Yote$AID, Yote$TelemDate),]
     YoteMR<-YoteMR[order(YoteMR$id),]
     Yote<-cbind(Yote, YoteMR[,c(5:11)])
     Yote$dist<-Yote$dist/1000 ### transforms to km
@@ -100,19 +100,23 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
 
       }
       s<-rbind(sub, s)
-
+      quant<-quantile(s$HrMR, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 1), na.rm=T)
+      quant<-as.numeric(quant[9])
+      s<-s[s$HrMR < quant, ]
     }
     s$Hour<-strftime(s$TelemDate, format = "%H")
     s$Hour<-as.numeric(s$Hour)
     agg<-aggregate(s$HrMR, by=list(s$AID, s$Hour), FUN = mean, na.rm=T)
     agg2<-aggregate(agg$x, by = list(agg$Group.2), FUN = mean, na.rm=T)
+
+    quant<-quantile(agg$x, c(0.01, 0.05, 0.1, 0.25, 0.5,0.7, 0.75, 0.95, 0.99, 1), na.rm=T)
+    quant<-as.numeric(quant[5])
+
     plot(agg2$Group.1, agg2$x, type = "l", ylim = c(0.3, 1.0))
-
-    quant<-quantile(s$HrMR, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 1), na.rm=T)
-    quant<-as.numeric(quant[6])
+    abline(h = quant, col = "red")
 
 
-    s$act.cat<-ifelse(s$HrMR >= quant, "High", "Low")
+    s$act.cat<-ifelse(s$Hour >= 4 & s$Hour <= 8 | s$Hour >= 20 & s$Hour <= 23, "High", "Low")
 
     return(s)
     }

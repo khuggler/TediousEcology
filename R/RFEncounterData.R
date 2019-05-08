@@ -72,6 +72,7 @@ random.ex$AID<-coyotedata$AID
 random.ex$act.cat<-coyotedata$act.cat
 random.ex$Used<-0
 
+coyotedata<-coyotedata[complete.cases(coyotedata$Easting),]
 coordinates(coyotedata)<-c('Easting', 'Northing')
 proj4string(coyotedata)<-'+proj=utm +zone=12 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 yote<-spTransform(coyotedata, proj4string(rasstack))

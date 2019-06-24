@@ -12,8 +12,16 @@ sampleveggies(x, a, year)
 \item{a}{list of time intervals to sample (in days)}
 
 \item{year}{year of interest to subset neonate data}
+
+\item{x}{path to neonate data}
+
+\item{a}{list of time intervals to sample (in days)}
+
+\item{year}{year of interest to subset neonate data}
 }
 \description{
+Sample random points from neonates for vegetation work
+
 Sample random points from neonates for vegetation work
 }
 \keyword{gps,}

@@ -6,6 +6,15 @@
 #' @keywords vegetation, sample, gps, neonate
 #' @export
 
+#' @title Sample random points from neonates for vegetation work
+#' @description Sample random points from neonates for vegetation work
+#' @param x path to neonate data
+#' @param a list of time intervals to sample (in days)
+#' @param year year of interest to subset neonate data
+#' @keywords vegetation, sample, gps, neonate
+#' @export
+
+
 sampleveggies<-function(x, a, year){
   library(dplyr)
   library(geosphere)
@@ -112,14 +121,10 @@ sampleveggies<-function(x, a, year){
 
       allsamps<-rbind(new, allsamps)
       allsamps$UseID<-as.character(allsamps$UseID)
-      allsamps$RandBearing<-runif(nrow(allsamps), 0,360)
     }
 
+    allsamps$RandBearing<-runif(nrow(allsamps), 0,360)
 
   }
   return(allsamps)
 }
-
-
-
-

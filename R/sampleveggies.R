@@ -123,8 +123,8 @@ sampleveggies<-function(x, a, year){
       allsamps$UseID<-as.character(allsamps$UseID)
     }
 
-    allsamps$RandBearing<-runif(nrow(allsamps), 0,360)
 
   }
+  allsamps$Bearing<-runif(nrow(allsamps), 0,360)
   return(allsamps)
 }

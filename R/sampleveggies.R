@@ -6,8 +6,7 @@
 #' @keywords vegetation, sample, gps, neonate
 #' @export
 
-
-SampFun<-function(x, a, year){
+sampleveggies<-function(x, a, year){
   library(dplyr)
   library(geosphere)
   library(sp)

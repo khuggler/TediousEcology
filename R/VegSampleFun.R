@@ -3,16 +3,14 @@
 #' @param x path to neonate data
 #' @param a list of time intervals to sample (in days)
 #' @param year year of interest to subset neonate data
-#' @return returns a csv file with all neonate sample data
 #' @keywords vegetation, sample, gps, neonate
 #' @export
 
+library(dplyr)
+library(geosphere)
+library(sp)
 
-VegSampleFun<-function(x, a, year){
-
-  library(dplyr)
-  library(geosphere)
-  library(sp)
+SampFun<-function(x, a, year){
 
   ## get start and endates in the right format for working with ##
   neo<-read.csv(x, stringsAsFactors = F)
@@ -93,6 +91,8 @@ VegSampleFun<-function(x, a, year){
 
       sp::coordinates(sub)<-~Long +Lat
       sp::proj4string(sub)<- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+
+
       Rand<-geosphere::destPoint(sub, sub@data$RandBearing, sub@data$RandDist)
       Rand<-data.frame(Rand)
       names(Rand)<-c('Long', 'Lat')
@@ -113,6 +113,7 @@ VegSampleFun<-function(x, a, year){
 
       allsamps<-rbind(new, allsamps)
       allsamps$UseID<-as.character(allsamps$UseID)
+      allsamps$RandBearing<-runif(nrow(allsamps), 0,360)
     }
 
 

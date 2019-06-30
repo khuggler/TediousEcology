@@ -25,7 +25,7 @@ mom$Year<-strftime(mom$CaptureDate, format = "%Y")
 mom$CapMonth<-strftime(mom$CaptureDate, format = '%m')
 mom$MoYr<-paste(mom$CapMonth, mom$Year, sep = "_")
 
-mom<-mom[mom$MoYr == "04_2016" | mom$MoYr == "04_2017" | mom$MoYr == "04_2018",] ## just easiest to loop through moms this way
+mom<-mom[mom$MoYr == "04_2016" | mom$MoYr == "04_2017" | mom$MoYr == "04_2018" | mom$MoYr == "04_2019",] ## just easiest to loop through moms this way
 mom$Ser<-ifelse(is.na(mom$Old.Serial.Number), mom$New.Serial.Number, ifelse(!is.na(mom$Old.Serial.Number) & !is.na(mom$New.Serial.Number), mom$New.Serial.Number, mom$Old.Serial.Number))
 ################################################# Fix AIDs for DB ################################
 neo$MomYr<-paste(neo$Year, neo$MomSerial, sep = "_") ## unique id to loop through

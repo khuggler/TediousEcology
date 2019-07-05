@@ -16,7 +16,8 @@
 
 ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex, subset){
 
-  sub<-gps[gps$Date >= startdates[1] & gps$Date <= enddates[1] | gps$Date >= startdates[2] & gps$Date <= enddates[2],]
+  sub<-gps[gps$Date >= startdates[1] & gps$Date <= enddates[1] | gps$Date >= startdates[2] & gps$Date <= enddates[2] |
+             gps$Date >= startdates[3] & gps$Date <= enddates[3],]
   sub<-sub[sub$Spp %in% subspp & sub$Sex %in% subsex,]
   sub$Year<-strftime(sub$Date, format = "%Y")
   sub$AIDYr<-paste(sub$AID, sub$Year, sep = "_")

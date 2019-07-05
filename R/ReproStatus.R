@@ -37,7 +37,7 @@ ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex, 
   cap$Year<-strftime(cap$CaptureDate, format = "%Y")
   cap$MoYr<-paste(cap$Month, cap$Year, sep = "_")
 
-  cap<-cap[cap$MoYr == "04_2017" | cap$MoYr == "04_2018",]
+  cap<-cap[cap$MoYr == "04_2017" | cap$MoYr == "04_2018" | cap$MoYr == "04_2019",]
   cap$AIDYr<-paste(cap$UAID, cap$Year, sep = "_")
 
   uni<-unique(sub$AIDYr)
@@ -47,6 +47,10 @@ ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex, 
     asub<-sub[sub$AIDYr == uni[z],]
     neosub<-neo[neo$AIDYr == uni[z],]
     capsub<-cap[cap$AIDYr == uni[z],]
+
+    if(nrow(capsub) == 0){
+      capsub<-data.frame(Number.Fetus = NA, Pregnant = NA)
+    }
 
     if(nrow(neosub) > 1){
       end<-max(neosub$EndDate)

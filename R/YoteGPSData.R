@@ -61,7 +61,8 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
     f<-f[complete.cases(f$AID),]
   }
 
-  f<-f[f$Date >= startdates[1] & f$Date <= enddates[1] | f$Date >= startdates[2] & f$Date <= enddates[2],]
+  f<-f[f$Date >= startdates[1] & f$Date <= enddates[1] | f$Date >= startdates[2] & f$Date <= enddates[2]
+       | f$Date >= startdates[3] & f$Date <= enddates[3],]
   newdat<-f
 
   #### Calculate Movement Rates #####

@@ -77,7 +77,7 @@ sampleveggies<-function(x, a, year){
       oats<-rbind(oats, samps)
     }
 
-    oats$Interval<-i
+    oats$Interval<-names(a)
     oats$Used<-1
 
     oats$UseBearing<-runif(nrow(oats), 0,360)
@@ -108,7 +108,7 @@ sampleveggies<-function(x, a, year){
       sub<-data.frame(sub)
       Rand$FawnID<-sub$FawnID
       Rand$MomSerial<-sub$MomSerial
-      Rand$Interval<-sub$Interval
+      Rand$Interval<-names(a)
       Rand$Used<-0
       Rand$v<-sub$v
       Rand$UseID<-paste0(Rand$MomSerial, "_", Rand$Interval, "_",Rand$v,"A")

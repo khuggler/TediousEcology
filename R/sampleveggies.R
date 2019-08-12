@@ -62,13 +62,14 @@ sampleveggies<-function(x, a, year){
 
     ## now sample gps data from interval of choice ##
     maxtime<-max(timeint)
+    mintime<-min(timeint)
     uni<-unique(new.df$MomSerial)
 
     oats<-data.frame()
     for(k in 1:length(uni)){
       sub<-new.df[new.df$MomSerial == uni[k],]
-      start<-sub$StartDate[1] + 1
-      end<-start + maxtime
+      start<-sub$StartDate[1] + mintime
+      end<-sub$StartDate[1] + maxtime -1
       sub$FixDate<-strftime(sub$TelemDate, format = "%Y-%m-%d")
       sub<-sub[sub$FixDate >= start & sub$FixDate <= end,]
 
@@ -110,7 +111,6 @@ sampleveggies<-function(x, a, year){
       Rand$MomSerial<-sub$MomSerial
       Rand$Interval<-names(a)
       Rand$Used<-0
-      Rand$v<-sub$v
       Rand$UseID<-paste0(Rand$MomSerial, "_", Rand$Interval, "_",Rand$v,"A")
 
       Rand<-Rand[,c('FawnID', 'MomSerial', 'Interval', 'Used', 'v', 'UseID', 'Long', 'Lat')]
@@ -128,3 +128,4 @@ sampleveggies<-function(x, a, year){
   allsamps$Bearing<-runif(nrow(allsamps), 0,360)
   return(allsamps)
 }
+

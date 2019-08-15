@@ -82,6 +82,7 @@ for(i in 1:nrow(x)){
       ss$AID<-xxx[1,1]
       ss$Sex<- c$Sex[1]
       ss$Spp<-c$Species[1]
+      ss$FawnAID<-c$FawnAID[1]
     }
 
     if(l == 1){

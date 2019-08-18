@@ -113,7 +113,7 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
     quant<-quantile(agg$x, c(0.01, 0.05, 0.1, 0.25, 0.5,0.7, 0.75, 0.95, 0.99, 1), na.rm=T)
     quant<-as.numeric(quant[5])
 
-    plot(agg2$Group.1, agg2$x, type = "l", ylim = c(0.3, 1.0))
+    plot(agg2$Group.1, agg2$x, main = "Movement Rates of Coyotes", type = "l", ylim = c(0.3, 1.0))
     abline(h = quant, col = "red")
 
 

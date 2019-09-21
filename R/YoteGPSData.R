@@ -23,12 +23,11 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
   gps$TelemDate<-as.POSIXct(gps$TelemDate, format = "%Y-%m-%d %H:%M:%S", tz = "GMT")
   gps$Date<-as.Date(gps$TelemDate, format = "%Y-%m-%d", tz = "MST")
 
-
-  coykeep<-c('39287', '39242', '39235', '39257','39218', '39252', '39255', '39240', '39254', '39245','39248','39247','39253','39237','39239',
-             '39244', '39288', '39241', '39213', '39246', '39243', '39251', '39291', '39235','39250', '39238', '39236', '39249', '39289', '39256')
-  data<-subset(gps, CollarSerialNumber %in% coykeep)
-  yote<-subset(yote, !Serial=="39290")
-
+  uni<-unique(yote$CollarSerialNumber)
+  data<-subset(gps, CollarSerialNumber %in% uni)
+  #yote<-subset(yote, !Serial=="39290")
+  
+  
   yote$Date<-as.Date(yote$Date, format="%m/%d/%Y")
   yote$MortDate<-as.character(yote$MortDate)
   yote$MortDate<-as.Date(yote$MortDate, format = "%m/%d/%Y")
@@ -38,6 +37,8 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
   uni<-unique(yote$Serial)
   f<-data.frame()
   for(i in 1:length(uni)){
+    
+    if(uni[i] == "39290"){next}
     sub<-gps[gps$CollarSerialNumber == uni[i],]
     subsub<-yote[yote$Serial == uni[i],]
 
@@ -78,20 +79,32 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
     dimnames(Yote@coords)[[2]]<- c('Easting', "Northing")
 
     Yote<-data.frame(Yote)
-    YoteMR<-as.ltraj(xy = Yote[, c("Easting", "Northing")], date = Yote$TelemDate, id = Yote$AID)
+    Yote$Year<-strftime(Yote$TelemDate, format = "%Y")
+    uni<-unique(Yote$Year)
+    
+    YoteMR<-data.frame()
+    for(k in 1:length(uni)){
+    sub<-Yote[Yote$Year == uni[k],]
+    sub<-sub[order(sub$TelemDate),]
+    subMR<-as.ltraj(xy = sub[, c("Easting", "Northing")], date = sub$TelemDate, id = sub$AID)
 
-    YoteMR<-rbindlist(YoteMR, idcol = "id")
+    subMR<-rbindlist(subMR, idcol = "id")
+    
+    YoteMR<-rbind(subMR, YoteMR)
+    }
     ### Bind back to all coyote data ###
 
     Yote<-Yote[order(Yote$AID, Yote$TelemDate),]
     YoteMR<-YoteMR[order(YoteMR$id),]
-    Yote<-cbind(Yote, YoteMR[,c(5:11)])
+    
+    Yote<-merge(Yote, YoteMR, by.x = c('AID', 'TelemDate'), by.y = c('id', 'date'), keep.all = T)
     Yote$dist<-Yote$dist/1000 ### transforms to km
 
     s<-data.frame()
-    uni<-unique(Yote$AID)
+    Yote$AIDYr<-paste(Yote$AID, Yote$Year, sep = "_")
+    uni<-unique(Yote$AIDYr)
     for(i in 1:length(uni)){
-      sub<-Yote[Yote$AID == uni[i],]
+      sub<-Yote[Yote$AIDYr == uni[i],]
 
       for(k in 1:nrow(sub)){
         sub$TimeDiff[k]<-difftime(sub$TelemDate[k+1], sub$TelemDate[k], units = "hours")
@@ -107,7 +120,7 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
     }
     s$Hour<-strftime(s$TelemDate, format = "%H")
     s$Hour<-as.numeric(s$Hour)
-    agg<-aggregate(s$HrMR, by=list(s$AID, s$Hour), FUN = mean, na.rm=T)
+    agg<-aggregate(s$HrMR, by=list(s$AIDYr, s$Hour), FUN = mean, na.rm=T)
     agg2<-aggregate(agg$x, by = list(agg$Group.2), FUN = mean, na.rm=T)
 
     quant<-quantile(agg$x, c(0.01, 0.05, 0.1, 0.25, 0.5,0.7, 0.75, 0.95, 0.99, 1), na.rm=T)

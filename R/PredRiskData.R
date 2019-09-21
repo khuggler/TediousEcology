@@ -2,6 +2,7 @@
 #' @description Build random forest model to predict probability of kill
 #' @param clustpath path to cluster data
 #' @param dbpath path to adult capture database
+#' @param neopath path to neoante database
 #' @param subset Logical TRUE/FALSE. Whether or not data should be subset to a certaind date range
 #' @param startdates vector of desired start dates
 #' @param enddates vector of desired end dates
@@ -13,7 +14,7 @@
 #' @keywords mountain lion, predation risk, deer
 #' @export
 
-PredRiskData<-function(clustpath, dbpath, subset, startdates, enddates,raspath, studypath, nsamps, pathout){
+PredRiskData<-function(clustpath, dbpath, neopath, subset, startdates, enddates,raspath, studypath, nsamps, pathout){
   clust<-read.csv(clustpath, stringsAsFactors = F)
   clust$Date.<-as.Date(clust$Date., format = "%m/%d/%Y")
 
@@ -22,7 +23,7 @@ PredRiskData<-function(clustpath, dbpath, subset, startdates, enddates,raspath, 
                clust$Date. >= startdates[2] & clust$Date. <= enddates[2],]
   clust<-clust[clust$Cluster.Description == "KILL" & clust$Species == "MULE DEER",]
   }
-
+  clust<-clust[clust$Cluster.Description == "KILL" & clust$Species == "MULE DEER",]
   clust<-clust[, c(5,14,18,19)]
 
   names(clust)<-c('Date', 'Sex', 'Easting', 'Northing')
@@ -41,8 +42,27 @@ PredRiskData<-function(clustpath, dbpath, subset, startdates, enddates,raspath, 
 
   deer<-deer[, c(47, 26, 48, 49)]
   names(deer)<-c('Date', 'Sex', 'Easting', 'Northing')
-
+  
+  neo<-read.csv(neopath, stringsAsFactors = F)
+  neo$Date<-as.Date(neo$Date, tryFormats = c("%m/%d/%Y", "%Y-%m-%d"))
+  neo<-neo[neo$Spp == "MD",]
+  cause<-'lion'
+  neo<-neo[neo$Cause %in% cause,]
+  neo$EndDate<-as.Date(neo$EndDate, tryFormats = c("%m/%d/%Y", "%Y-%m-%d"))
+  
+  if(subset == TRUE){
+    neo<-neo[neo$EndDate >= startdates[1] & neo$EndDate <= enddates[1] |
+               neo$EndDate >= startdates[2] & neo$EndDate <= enddates[2],]
+  }
+  
+  neo<-neo[,c(1,11,37,38)]
+  names(neo)<-c('Date', 'Sex', 'Easting', 'Northing')
+  
+  
   allkill<-rbind(clust, deer)
+  allkill<-rbind(allkill, neo)
+  
+  
   allkill$Month<-as.numeric(strftime(allkill$Date, format = "%m"))
   allkill$Season<-ifelse(allkill$Month >= 5 & allkill$Month <= 10, "Summer", "Winter")
   allkill$Month<-as.character(allkill$Month)
@@ -62,6 +82,11 @@ PredRiskData<-function(clustpath, dbpath, subset, startdates, enddates,raspath, 
     stack<-lapply(r, stack)
     rasstack<-stack(stack)
   }
+  
+  deer<-raster('C:/Users/khuggler/Box Sync/DEER/GradStudentWork/Huggler/Chapter1/Analyses/Data/PredationRiskLayer/FMDLayer/FMD.img')
+  
+  rasstack<-stack(rasstack, deer)
+  
 
   study<-readOGR(studypath)
   study<-spTransform(study, proj4string(rasstack))

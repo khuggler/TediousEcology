@@ -13,7 +13,7 @@
 
 ElkMR<-function(gps, startdates, enddates, subspp, subsex){
   ek<-gps[gps$Spp == subspp & gps$Sex == subsex,]
-  ek<-ek[ek$Date >= startdates[1] & ek$Date <= enddates[1] | ek$Date >= startdates[2] & ek$Date <= enddates[2],]
+  ek<-ek[ek$Date >= startdates[1] & ek$Date <= enddates[1] | ek$Date >= startdates[2] & ek$Date <= enddates[2] | ek$Date >= startdates[3] & ek$Date <= enddates[3],]
 
   library(adehabitatLT)
   library(data.table)
@@ -29,14 +29,22 @@ ElkMR<-function(gps, startdates, enddates, subspp, subsex){
 
   ek<-data.frame(ek)
   ek$AID<-as.character(ek$AID)
-  ElkMR<-as.ltraj(xy = ek[, c("Easting", "Northing")], date = ek$TelemDate, id = ek$AID)
+  ek$Year<-strftime(ek$TelemDate, format = "%Y")
+  
+  uni<-unique(ek$Year)
+  ElkMR<-data.frame()
+  for(k in 1:length(uni)){
+  sub.elk<-ek[ek$Year == uni[k],]
+  subMR<-as.ltraj(xy = sub.elk[, c("Easting", "Northing")], date = sub.elk$TelemDate, id = sub.elk$AID)
 
-  ElkMR<-rbindlist(ElkMR, idcol = "id")
-
+  subMR<-rbindlist(subMR, idcol = "id")
+  ElkMR<-rbind(subMR, ElkMR)
+  }
 
   elk<-ek[order(ek$AID),]
   ElkMR<-ElkMR[order(ElkMR$id),]
-  elk<-cbind(elk, ElkMR[,c(5:11)])
+  
+  elk<-merge(elk, ElkMR, by.x = c('AID', 'TelemDate'), by.y = c('id', 'date'), keep.all = TRUE)
   elk$dist<-elk$dist/1000 ### transforms to km
 
   s<-data.frame()

@@ -42,6 +42,8 @@ boot.fun<-function(data, idcol, prop, n.boot, mtry, cutoff,samplesize, pred.name
   trainset<- data[data$ID %in% unix,]
   testset<-data[!(data$ID %in% unix),]
 
+  trainset<-trainset[complete.cases(trainset),]
+  testset<-testset[complete.cases(testset),]
   #### build RF model on data ####
   rf<-randomForest(trainset[, pred.names], as.factor(trainset[,cat.column]), sampsize = samplesize, mtry = mtry, cutoff = c(cutoff, 1-cutoff))
   varImpPlot(rf)

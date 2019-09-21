@@ -4,13 +4,15 @@
 \alias{PredRiskData}
 \title{BuildRF model of predation risk}
 \usage{
-PredRiskData(clustpath, dbpath, subset, startdates, enddates, raspath,
-  studypath, nsamps, pathout)
+PredRiskData(clustpath, dbpath, neopath, subset, startdates, enddates,
+  raspath, studypath, nsamps, pathout)
 }
 \arguments{
 \item{clustpath}{path to cluster data}
 
 \item{dbpath}{path to adult capture database}
+
+\item{neopath}{path to neoante database}
 
 \item{subset}{Logical TRUE/FALSE. Whether or not data should be subset to a certaind date range}
 

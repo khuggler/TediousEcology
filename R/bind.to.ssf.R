@@ -7,11 +7,11 @@
 #' @export
 
 bind.to.ssf<-function(ssfdata, orig.data){
-  orig.data$IDs<-paste(orig.data$AID, orig.data$Hour, sep = "_")
+  orig.data$IDs<-paste(orig.data$AIDYr, orig.data$Hour, sep = "_")
   orig.uni<-unique(orig.data$IDs)
 
   ssfdata$Hour<-as.numeric(strftime(ssfdata$timestamp, format = "%H"))
-  ssfdata$IDs<-paste(ssfdata$id, ssfdata$Hour, sep = "_")
+  ssfdata$IDs<-paste(ssfdata$AIDYr, ssfdata$Hour, sep = "_")
   d<-data.frame()
   for(k in 1:length(orig.uni)){
     ssf.sub<-ssfdata[ssfdata$IDs == orig.uni[k],]
@@ -29,11 +29,11 @@ bind.to.ssf<-function(ssfdata, orig.data){
 
   new.dat<-d
 
-  orig.data$IDs<-paste(orig.data$AID, orig.data$Date, sep = "_")
+  orig.data$IDs<-paste(orig.data$AIDYr, orig.data$Date, sep = "_")
   orig.uni<-unique(orig.data$IDs)
 
   new.dat$date<-strftime(new.dat$timestamp, format = "%Y-%m-%d")
-  new.dat$IDs<-paste(new.dat$id, new.dat$date, sep = "_")
+  new.dat$IDs<-paste(new.dat$AIDYr, new.dat$date, sep = "_")
 
   x<-data.frame()
   for(l in 1:length(orig.uni)){

@@ -26,8 +26,8 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
   uni<-unique(yote$CollarSerialNumber)
   data<-subset(gps, CollarSerialNumber %in% uni)
   #yote<-subset(yote, !Serial=="39290")
-  
-  
+
+
   yote$Date<-as.Date(yote$Date, format="%m/%d/%Y")
   yote$MortDate<-as.character(yote$MortDate)
   yote$MortDate<-as.Date(yote$MortDate, format = "%m/%d/%Y")
@@ -37,7 +37,7 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
   uni<-unique(yote$Serial)
   f<-data.frame()
   for(i in 1:length(uni)){
-    
+
     if(uni[i] == "39290"){next}
     sub<-gps[gps$CollarSerialNumber == uni[i],]
     subsub<-yote[yote$Serial == uni[i],]
@@ -80,57 +80,63 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
 
     Yote<-data.frame(Yote)
     Yote$Year<-strftime(Yote$TelemDate, format = "%Y")
-    uni<-unique(Yote$Year)
-    
-    YoteMR<-data.frame()
-    for(k in 1:length(uni)){
-    sub<-Yote[Yote$Year == uni[k],]
-    sub<-sub[order(sub$TelemDate),]
-    subMR<-as.ltraj(xy = sub[, c("Easting", "Northing")], date = sub$TelemDate, id = sub$AID)
+    Yote$aid.yr<-paste(Yote$AID, Yote$Year, sep = "_")
 
-    subMR<-rbindlist(subMR, idcol = "id")
-    
-    YoteMR<-rbind(subMR, YoteMR)
+    all.traj<-NULL
+    uni<-unique(Yote$aid.yr)
+    for(i in 1:length(uni)){
+      tmp<-Yote[Yote$aid.yr == uni[i],]
+      tmp<-tmp[!duplicated(tmp$TelemDate),]
+
+      temp.traj<-as.ltraj(data.frame(tmp$Easting, tmp$Northing), tmp$TelemDate, id = uni[i])
+      id<-attr(temp.traj[[1]], which = "id")
+      temp.traj<-data.frame(rbindlist(temp.traj, idcol = "id"))
+      temp.traj$id<-id
+
+      all.traj<-rbind(temp.traj, all.traj)
+
     }
-    ### Bind back to all coyote data ###
 
-    Yote<-Yote[order(Yote$AID, Yote$TelemDate),]
-    YoteMR<-YoteMR[order(YoteMR$id),]
-    
-    Yote<-merge(Yote, YoteMR, by.x = c('AID', 'TelemDate'), by.y = c('id', 'date'), keep.all = T)
+    Yote<-Yote[order(Yote$aid.yr, Yote$TelemDate),]
+    YoteMR<-all.traj[order(all.traj$id, all.traj$date),]
+
+    Yote<-merge(Yote, YoteMR, by.x = c('aid.yr', 'TelemDate'), by.y = c('id', 'date'), keep.all = T)
+
     Yote$dist<-Yote$dist/1000 ### transforms to km
 
     s<-data.frame()
-    Yote$AIDYr<-paste(Yote$AID, Yote$Year, sep = "_")
-    uni<-unique(Yote$AIDYr)
+    uni<-unique(Yote$aid.yr)
     for(i in 1:length(uni)){
-      sub<-Yote[Yote$AIDYr == uni[i],]
+      sub<-Yote[Yote$aid.yr == uni[i],]
 
       for(k in 1:nrow(sub)){
         sub$TimeDiff[k]<-difftime(sub$TelemDate[k+1], sub$TelemDate[k], units = "hours")
         sub$HrMR[k]<-sub$dist[k]/sub$TimeDiff[k]
 
-        print(k)
+        #print(k)
 
       }
       s<-rbind(sub, s)
-      quant<-quantile(s$HrMR, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 1), na.rm=T)
-      quant<-as.numeric(quant[9])
-      s<-s[s$HrMR < quant, ]
+      quants<-quantile(s$HrMR, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 1), na.rm=T)
+      quant<-as.numeric(quants[8])
+      #out<-as.numeric(quants[9])
+      print(quant)
+      print(i)
+      s<-s[s$HrMR <= quant, ]
     }
     s$Hour<-strftime(s$TelemDate, format = "%H")
     s$Hour<-as.numeric(s$Hour)
-    agg<-aggregate(s$HrMR, by=list(s$AIDYr, s$Hour), FUN = mean, na.rm=T)
+    agg<-aggregate(s$HrMR, by=list(s$aid.yr, s$Hour), FUN = mean, na.rm=T)
     agg2<-aggregate(agg$x, by = list(agg$Group.2), FUN = mean, na.rm=T)
 
     quant<-quantile(agg$x, c(0.01, 0.05, 0.1, 0.25, 0.5,0.7, 0.75, 0.95, 0.99, 1), na.rm=T)
     quant<-as.numeric(quant[5])
 
-    plot(agg2$Group.1, agg2$x, main = "Movement Rates of Coyotes", type = "l", ylim = c(0.3, 1.0))
+    plot(agg2$Group.1, agg2$x, main = "Movement Rates of Coyotes", type = "l")
     abline(h = quant, col = "red")
 
 
-    s$act.cat<-ifelse(s$Hour >= 4 & s$Hour <= 8 | s$Hour >= 20 & s$Hour <= 23, "High", "Low")
+    s$act.cat<-ifelse(s$Hour >= 4 & s$Hour <= 8 | s$Hour >= 19 & s$Hour <= 23, "High", "Low")
 
     return(s)
     }

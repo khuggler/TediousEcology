@@ -25,37 +25,65 @@ proj<-'+proj=utm +zone=12 +ellps=GRS80 +datum=NAD83 +units=m +no_defs'
 proj4string(all_lion)<-proj
 
 all_lion<-data.frame(all_lion)
-all_lion$TelemDate<-as.POSIXct(all_lion$TelemDate, format = "%m/%d/%Y %H:%M", tz = "MST")
+all_lion$TelemDate<-as.POSIXct(all_lion$TelemDate, format = "%Y-%m-%d %H:%M")
 all_lion$Date<-as.Date(all_lion$TelemDate, format = "%Y-%m-%d", tz = "MST")
-all_lion<-all_lion[!duplicated(all_lion[c("AID", "TelemDate")]),]
-all_lion<-all_lion[all_lion$Date >= startdates[1] & all_lion$Date <= enddates[1] | all_lion$Date >= startdates[2] & all_lion$Date <= enddates[2],]
+all_lion<-all_lion[!duplicated(all_lion[c("AID", "TelemDate")]),] ### remove duplicated fixes
+
+all_lion<-all_lion[all_lion$Date >= startdates[1] & all_lion$Date <= enddates[1] | all_lion$Date >= startdates[2] & all_lion$Date <= enddates[2] | all_lion$Date >= startdates[3] & all_lion$Date <= enddates[3],]
 
 
-LionMR<-as.ltraj(xy = all_lion[, c("Easting", "Northing")], date = all_lion$TelemDate, id = all_lion$AID)
-LionMR<-rbindlist(LionMR, idcol = "id")
+
+#all_lion<-data.frame(all_lion)
+all_lion$Year<-strftime(all_lion$TelemDate, format = "%Y")
+all_lion<-all_lion[complete.cases(all_lion$Year),]
+
+all_lion$aid.yr<-paste(all_lion$AID, all_lion$Year, sep = "_")
+
+#all_lion$AID<-as.character(all_lion$AID)
+uni<-unique(all_lion$aid.yr)
+
+all.traj<-NULL
+for(i in 1:length(uni)){
+  tmp<-all_lion[all_lion$aid.yr == uni[i],]
+  tmp<-tmp[!duplicated(tmp$TelemDate),]
+  
+  temp.traj<-as.ltraj(data.frame(tmp$Easting, tmp$Northing), tmp$TelemDate, id = uni[i])
+  id<-attr(temp.traj[[1]], which = "id")
+  temp.traj<-data.frame(rbindlist(temp.traj, idcol = "id"))
+  temp.traj$id<-id
+  
+  all.traj<-rbind(temp.traj, all.traj)
+  
+}
 
 
-all_lion<-all_lion[order(all_lion$AID),]
-LionMR<-LionMR[order(LionMR$id),]
-all_lion<-cbind(all_lion, LionMR[,c(5:11)])
-all_lion$dist<-all_lion$dist/1000 ### transforms to km
+all_lion<-all_lion[order(all_lion$aid.yr, all_lion$TelemDate),]
+LionMR<-all.traj[order(all.traj$id, all.traj$date),]
+
+Lion<-merge(all_lion, LionMR, by.x = c('aid.yr', 'TelemDate'), by.y = c('id', 'date'), keep.all = T)
+
+Lion$dist<-Lion$dist/1000 ### transforms to km
 
 s<-data.frame()
-uni<-unique(all_lion$AID)
+uni<-unique(Lion$AID)
 for(i in 1:length(uni)){
-  sub<-all_lion[all_lion$AID == uni[i],]
+  sub<-Lion[Lion$AID == uni[i],]
 
   for(k in 1:nrow(sub)){
     sub$TimeDiff[k]<-difftime(sub$TelemDate[k+1], sub$TelemDate[k], units = "hours")
     sub$HrMR[k]<-sub$dist[k]/sub$TimeDiff[k]
 
-    print(k)
+    #print(k)
 
   }
   s<-rbind(sub, s)
   quant<-quantile(s$HrMR, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 1), na.rm=T)
-  quant<-as.numeric(quant[9])
-  s<-s[s$HrMR < quant, ]
+  quant<-as.numeric(quant[8])
+  
+  print(quant)
+  print(i)
+  
+  s<-s[s$HrMR <= quant, ]
 }
 
 s$Hour<-strftime(s$TelemDate, format = "%H")

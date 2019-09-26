@@ -170,7 +170,7 @@ ssf.fun<-function(dat, datecol,idcol, plot, pathout, nsamps){
   ssf.df <- data.frame(spTransform(ssfdat2, CRS("+proj=longlat +datum=WGS84")))
   names(ssf.df)[c(1,16,17)] <-c("AIDYr", "long", "lat")
   ssf.df$timestamp<-ssf.df$t1_
-  ssf.df<-ssf.df[,c('AIDYr', 'timestamp', 'burst_', 'case_', 'lat','long', 'utm.easting', 'utm.northing', 'x1_', 'x2_', 'y1_', 'y2_', 'sl_', 'ta_')]
+  ssf.df<-ssf.df[,c('AIDYr', 'timestamp', 'burst_', 'step_id_','case_', 'lat','long', 'utm.easting', 'utm.northing', 'x1_', 'x2_', 'y1_', 'y2_', 'sl_', 'ta_')]
 
   write.csv(ssf.df,pathout, row.names = F)
 

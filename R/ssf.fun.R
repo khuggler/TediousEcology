@@ -30,9 +30,10 @@ ssf.fun<-function(dat, datecol,idcol, plot, pathout, nsamps){
   library(ggmap)
   library(purrr)
 
-  dat<-dat[dat$HDOP < 12,]
+  dat<-dat[dat$HDOP < 12,] ### remove shitty points
 
-  #deer7<-data %>% filter(AID == "7")
+
+  deer7<-dat %>% filter(AIDYr == "105_2017")
   #z<-(calc_zoom(Longitude, Latitude, deer7))
 
   ### Create tracks in AMT package ###
@@ -41,7 +42,7 @@ ssf.fun<-function(dat, datecol,idcol, plot, pathout, nsamps){
   proj<-'+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
   proj4string(spatial.dat)<-proj
 
-  trk <- mk_track(dat, .x=Longitude, .y=Latitude, .t=TelemDate, id = AID,
+  trk <- mk_track(dat, .x=Longitude, .y=Latitude, .t=TelemDate, id = AIDYr,
                   crs = CRS(proj))
 
   geo.proj<-'+proj=utm +zone=12 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
@@ -87,12 +88,12 @@ ssf.fun<-function(dat, datecol,idcol, plot, pathout, nsamps){
     addCircles(deer7$Longitude, deer7$Latitude)
 
   ### Plot all ids using ggmap ###
-  ggplot(data, aes(x=Longitude, y=Latitude))+geom_point()+
-    facet_wrap(~AID, scales="free")
+  ggplot(dat, aes(x=Longitude, y=Latitude))+geom_point()+
+    facet_wrap(~AIDYr, scales="free")
 
   ### Now all on one map ###
 
-  ggplot(data, aes(x=Longitude, y=Latitude, color=as.factor(AID)))+
+  ggplot(dat, aes(x=Longitude, y=Latitude, color=as.factor(AIDYr)))+
     geom_point()
 
 
@@ -167,9 +168,9 @@ ssf.fun<-function(dat, datecol,idcol, plot, pathout, nsamps){
   ssfdat2 <- SpatialPointsDataFrame(ssfdat[,c("x2_","y2_")], ssfdat,
                                     proj4string=CRS("+proj=utm +zone=12N +datum=WGS84"))
   ssf.df <- data.frame(spTransform(ssfdat2, CRS("+proj=longlat +datum=WGS84")))
-  names(ssf.df)[c(13,16,17)] <-c("AID", "long", "lat")
+  names(ssf.df)[c(1,16,17)] <-c("AIDYr", "long", "lat")
   ssf.df$timestamp<-ssf.df$t1_
-  ssf.df %>% dplyr::select('lat', utm.easting, x1_, x2_, y1_, y2_, 'long', utm.northing) %>% head
+  ssf.df<-ssf.df[,c('AIDYr', 'timestamp', 'burst_', 'case_', 'lat','long', 'utm.easting', 'utm.northing', 'x1_', 'x2_', 'y1_', 'y2_', 'sl_', 'ta_')]
 
   write.csv(ssf.df,pathout, row.names = F)
 

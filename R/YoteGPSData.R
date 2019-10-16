@@ -124,7 +124,7 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
       print(i)
       s<-s[s$HrMR <= quant, ]
     }
-    s$Hour<-strftime(s$TelemDate, format = "%H")
+    s$Hour<-strftime(s$TelemDate, format = "%H", tz = "MST")
     s$Hour<-as.numeric(s$Hour)
     agg<-aggregate(s$HrMR, by=list(s$AID, s$Hour), FUN = mean, na.rm=T)
     agg2<-aggregate(agg$x, by = list(agg$Group.2), FUN = mean, na.rm=T)

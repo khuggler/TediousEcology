@@ -46,14 +46,14 @@ all.traj<-NULL
 for(i in 1:length(uni)){
   tmp<-all_lion[all_lion$aid.yr == uni[i],]
   tmp<-tmp[!duplicated(tmp$TelemDate),]
-  
+
   temp.traj<-as.ltraj(data.frame(tmp$Easting, tmp$Northing), tmp$TelemDate, id = uni[i])
   id<-attr(temp.traj[[1]], which = "id")
   temp.traj<-data.frame(rbindlist(temp.traj, idcol = "id"))
   temp.traj$id<-id
-  
+
   all.traj<-rbind(temp.traj, all.traj)
-  
+
 }
 
 
@@ -65,12 +65,13 @@ Lion<-merge(all_lion, LionMR, by.x = c('aid.yr', 'TelemDate'), by.y = c('id', 'd
 Lion$dist<-Lion$dist/1000 ### transforms to km
 
 s<-data.frame()
-uni<-unique(Lion$AID)
+uni<-unique(Lion$aid.yr)
 for(i in 1:length(uni)){
-  sub<-Lion[Lion$AID == uni[i],]
+  sub<-Lion[Lion$aid.yr == uni[i],]
 
   for(k in 1:nrow(sub)){
     sub$TimeDiff[k]<-difftime(sub$TelemDate[k+1], sub$TelemDate[k], units = "hours")
+    sub$OtherDiff[k]<-as.numeric(sub$dt[k]/60/60)
     sub$HrMR[k]<-sub$dist[k]/sub$TimeDiff[k]
 
     #print(k)
@@ -79,16 +80,16 @@ for(i in 1:length(uni)){
   s<-rbind(sub, s)
   quant<-quantile(s$HrMR, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 1), na.rm=T)
   quant<-as.numeric(quant[8])
-  
+
   print(quant)
   print(i)
-  
+
   s<-s[s$HrMR <= quant, ]
 }
 
 s$Hour<-strftime(s$TelemDate, format = "%H")
 s$Hour<-as.numeric(s$Hour)
-agg<-aggregate(s$HrMR, by=list(s$AID, s$Hour), FUN = mean, na.rm=T)
+agg<-aggregate(s$HrMR, by=list(s$aid.yr, s$Hour), FUN = mean, na.rm=T)
 agg2<-aggregate(agg$x, by = list(agg$Group.2), FUN = mean, na.rm=T)
 
 quant<-quantile(agg$x, c(0.01, 0.05, 0.1, 0.25, 0.5,0.7, 0.75, 0.95, 0.99, 1), na.rm=T)

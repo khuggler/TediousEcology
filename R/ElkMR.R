@@ -30,44 +30,45 @@ ElkMR<-function(gps, startdates, enddates, subspp, subsex){
   ek<-data.frame(ek)
   ek$AID<-as.character(ek$AID)
   ek$Year<-strftime(ek$TelemDate, format = "%Y")
-  
+
   ek$aid.yr<-paste(ek$AID, ek$Year, sep = "_")
-  
+
   all.traj<-NULL
   uni<-unique(ek$aid.yr)
   for(i in 1:length(uni)){
     tmp<-ek[ek$aid.yr == uni[i],]
     tmp<-tmp[!duplicated(tmp$TelemDate),]
-    
+
     temp.traj<-as.ltraj(data.frame(tmp$Easting, tmp$Northing), tmp$TelemDate, id = uni[i])
     id<-attr(temp.traj[[1]], which = "id")
     temp.traj<-data.frame(rbindlist(temp.traj, idcol = "id"))
     temp.traj$id<-id
-    
+
     all.traj<-rbind(temp.traj, all.traj)
-    
+
   }
-  
+
   Elk<-ek[order(ek$aid.yr, ek$TelemDate),]
   ElkMR<-all.traj[order(all.traj$id, all.traj$date),]
-  
+
   Elk<-merge(Elk, ElkMR, by.x = c('aid.yr', 'TelemDate'), by.y = c('id', 'date'), keep.all = T)
-  
+
   Elk$dist<-Elk$dist/1000 ### transforms to km
 
   elk<-Elk
 
   s<-data.frame()
-  uni<-unique(elk$AID)
+  uni<-unique(elk$aid.yr)
   for(i in 1:length(uni)){
-    sub<-elk[elk$AID == uni[i],]
-    
+    sub<-elk[elk$aid.yr == uni[i],]
+
     for(k in 1:nrow(sub)){
       sub$TimeDiff[k]<-difftime(sub$TelemDate[k+1], sub$TelemDate[k], units = "hours")
+      sub$OtherDiff[k]<-as.numeric(sub$dt[k]/60/60)
       sub$HrMR[k]<-sub$dist[k]/sub$TimeDiff[k]
-      
+
       #print(k)
-      
+
     }
     s<-rbind(sub, s)
     quants<-quantile(s$HrMR, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 1), na.rm=T)
@@ -77,20 +78,20 @@ ElkMR<-function(gps, startdates, enddates, subspp, subsex){
     print(i)
     s<-s[s$HrMR <= quant, ]
   }
-  s$Hour<-strftime(s$TelemDate, format = "%H")
+  s$Hour<-strftime(s$TelemDate, format = "%H", tz = "MST")
   s$Hour<-as.numeric(s$Hour)
-  agg<-aggregate(s$HrMR, by=list(s$AID, s$Hour), FUN = mean, na.rm=T)
+  agg<-aggregate(s$HrMR, by=list(s$aid.yr, s$Hour), FUN = mean, na.rm=T)
   agg2<-aggregate(agg$x, by = list(agg$Group.2), FUN = mean, na.rm=T)
-  
+
   quant<-quantile(agg$x, c(0.01, 0.05, 0.1, 0.25, 0.5,0.7, 0.75, 0.95, 0.99, 1), na.rm=T)
   quant<-as.numeric(quant[5])
-  
+
   plot(agg2$Group.1, agg2$x, main = "Movement Rates of Elk", type = "l")
   abline(h = quant, col = "red")
-  
-  
+
+
   s$act.cat<-ifelse(s$Hour >= 5 & s$Hour <= 7 | s$Hour >= 17 & s$Hour <= 22, "High", "Low")
-  
+
   return(s)
 }
 

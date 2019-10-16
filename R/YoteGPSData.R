@@ -103,22 +103,25 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
     Yote<-merge(Yote, YoteMR, by.x = c('aid.yr', 'TelemDate'), by.y = c('id', 'date'), keep.all = T)
 
     Yote$dist<-Yote$dist/1000 ### transforms to km
+    
+    Yote<-Yote[Yote$aid.yr != "1_2019",] ## remove this coyote
 
     s<-data.frame()
-    uni<-unique(Yote$AID)
+    uni<-unique(Yote$aid.yr)
     for(i in 1:length(uni)){
-      sub<-Yote[Yote$AID == uni[i],]
+      sub<-Yote[Yote$aid.yr == uni[i],]
 
       for(k in 1:nrow(sub)){
-        sub$TimeDiff[k]<-difftime(sub$TelemDate[k+1], sub$TelemDate[k], units = "hours")
+        
+        sub$TimeDiff[k]<-as.numeric(difftime(sub$TelemDate[k+1], sub$TelemDate[k], units = "hours"))
+        sub$OtherDiff[k]<-as.numeric(sub$dt[k]/60/60)
         sub$HrMR[k]<-sub$dist[k]/sub$TimeDiff[k]
-
-        #print(k)
+        
 
       }
       s<-rbind(sub, s)
       quants<-quantile(s$HrMR, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 1), na.rm=T)
-      quant<-as.numeric(quants[8])
+      quant<-as.numeric(quants[8]) ## remove crazy MRs
       #out<-as.numeric(quants[9])
       print(quant)
       print(i)
@@ -130,7 +133,7 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
     agg2<-aggregate(agg$x, by = list(agg$Group.2), FUN = mean, na.rm=T)
 
     quant<-quantile(agg$x, c(0.01, 0.05, 0.1, 0.25, 0.5,0.7, 0.75, 0.95, 0.99, 1), na.rm=T)
-    quant<-as.numeric(quant[5])
+    quant<-as.numeric(quant[5]) ## 75th percentile 
 
     plot(agg2$Group.1, agg2$x, main = "Movement Rates of Coyotes", type = "l")
     abline(h = quant, col = "red")

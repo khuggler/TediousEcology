@@ -11,7 +11,7 @@
 
 
 LionData<-function(filepath, startdates, enddates){
-library(rbindlist)
+#library(rbindlist)
 lion<-read.csv(filepath, stringsAsFactors = F)
 names(lion)[10:11]<-c('Easting', 'Northing')
 lion<-lion[lion$AID != "BJ3029",]
@@ -42,27 +42,28 @@ all_lion$aid.yr<-paste(all_lion$AID, all_lion$Year, sep = "_")
 #all_lion$AID<-as.character(all_lion$AID)
 uni<-unique(all_lion$aid.yr)
 
-all.traj<-NULL
-for(i in 1:length(uni)){
-  tmp<-all_lion[all_lion$aid.yr == uni[i],]
-  tmp<-tmp[!duplicated(tmp$TelemDate),]
+#all.traj<-NULL
+#for(i in 1:length(uni)){
+ # tmp<-all_lion[all_lion$aid.yr == uni[i],]
+  #tmp<-tmp[!duplicated(tmp$TelemDate),]
 
-  temp.traj<-as.ltraj(data.frame(tmp$Easting, tmp$Northing), tmp$TelemDate, id = uni[i])
-  id<-attr(temp.traj[[1]], which = "id")
-  temp.traj<-data.frame(rbindlist(temp.traj, idcol = "id"))
-  temp.traj$id<-id
+  #temp.traj<-as.ltraj(data.frame(tmp$Easting, tmp$Northing), tmp$TelemDate, id = uni[i])
+  #id<-attr(temp.traj[[1]], which = "id")
+  #temp.traj<-data.frame(rbindlist(temp.traj, idcol = "id"))
+  #temp.traj$id<-id
 
-  all.traj<-rbind(temp.traj, all.traj)
+  #all.traj<-rbind(temp.traj, all.traj)
 
-}
+#}
 
 
-all_lion<-all_lion[order(all_lion$aid.yr, all_lion$TelemDate),]
-LionMR<-all.traj[order(all.traj$id, all.traj$date),]
+#all_lion<-all_lion[order(all_lion$aid.yr, all_lion$TelemDate),]
+#LionMR<-all.traj[order(all.traj$id, all.traj$date),]
 
-Lion<-merge(all_lion, LionMR, by.x = c('aid.yr', 'TelemDate'), by.y = c('id', 'date'), keep.all = T)
+#Lion<-merge(all_lion, LionMR, by.x = c('aid.yr', 'TelemDate'), by.y = c('id', 'date'), keep.all = T)
 
-Lion$dist<-Lion$dist/1000 ### transforms to km
+#Lion$dist<-Lion$dist/1000 ### transforms to km
+Lion<-all_lion
 
 s<-data.frame()
 uni<-unique(Lion$aid.yr)

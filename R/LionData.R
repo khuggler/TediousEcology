@@ -11,7 +11,7 @@
 
 
 LionData<-function(filepath, startdates, enddates){
-
+library(rbindlist)
 lion<-read.csv(filepath, stringsAsFactors = F)
 names(lion)[10:11]<-c('Easting', 'Northing')
 lion<-lion[lion$AID != "BJ3029",]

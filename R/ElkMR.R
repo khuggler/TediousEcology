@@ -12,7 +12,8 @@
 #' \donttest{ElkData<-ElkMR(gps = yourgpsdata, startdates = c('2017-05-01', '2018-05-01'), enddates = c('2017-09-01', '2018-09-01'), subspp = "ELK", subsex = "F")}
 
 ElkMR<-function(gps, startdates, enddates, subspp, subsex){
-  ek<-gps[gps$Spp == subspp & gps$Sex == subsex,]
+  ek<-gps[gps$Spp == subspp,]
+
   ek<-ek[ek$Date >= startdates[1] & ek$Date <= enddates[1] | ek$Date >= startdates[2] & ek$Date <= enddates[2] | ek$Date >= startdates[3] & ek$Date <= enddates[3],]
 
   library(adehabitatLT)
@@ -27,35 +28,36 @@ ElkMR<-function(gps, startdates, enddates, subspp, subsex){
   ek<-sp::spTransform(ek, '+proj=utm +zone=12 +ellps=GRS80 +datum=WGS84 +units=m +no_defs')
   dimnames(ek@coords)[[2]]<- c('Easting', "Northing")
 
-  ek<-data.frame(ek)
+  #ek<-data.frame(ek)
   ek$AID<-as.character(ek$AID)
   ek$Year<-strftime(ek$TelemDate, format = "%Y")
 
   ek$aid.yr<-paste(ek$AID, ek$Year, sep = "_")
 
-  all.traj<-NULL
-  uni<-unique(ek$aid.yr)
-  for(i in 1:length(uni)){
-    tmp<-ek[ek$aid.yr == uni[i],]
-    tmp<-tmp[!duplicated(tmp$TelemDate),]
+  #all.traj<-NULL
+  #uni<-unique(ek$aid.yr)
+  #for(i in 1:length(uni)){
+   # tmp<-ek[ek$aid.yr == uni[i],]
+    #tmp<-tmp[!duplicated(tmp$TelemDate),]
 
-    temp.traj<-as.ltraj(data.frame(tmp$Easting, tmp$Northing), tmp$TelemDate, id = uni[i])
-    id<-attr(temp.traj[[1]], which = "id")
-    temp.traj<-data.frame(rbindlist(temp.traj, idcol = "id"))
-    temp.traj$id<-id
+    #temp.traj<-as.ltraj(data.frame(tmp$Easting, tmp$Northing), tmp$TelemDate, id = uni[i])
+    #id<-attr(temp.traj[[1]], which = "id")
+    #temp.traj<-data.frame(rbindlist(temp.traj, idcol = "id"))
+    #temp.traj$id<-id
 
-    all.traj<-rbind(temp.traj, all.traj)
+  #  all.traj<-rbind(temp.traj, all.traj)
 
-  }
+  #}
 
-  Elk<-ek[order(ek$aid.yr, ek$TelemDate),]
-  ElkMR<-all.traj[order(all.traj$id, all.traj$date),]
+  #Elk<-ek[order(ek$aid.yr, ek$TelemDate),]
+  #ElkMR<-all.traj[order(all.traj$id, all.traj$date),]
 
-  Elk<-merge(Elk, ElkMR, by.x = c('aid.yr', 'TelemDate'), by.y = c('id', 'date'), keep.all = T)
+  #Elk<-merge(Elk, ElkMR, by.x = c('aid.yr', 'TelemDate'), by.y = c('id', 'date'), keep.all = T)
 
-  Elk$dist<-Elk$dist/1000 ### transforms to km
+  #Elk$dist<-Elk$dist/1000 ### transforms to km
 
-  elk<-Elk
+  elk<-data.frame(ek)
+  elk$TelemDate<-as.POSIXct(elk$TelemDate, format = "%Y-%m-%d %H:%M:%S")
 
   s<-data.frame()
   uni<-unique(elk$aid.yr)
@@ -93,7 +95,7 @@ ElkMR<-function(gps, startdates, enddates, subspp, subsex){
   abline(h = quant, col = "red")
 
 
-  s$act.cat<-ifelse(s$Hour >= 5 & s$Hour <= 7 | s$Hour >= 17 & s$Hour <= 22, "High", "Low")
+  s$act.cat<-ifelse(s$Hour >= 3 & s$Hour <= 7 | s$Hour >= 16 & s$Hour <= 21, "High", "Low")
 
   return(s)
 }

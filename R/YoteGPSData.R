@@ -111,11 +111,15 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
     for(i in 1:length(uni)){
       sub<-Yote[Yote$aid.yr == uni[i],]
 
-      for(k in 1:nrow(sub)){
+      sub$movedist<-NA
+      sub$timediff<-NA
+      sub$moverate<-NA
 
-        sub$TimeDiff[k]<-as.numeric(difftime(sub$TelemDate[k+1], sub$TelemDate[k], units = "hours"))
-        sub$OtherDiff[k]<-as.numeric(sub$dt[k]/60/60)
-        sub$HrMR[k]<-sub$dist[k]/sub$TimeDiff[k]
+      for(k in 2:nrow(sub)){
+
+        sub$movedist[k]<-sqrt(((sub$Easting[k]-sub$Easting[k-1]))^2)+ sqrt((sub$Northing[k]-sub$Northing[k-1])^2)
+        sub$timediff[k]<-(as.numeric(sub$timestamp[k]-sub$timestamp[k-1]))
+        sub$moverate[k]<-ifelse(sub$movedist[k]==0, 0, (sub$movedist[k])/(as.numeric(sub$TelemDate[k]-sub$TelemDate[k-1])))
 
 
       }

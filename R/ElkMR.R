@@ -62,25 +62,28 @@ ElkMR<-function(gps, startdates, enddates, subspp, subsex){
   for(i in 1:length(uni)){
     sub<-elk[elk$aid.yr == uni[i],]
 
-    for(k in 1:nrow(sub)){
-      sub$TimeDiff[k]<-difftime(sub$TelemDate[k+1], sub$TelemDate[k], units = "hours")
-      sub$OtherDiff[k]<-as.numeric(sub$dt[k]/60/60)
-      sub$HrMR[k]<-sub$dist[k]/sub$TimeDiff[k]
+    sub$movedist<-NA
+    sub$timediff<-NA
+    sub$moverate<-NA
 
-      #print(k)
+    for(k in 2:nrow(sub)){
+
+      sub$movedist[k]<-sqrt(((sub$Easting[k]-sub$Easting[k-1]))^2)+ sqrt((sub$Northing[k]-sub$Northing[k-1])^2)
+      sub$timediff[k]<-(as.numeric(difftime(sub$TelemDate[k],sub$TelemDate[k-1]), units = "hours"))
+      sub$moverate[k]<-ifelse(sub$movedist[k]==0, 0, (sub$movedist[k])/(as.numeric(sub$TelemDate[k]-sub$TelemDate[k-1])))
 
     }
     s<-rbind(sub, s)
-    quants<-quantile(s$HrMR, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 1), na.rm=T)
+    quants<-quantile(s$moverate, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 1), na.rm=T)
     quant<-as.numeric(quants[8])
     #out<-as.numeric(quants[9])
-    print(quant)
+    #print(quant)
     print(i)
-    s<-s[s$HrMR <= quant, ]
+    s<-s[s$moverate <= quant, ]
   }
   s$Hour<-strftime(s$TelemDate, format = "%H", tz = "MST")
   s$Hour<-as.numeric(s$Hour)
-  agg<-aggregate(s$HrMR, by=list(s$aid.yr, s$Hour), FUN = mean, na.rm=T)
+  agg<-aggregate(s$moverate, by=list(s$aid.yr, s$Hour), FUN = mean, na.rm=T)
   agg2<-aggregate(agg$x, by = list(agg$Group.2), FUN = mean, na.rm=T)
 
   quant<-quantile(agg$x, c(0.01, 0.05, 0.1, 0.25, 0.5,0.7, 0.75, 0.95, 0.99, 1), na.rm=T)

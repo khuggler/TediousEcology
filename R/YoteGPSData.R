@@ -125,11 +125,11 @@ YoteGPSData<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, s
       s<-rbind(sub, s)
 
       quants<-quantile(s$moverate, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 1), na.rm=T)
-      #quant<-as.numeric(quants[8]) ## remove crazy MRs
+      quant<-as.numeric(quants[8]) ## remove crazy MRs
       #out<-as.numeric(quants[9])
       #print(quant)
       print(i)
-      #s<-s[s$HrMR <= quant, ]
+      s<-s[s$moverate <= quant, ]
     }
     s$Hour<-strftime(s$TelemDate, format = "%H", tz = "MST")
     s$Hour<-as.numeric(s$Hour)

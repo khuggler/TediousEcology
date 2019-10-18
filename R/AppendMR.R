@@ -8,9 +8,14 @@
 #' @keywords deer, gps, activity
 #' @export
 AppendMR<-function(deerdata,elkdata,liondata, coyotedata){
-  deerdata$Hour<-strftime(deerdata$TelemDate, format = "%H")
+  deerdata$Hour<-strftime(deerdata$TelemDate, format = "%H", tz = "MST")
   deerdata$Hour<-as.numeric(deerdata$Hour)
-
+  
+  deerdata<-deerdata[complete.cases(deerdata$Hour),]
+  elkdata<-elkdata[complete.cases(elkdata$Hour),]
+  liondata<-liondata[complete.cases(liondata$Hour),]
+  coyotedata<-coyotedata[complete.cases(coyotedata$Hour),]
+  
   uni<-unique(deerdata$Hour)
   uni<-as.numeric(uni)
   x<-data.frame()

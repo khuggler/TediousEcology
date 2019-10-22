@@ -18,10 +18,13 @@ ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex, 
 
   sub<-gps[gps$Date >= startdates[1] & gps$Date <= enddates[1] | gps$Date >= startdates[2] & gps$Date <= enddates[2] |
              gps$Date >= startdates[3] & gps$Date <= enddates[3],]
+  
   sub<-sub[sub$Spp %in% subspp & sub$Sex %in% subsex,]
   sub$Year<-strftime(sub$Date, format = "%Y")
   sub$AIDYr<-paste(sub$AID, sub$Year, sep = "_")
 
+  #' NEO DATA 
+  #' =============
   neo<-read.csv(neodat, stringsAsFactors = F)
   neo$StartDate<-as.Date(neo$StartDate, tryFormats = c("%Y-%m-%d", "%m/%d/%Y"))
   p<-Sys.Date()
@@ -30,6 +33,8 @@ ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex, 
   neo$EndDate<-as.Date(neo$EndDate, format = "%Y-%m-%d")
   neo$Year<-strftime(neo$StartDate, format = "%Y")
   neo$AIDYr<-paste(neo$MomAID, neo$Year, sep = "_")
+  
+  
 
   cap<-read.csv(capdat, stringsAsFactors = F) ######
   cap$CaptureDate<-as.Date(cap$CaptureDate, tryFormats = c("%m/%d/%Y", "%Y-%m-%d"))
@@ -71,7 +76,8 @@ ReproStatus<-function(gps, startdates, enddates, neodat,capdat, subspp, subsex, 
     asub$PregStat<-capsub$Pregnant
     asub$AllCatch<-ifelse(nrow(neosub) < capsub$Number.Fetus,0,1)
     asub$NeoCatch<-ifelse(nrow(neosub)> 0, 1, 0)
-    asub$ReproStatus <- ifelse(end < asub$Date, "NonRepro", "Repro")
+    asub$ReproStatus<-ifelse(asub$Date >= start & asub$Date <= end, "Repro", "NonRepro")
+    #asub$ReproStatus <- ifelse(end < asub$Date, "NonRepro", "Repro")
     asub$ReproStatus<-ifelse(asub$PregStat == 0, "NonRepro", asub$ReproStatus)
     asub$Keep<-ifelse(asub$AllCatch == 0 & asub$ReproStatus == "NonRepro", 0, 1)
     asub$birth.date<-start

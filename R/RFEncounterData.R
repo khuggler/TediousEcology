@@ -14,21 +14,15 @@ RFEncounterData<-function(elkdata, liondata, coyotedata, raspath, studypath){
 library(raster)
   files<-unzip(raspath, files = NULL)
   files<-grep(".img$", files, value = TRUE)
-
-  r<-list()
-  for(i in 1:length(files)){
-    tempras<-raster(files[i])
-    r[[i]]<-assign(names(tempras), tempras)
-
-    stack<-lapply(r, stack)
-    rasstack<-stack(stack)
-  }
+  
+  rasstack<-raster::stack(files)
 
 study<-readOGR(studypath)
 study<-spTransform(study, proj4string(rasstack))
 
 elk<-elkdata[complete.cases(elkdata$Easting),]
 random<-spsample(study, nrow(elk), type = "random")
+
 random.ex<-data.frame(extract(rasstack, random))
 random.ex$AID<-elk$AID
 random.ex$act.cat<-elk$act.cat

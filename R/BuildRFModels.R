@@ -20,22 +20,10 @@ BuildRFModels<-function(data, ncpu, withold, trees, raspath, pathout, subset, ca
 
   files<-unzip(raspath, files = NULL)
   files<-grep(".img$", files, value = TRUE)
+  rasstack<-stack(files)
 
-  r<-list()
-  for(i in 1:length(files)){
-    tempras<-raster(files[i])
-    r[[i]]<-assign(names(tempras), tempras)
+  pred.names<-colnames(data[,c(1,3:7, 14:16, 30:35)])
 
-    stack<-lapply(r, stack)
-    rasstack<-stack(stack)
-  }
-
-
-  data$RasterStack_NLCD_11_30<-as.factor(data$RasterStack_NLCD_11_30)
-
-  pred.names<-(names(data[,c(1:7, 9:15)]))
-
-  data<-data[data$RasterStack_PercentSage < 100,]
 
   if(subset == TRUE){
     data<-data[data$act.cat == catname,]

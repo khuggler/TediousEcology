@@ -17,6 +17,8 @@ CollarHistory<-function(capdat){
   dat$Uni<-paste(dat$New.Serial.Number,dat$CaptureDate,dat$Mortality.,sep='_')
 
   dat$NewCap<-ifelse(is.na(dat$Old.Serial.Number),1,0)
+  dat$Uni<-ifelse(dat$Uni == "NA_NA_NA", NA, dat$Uni)
+  dat<-dat[complete.cases(dat$Uni),]
 
   ad<-dat[,c(4,27,28,46:49)]
 
@@ -73,7 +75,21 @@ CollarHistory<-function(capdat){
     sub7$New.Serial.Number<-ifelse(is.na(sub7$New.Serial.Number)&sub7$Mortality.=='0',sub7$Old.Serial.Number,sub7$New.Serial.Number)
 
 
-    sub<-rbind(sub,sub2,sub3,sub4,sub5,sub6,sub7)
+    sub8<-dat[dat$Old.Serial.Number==sub7$New.Serial.Number[1]&dat$CaptureDate>sub7$CaptureDate[1],]
+
+    sub8<-sub8[complete.cases(sub8$CaptureDate),]
+    sub8<-sub8[1,]
+    sub8$New.Serial.Number<-ifelse(is.na(sub8$New.Serial.Number)&sub8$Mortality.=='0',sub8$Old.Serial.Number,sub8$New.Serial.Number)
+
+    sub9<-dat[dat$Old.Serial.Number==sub8$New.Serial.Number[1]&dat$CaptureDate>sub8$CaptureDate[1],]
+
+    sub9<-sub9[complete.cases(sub9$CaptureDate),]
+    sub9<-sub9[1,]
+    sub9$New.Serial.Number<-ifelse(is.na(sub9$New.Serial.Number)&sub9$Mortality.=='0',sub9$Old.Serial.Number,sub9$New.Serial.Number)
+
+
+
+    sub<-rbind(sub,sub2,sub3,sub4,sub5,sub6,sub7,sub8, sub9)
     sub<-sub[complete.cases(sub$CaptureDate),]
 
     if('1' %in% sub$Mortality.){
@@ -123,7 +139,7 @@ CollarHistory<-function(capdat){
       sub$EndDate<-as.character(Sys.Date())
     }
     if(is.na(sub$EndDate[nrow(sub)])){
-      sub$EndDate[nrow(sub)]<-as.character(Sys.Date())
+      sub$EndDate[nrow(sub)]<-as.character(sub$CaptureDate[nrow(sub)])
     }
     sub$StartDate<-as.Date(sub$StartDate,format='%Y-%m-%d')
     sub$EndDate<-as.Date(sub$EndDate,format='%Y-%m-%d')
@@ -137,6 +153,8 @@ CollarHistory<-function(capdat){
                     Ser2=NA,Ser2Start=as.Date(NA),Ser2End=as.Date(NA),
                     Ser3=NA,Ser3Start=as.Date(NA),Ser3End=as.Date(NA),
                     Ser4=NA,Ser4Start=as.Date(NA),Ser4End=as.Date(NA),
+                    Ser5=NA,Ser5Start=as.Date(NA),Ser5End=as.Date(NA),
+                    Ser6 = NA,Ser6Start=as.Date(NA),Ser6End=as.Date(NA),
                     stringsAsFactors = F)
     agg<-agg[order(agg$StartDate),]
     #for(i in 1:nrow(sub)){
@@ -155,6 +173,14 @@ CollarHistory<-function(capdat){
     iin[1,11]<-agg$Serial[4]
     iin[1,12]<-agg$StartDate[4]
     iin[1,13]<-agg$EndDate[4]
+
+    iin[1,14]<-agg$Serial[5]
+    iin[1,15]<-agg$StartDate[5]
+    iin[1,16]<-agg$EndDate[5]
+
+    iin[1,17]<-agg$Serial[6]
+    iin[1,18]<-agg$StartDate[6]
+    iin[1,19]<-agg$EndDate[6]
 
 
     uaid<-rbind(uaid,iin)

@@ -89,4 +89,22 @@ unisers<-unique(sub$Serial)
 
  }
 }
+
+colhist$Ser1Start<-as.Date(colhist$Ser1Start, tryFormats= c('%m/%d/%Y', '%Y-%m-%d'))
+colhist$Ser1End<-as.Date(colhist$Ser1End,  tryFormats= c('%m/%d/%Y', '%Y-%m-%d'))
+
+colhist$Ser2Start<-as.Date(colhist$Ser2Start,  tryFormats= c('%m/%d/%Y', '%Y-%m-%d'))
+colhist$Ser2End<-as.Date(colhist$Ser2End,  tryFormats= c('%m/%d/%Y', '%Y-%m-%d'))
+
+colhist$Ser3Start<-as.Date(colhist$Ser3Start,  tryFormats= c('%m/%d/%Y', '%Y-%m-%d'))
+colhist$Ser3End<-as.Date(colhist$Ser3End,  tryFormats= c('%m/%d/%Y', '%Y-%m-%d'))
+
+colhist$Ser4Start<-as.Date(colhist$Ser4Start,  tryFormats= c('%m/%d/%Y', '%Y-%m-%d'))
+colhist$Ser4End<-as.Date(colhist$Ser4End,  tryFormats= c('%m/%d/%Y', '%Y-%m-%d'))
+
+colhist$Ser5Start<-as.Date(colhist$Ser5Start,  tryFormats= c('%m/%d/%Y', '%Y-%m-%d'))
+colhist$Ser5End<-as.Date(colhist$Ser5End,  tryFormats= c('%m/%d/%Y', '%Y-%m-%d'))
+
+
+return(colhist)
   }

@@ -16,7 +16,7 @@ Returns a data.frame with start and end date of every individual serial number a
 Convert capture data into a record of every serial number and start and end dates of every individual captured
 }
 \examples{
-\donttest{Hist<-CollarHistory(capdat = yourdata, format = \%m/\%d/\%Y)}
+\donttest{Hist<-CollarHistory(capdat = yourdata)}
 }
 \keyword{ID,}
 \keyword{animal}

@@ -1,12 +1,11 @@
 #' @title Conversion of adult capture data into capture history data
-#
 #' @description Convert capture data into a record of every serial number and start and end dates of every individual captured
 #' @param capdat data.frame with all the capture information
 #' @return Returns a data.frame with start and end date of every individual serial number along with an assigned animal ID)
 #' @keywords capture, animal ID, history
 #' @export
 #' @examples
-#' \donttest{Hist<-CollarHistory(capdat = yourdata, format = %m/%d/%Y)}
+#' \donttest{Hist<-CollarHistory(capdat = yourdata)}
 
 colhist<-function(capdat){
 

@@ -43,6 +43,7 @@ unisers<-unique(sub$Serial)
 
 
    colsub<-sub[sub$Serial == unisers[i],]
+   
 
 
    if(i ==1){
@@ -60,6 +61,8 @@ unisers<-unique(sub$Serial)
      colhist$Ser2End[k]<-ifelse(!is.na(colsub$MortalityDate[x]), as.character(colsub$MortalityDate[x]), NA)
 
    }
+   
+
 
    if(i == 3){
      colhist$Ser3[k]<-colsub$Serial[1]
@@ -109,6 +112,7 @@ colhist$Ser4End<-as.Date(colhist$Ser4End,  tryFormats= c('%m/%d/%Y', '%Y-%m-%d')
 colhist$Ser5Start<-as.Date(colhist$Ser5Start,  tryFormats= c('%m/%d/%Y', '%Y-%m-%d'))
 colhist$Ser5End<-as.Date(colhist$Ser5End,  tryFormats= c('%m/%d/%Y', '%Y-%m-%d'))
 
+colhist$Ser3<-ifelse(colhist$Ser3 == 37102, 37101, colhist$Ser3)
 
 return(colhist)
   }

@@ -11,6 +11,7 @@ colhist<-function(capdat){
 
 cap<-read.csv(capdat, stringsAsFactors = F)
 cap$CaptureDate<-as.Date(cap$CaptureDate, tryFormats = c("%m/%d/%Y", "%Y-%m-%d"))
+cap$MortalityDate<-as.Date(cap$MortalityDate, format = '%m/%d/%Y')
 
 uni<-unique(cap$UAID)
 
@@ -28,7 +29,11 @@ for(k in 1:length(uni)){
  sub$Serial<-ifelse(is.na(sub$Old.Serial.Number) & !is.na(sub$New.Serial.Number), sub$New.Serial.Number, ifelse(!is.na(sub$Old.Serial.Number) & !is.na(sub$New.Serial.Number), sub$New.Serial.Number,
                                                                                                                 sub$Old.Serial.Number))
 x<-nrow(sub)
-sub[x,]$MortalityDate<-ifelse(!is.na(sub[x,]$MortalityDate), sub[x,]$MortalityDate, as.character(Sys.Date()))
+
+
+sub[x,]$MortalityDate<-ifelse(!is.na(sub[x,]$MortalityDate), as.character(sub[x,]$MortalityDate), as.character(Sys.Date()))
+sub[x,]$MortalityDate<-as.Date(sub[x,]$MortalityDate, format = "%Y-%m-%d")
+
 unisers<-unique(sub$Serial)
 
 
@@ -107,3 +112,4 @@ colhist$Ser5End<-as.Date(colhist$Ser5End,  tryFormats= c('%m/%d/%Y', '%Y-%m-%d')
 
 return(colhist)
   }
+

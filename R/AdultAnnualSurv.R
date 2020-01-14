@@ -13,6 +13,7 @@
 #' @param cause vector of causes that require censoring (e.g. collar_failure, capturemort, etc.)
 #' @param plot logical. TRUE/FALSE. If TRUE, function will generate bar plot of yearly survival
 #' @param title desired title of survival plot (character)
+#' @param spp species to subset survival data to
 #' @return Returns a data.frame with animal ID, start date of modeling, end date of modeling, status of animal (alive = 0, dead = 1), and number of months alive during time period
 #' @keywords adult, annual, survival, kaplan-meier, analysis
 #' @export
@@ -20,7 +21,7 @@
 #' \donttest{AdultSurv<-AdultAnnualSurv(data = yourdata, uni = uniquevector, mortcol = "MortalityDate", yearstart = 2015, yearend = 2019 , cause = "CaptureMort")}
 #'
 
-AdultAnnualSurv<-function(data, dateformat, uaidcol,capcol, mortcol, yearstart, yearend, cause, plot,title){
+AdultAnnualSurv<-function(data, dateformat, uaidcol,capcol, mortcol, yearstart, yearend, cause, plot,title, spp){
   data[,mortcol]<-as.Date(data[,mortcol], format = dateformat)
   Year<-yearstart:yearend
   hist<-data.frame(Year = Year, StartDate = paste("01/01/", Year, sep = ""), EndDate = paste("12/31/", Year, sep = ""))
@@ -31,7 +32,8 @@ AdultAnnualSurv<-function(data, dateformat, uaidcol,capcol, mortcol, yearstart, 
   z<-data.frame()
 
   uni<-unique(data[,uaidcol])
-
+  
+all.surv<-data.frame()
   for(k in 1:length(uni)){
     sub<-data[data[,uaidcol] == uni[k],]
     date<-ifelse(is.na(unique(sub[nrow(sub),mortcol])) %in% FALSE,
@@ -43,56 +45,55 @@ AdultAnnualSurv<-function(data, dateformat, uaidcol,capcol, mortcol, yearstart, 
       date<-Sys.Date()
     }
     capdate<-as.Date(sub[,capcol], tryFormats = c('%Y-%m-%d', '%m/%d/%Y'), origin = sub[,capcol])
-    x<-nrow(hist)
+    start<-min(capdate)
+    end<-date
+    
 
-    for(l in 1:x){
-      xxx<-hist[l,]
-      m<-ifelse(date >= xxx[,2] & date <= xxx[,3], as.character(difftime(date, xxx[,2], units = "days")/30.4375), 12)
-      m<-as.numeric(m)
-      rem<-ifelse(capdate >= xxx[,2] & capdate <= xxx[,3], 0, 1)
-      c<-length(capdate)
-      Yr<-strftime(xxx[,2], format = "%Y")
-      remove<-ifelse(sum(rem) == c & Yr != yearend ,1, 0)
-      Stat<-ifelse(m == 12, 0,
-                   ifelse(m < 12 & date == Sys.Date(), 0, 1))
-      All<-data.frame(AID = sub$UAID[1], Year = strftime(xxx[,2], format = "%Y"),
-                      StartDate = xxx[,2], EndDate = xxx[,3], Time= m, Remove = remove,
-                      Status = ifelse(Stat == 1 & sub$X %in% cause, 0, Stat))
-
-      d<-rbind(d, All)
-    }
-    z<-rbind(d, z)
-    z<-z[!duplicated(z[,c(1:4)]),]
-}
-
-###### Remove rest of rows after an animal dies or is censored #######
-  u<-unique(z$AID)
-  r<-data.frame()
-  fin<-data.frame()
-  e<-data.frame()
-  y<-data.frame()
-
-    for(m in 1:length(u)){
-      sub<-z[z$AID == u[m],]
-
-    #for(p in 1:nrow(sub)){
-      if(sum(sub$Status) == 0){
-        e<-sub
+      hist$start.seq<-ifelse(start >= hist$StartDate & start <= hist$EndDate, 1, 0)
+      hist$end.seq<-ifelse(end >= hist$StartDate & end <= hist$EndDate, 1, 0)
+      start.row<-which(hist$start.seq == 1)
+      end.row<-which(hist$end.seq == 1)
+      
+      if(identical(end.row, integer(0)) == TRUE){
+        end.row<-nrow(hist)
       }
-    if(sum(sub$Status) > 0){
-      g<-which(sub$Status == 1)
-      y<-sub[1:g,]
-    }
+      
+      new.hist<-hist[start.row:end.row, ]
+      new.hist$start<-ifelse(new.hist$start.seq == 1, as.character(start), NA)
+      new.hist$end<-ifelse(new.hist$end.seq == 1, as.character(end), NA)
+      
+      new.hist$time.alive<-ifelse(!is.na(new.hist$start) & is.na(new.hist$end), abs(difftime(new.hist$start, new.hist$EndDate, units = "days")/30.4375), NA)
+      new.hist$time.alive<-ifelse(is.na(new.hist$start) & is.na(new.hist$end), 12, new.hist$time.alive)
+      new.hist$time.alive<-ifelse(is.na(new.hist$start) & !is.na(new.hist$end), abs(difftime(new.hist$StartDate, new.hist$end, units = "days")/30.4375), new.hist$time.alive)
+      new.hist$time.alive<-ifelse(!is.na(new.hist$start) & !is.na(new.hist$end), abs(difftime(new.hist$start, new.hist$end, units = "days")/30.4375), new.hist$time.alive)
 
-    r<-rbind(e, r)
-    fin<-rbind(r, fin)
+      c<-nrow(sub)
+      new.hist$aid<-sub$UAID[1]
+      new.hist$cause<-ifelse(!is.na(new.hist$end), sub$X[c], NA)
+      new.hist$sex<-sub$Sex[1]
+      new.hist$spp<-sub$Species[1]
+      x<-nrow(new.hist)
+      new.hist$status<-ifelse(is.na(new.hist$end),0, NA)
+      new.hist$status<-ifelse(!is.na(new.hist$end), 1, new.hist$status)
+      new.hist$status<-ifelse(new.hist$status == 1 & new.hist$cause %in% cause, 0, new.hist$status)
+      new.hist$Year<-strftime(new.hist$StartDate, format = "%Y")
+      
+      all.surv<-rbind(new.hist, all.surv)
+      
+  }
 
-    fin<-fin[!duplicated(fin[,c(1:4)]),]
-    fin<-fin[fin$Remove == 0,]
-    #}
-    }
+
+
+
+
+
+
+
+      
+
   if(plot == TRUE){
-    surv<-survival::survfit(survival::Surv(time = fin$Time, event = fin$Status)~ fin$Year)
+    all.surv<-all.surv[all.surv$spp == spp,]
+    surv<-survival::survfit(survival::Surv(time = all.surv$time.alive, event = all.surv$status)~ all.surv$Year)
 
     summ<-summary(surv)
     cols<-lapply(c(2:6, 8:11), function(x) summ[x])
@@ -117,5 +118,11 @@ AdultAnnualSurv<-function(data, dateformat, uaidcol,capcol, mortcol, yearstart, 
     cols<-brewer.pal(n = n, name = "Set1")
     barplot(csurv$Surv, col = cols, ylim = c(0,1), names.arg = csurv$Year, border = NA, main = title)
   }
-      return(list(fin, csurv))
+  
+  if(plot ==FALSE){
+    next
+  }
+  
+  
+      return(list(all.surv, csurv))
     }

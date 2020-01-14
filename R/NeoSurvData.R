@@ -19,11 +19,11 @@ NeoSurvData<-function(NeoDat, units, cuts, cutoffs, Cause){
   #NeoDat<-NeoDat[complete.cases(NeoDat$StartDate),]
   #NeoDat<-NeoDat[complete.cases(NeoDat$EndDate),]
   NeoDat$StartDate<-as.Date(NeoDat$StartDate, tryFormats = c('%m/%d/%Y', '%Y-%m-%d'))
-  neo$EndDate<-ifelse(neo$EndDate == "", NA, neo$EndDate)
-  neo$EndDate<-as.Date(neo$EndDate, format = "%m/%d/%Y")
-  neo$EndDate<-ifelse(is.na(neo$EndDate), as.character(Sys.Date()), as.character(neo$EndDate))
-  neo$EndDate<-as.Date(neo$EndDate, format = "%Y-%m-%d")
-  neo$StartDate<-as.Date(neo$StartDate, format = '%m/%d/%Y')
+  NeoDat$EndDate<-ifelse(NeoDat$EndDate == "", NA, NeoDat$EndDate)
+  NeoDat$EndDate<-as.Date(NeoDat$EndDate, format = "%m/%d/%Y")
+  NeoDat$EndDate<-ifelse(is.na(NeoDat$EndDate), as.character(Sys.Date()), as.character(NeoDat$EndDate))
+  NeoDat$EndDate<-as.Date(NeoDat$EndDate, format = "%Y-%m-%d")
+  NeoDat$StartDate<-as.Date(NeoDat$StartDate, format = '%m/%d/%Y')
   
 
   NeoDat$DiffTime<-as.numeric(difftime(NeoDat$EndDate, NeoDat$StartDate, units = units))

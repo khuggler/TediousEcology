@@ -119,10 +119,6 @@ all.surv<-data.frame()
     barplot(csurv$Surv, col = cols, ylim = c(0,1), names.arg = csurv$Year, border = NA, main = title)
   }
   
-  if(plot ==FALSE){
-    next
-  }
-  
   
       return(list(all.surv, csurv))
     }

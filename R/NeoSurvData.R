@@ -16,11 +16,15 @@
 #' \donttest{NeoSurv<-NeoSurvDat(NeoDat = yourdata, units = "days", cuts = TRUE, cutoffs = 140, Cause = "collar_failure")}
 #'
 NeoSurvData<-function(NeoDat, units, cuts, cutoffs, Cause){
-  NeoDat<-NeoDat[complete.cases(NeoDat$StartDate),]
-  NeoDat<-NeoDat[complete.cases(NeoDat$EndDate),]
+  #NeoDat<-NeoDat[complete.cases(NeoDat$StartDate),]
+  #NeoDat<-NeoDat[complete.cases(NeoDat$EndDate),]
   NeoDat$StartDate<-as.Date(NeoDat$StartDate, tryFormats = c('%m/%d/%Y', '%Y-%m-%d'))
-  NeoDat$EndDate<-ifelse(NeoDat$EndDate == "", NA, NeoDat$EndDate)
-  NeoDat$EndDate<-as.Date(NeoDat$EndDate, tryFormats = c('%m/%d/%Y', '%Y-%m-%d'))
+  neo$EndDate<-ifelse(neo$EndDate == "", NA, neo$EndDate)
+  neo$EndDate<-as.Date(neo$EndDate, format = "%m/%d/%Y")
+  neo$EndDate<-ifelse(is.na(neo$EndDate), as.character(Sys.Date()), as.character(neo$EndDate))
+  neo$EndDate<-as.Date(neo$EndDate, format = "%Y-%m-%d")
+  neo$StartDate<-as.Date(neo$StartDate, format = '%m/%d/%Y')
+  
 
   NeoDat$DiffTime<-as.numeric(difftime(NeoDat$EndDate, NeoDat$StartDate, units = units))
   NeoDat$Year<-strftime(NeoDat$StartDate, format = "%Y")

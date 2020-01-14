@@ -33,8 +33,10 @@ clean.gps<-function(vecdata, vecpath, usernames, passwords, tempdir, ST, STUser,
                            password = passwords,
                            dirdown = tempdir,
                            cType = cType
+                           
 
     )
+    gps<-gps[[1]]
   }
 
   gps$TelemDate<-as.POSIXct(gps$TelemDate, format = "%Y-%m-%d %H:%M:%S", tz = "GMT")

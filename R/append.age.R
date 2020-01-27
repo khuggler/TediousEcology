@@ -39,7 +39,7 @@ append.age<-function(agepath, cappath, idcol, gps, type){
     uni<-unique(sub[,idcol])
 
     all.dat<-data.frame()
-    for(k in 1:length(uni,)){
+    for(k in 1:length(uni)){
       subsub<-sub[sub$UAID == uni[k],]
       subsub$diff<-as.numeric(difftime(subsub$CaptureDate, subsub$BirthDate[1], units = "days")/365)
       subsub$Age<-round(subsub$diff/0.5)*0.5

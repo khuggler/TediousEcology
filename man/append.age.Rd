@@ -2,20 +2,25 @@
 % Please edit documentation in R/append.age.R
 \name{append.age}
 \alias{append.age}
-\title{append ages and calculate new age for every capture event}
+\title{append age to gps data}
 \usage{
-append.age(agepath, cappath)
+append.age(agepath, cappath, idcol, gps, type)
 }
 \arguments{
-\item{agepath}{path to where age table lives}
+\item{cappath}{path to where capture data (with birth dates) lives}
 
-\item{cappath}{path to where capture data lives}
+\item{idcol}{name of column where animal ID exists}
+
+\item{gps}{name of gps dataframe}
+
+\item{type}{type of append to do. Either "gps" or "database"}
 }
 \value{
-Returns original capture data.frame with age column of each animal
+Returns original gps data with an age column
 }
 \description{
-append ages of animals to databaes and calculate age for every capture event
+append ages of animals to gps data
 }
 \keyword{age,}
-\keyword{capture}
+\keyword{capture,}
+\keyword{gps}

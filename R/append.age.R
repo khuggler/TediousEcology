@@ -45,6 +45,7 @@ append.age<-function(agepath, cappath, idcol, gps, type){
       subsub$Age<-round(subsub$diff/0.5)*0.5
 
 
+
       all.dat<-rbind(all.dat, subsub)
     }
   }

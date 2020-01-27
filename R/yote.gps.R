@@ -62,9 +62,12 @@ yote.gps<-function(username, password,dirdown, cType = "ATS/IRID", yotedat){
 
       }
     }
+    
     f<-rbind(sub, f)
     f<-f[complete.cases(f$AID),]
     
-    return(f)
+   
   }
+  
+  return(f)
 }

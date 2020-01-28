@@ -44,8 +44,6 @@ append.age<-function(agepath, cappath, idcol, gps, type){
       subsub$diff<-as.numeric(difftime(subsub$CaptureDate, subsub$BirthDate[1], units = "days")/365)
       subsub$Age<-round(subsub$diff/0.5)*0.5
 
-
-
       all.dat<-rbind(all.dat, subsub)
     }
   }

@@ -23,6 +23,7 @@
 #' \donttest{AdultSeasonal<-AdultSeasonalSurv(data = data, startcol = 'CaptureDate',uni = uni, UAIDcol = "UAID", mortcol = 'MortalityDate', yearstart = 2015, yearend = 2019, seasons = c('winter', 'summer'), winterstart = 11, winterend = 05, cause = c("CollarFailure", 'CaptureMort'))}
 
 AdultSeasonalSurv<-function(data, uni, UAIDcol, startcol, mortcol, yearstart, yearend, seasons = c('winter', 'summer'), winterstart, winterend, cause, dateformat, plot, title){
+  
   data[,mortcol]<-as.Date(data[,mortcol], tryFormats = c('%m/%d/%Y', '%Y-%m-%d'))
   data[,startcol]<-as.Date(data[,startcol], tryFormats = c('%m/%d/%Y', '%Y-%m-%d'))
   Year<-yearstart:yearend
@@ -55,28 +56,52 @@ AdultSeasonalSurv<-function(data, uni, UAIDcol, startcol, mortcol, yearstart, ye
     start<-as.Date(min(sub[,startcol], na.rm=T), format = dateformat, origin = sub[,startcol])
     x<-nrow(c)
 
+    
     for(l in 1:x){
       xxx<-c[l,]
-      #xxx$CapInd<-ifelse(start >= xxx[,4] & start < xxx[,5] | date >= xxx[,4] & date <= xxx[,5], 1, 0)
-      xxx$MortInd<-ifelse(date >= xxx[,4] & date <= xxx[,5],1, 0)
-      SurvTime<-ifelse(xxx$MortInd == 1, as.character(difftime(date, xxx[,4], units = "days")/30.6), 6)
-      SurvTime<-as.numeric(SurvTime)
-      Stat<-ifelse(SurvTime == 6 | date == Sys.Date(), 0, 1)
-      #Alive<-ifelse(date == Sys.Date(), 1, 0)
+      xxx$Mort<-ifelse(date >= xxx[,4] & date <= xxx[,5], 1,0)
+      xxx$Start<-ifelse(start >= xxx[,4] & start <= xxx[,5], 1, 0)
+      startdiff<-ifelse(xxx$Start == 1, as.numeric(difftime( xxx[,5],start, units = "days")/30.6), 6)
+      diff<-ifelse(xxx$Mort == 1, as.numeric(difftime(date, xxx[,4], units = "days")/30.6), 6)
+      status<-ifelse(diff == 6 | date == Sys.Date(), 0 , 1)
+      censor<-ifelse(sub$X[p] %in% cause, 1, 0)
+      
+      
       All<-data.frame(AID = sub[,UAIDcol][1], Year = strftime(xxx[,4], format = "%Y"),
-                      StartDate = xxx[,4], EndDate = xxx[,5], Time= SurvTime,
-                      Status = ifelse(Stat == 0 | sub$X[p] %in% cause, 0, Stat),
+                      StartDate = xxx[,4], EndDate = xxx[,5], Start = xxx$Start, StartTime = startdiff, Time= diff,
+                      Status = ifelse(status == 0 | sub$X[p] %in% cause, 0, 1),
                       SeasonYr = paste(xxx[,2], strftime(xxx[,4], format = "%Y"), sep = "_"))
-
+      
+      
       d<-rbind(d, All)
-      d<-d[d$StartDate >= start,]
-      d<-d[d$StartDate <= date,]
-      #d<-d[d$EndDate <= start,]
-      #d<-d[d$Ind == 0,]
     }
-    z<-rbind(d, z)
-    z<-z[!duplicated(z[,c(1:4)]),]
+    
+    d$AID<-as.character(d$AID)
+    subsub<-data.frame()
+    unix<-unique(d$AID)
+    
+    for(i in 1:length(unix)){
+      
+      sub2<-d[d$AID == unix[i],]
+      start.row<-which(sub2$Start == 1)
+      death.row<-which(sub2$Status == 1)
+      death.row<-ifelse(length(death.row)==0, nrow(d), death.row)
+      
+      rows<-seq(start.row, death.row, 1)
+      sub2<-sub2[rows, ]
+      
+      subsub<-rbind(sub2, subsub)
+    }
+      
+
+    
+    z<-rbind(subsub, z)
+   z<-z[complete.cases(z),]
+   z<-z[!duplicated(z[,1:4]),]
+    
   }
+    
+  
 cumsurv<-data.frame()
   if(plot == TRUE){
     surs<-survival::survfit(survival::Surv(time = z$Time, event = z$Status)~z$SeasonYr)

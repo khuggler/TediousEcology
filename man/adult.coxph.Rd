@@ -4,7 +4,7 @@
 \alias{adult.coxph}
 \title{Create data with age and IFBFat to model survival}
 \usage{
-adult.coxph(data, uni, uaidcol, startcol, mortcol, yearstart, yearend,
+adult.coxph(data, uni, UAIDcol, startcol, mortcol, yearstart, yearend,
   seasons, winterstart, winterend, cause, plot, title, grossweightcol,
   maxthickcol, bcscol, seasoncol)
 }
@@ -13,7 +13,7 @@ adult.coxph(data, uni, uaidcol, startcol, mortcol, yearstart, yearend,
 
 \item{uni}{vector of unique ids in which survival should be calculated}
 
-\item{uaidcol}{column where aids live}
+\item{UAIDcol}{column where aids live}
 
 \item{startcol}{name of column where capture date lives}
 

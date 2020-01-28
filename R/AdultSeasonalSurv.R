@@ -98,6 +98,8 @@ AdultSeasonalSurv<-function(data, uni, UAIDcol, startcol, mortcol, yearstart, ye
     z<-rbind(subsub, z)
    z<-z[complete.cases(z),]
    z<-z[!duplicated(z[,1:4]),]
+   
+   z$Time<-ifelse(z$Start == 1 & z$StartTime != 6, z$StartTime, z$Time)
     
   }
     

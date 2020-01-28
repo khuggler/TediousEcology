@@ -61,15 +61,15 @@ AdultSeasonalSurv<-function(data, uni, UAIDcol, startcol, mortcol, yearstart, ye
       xxx<-c[l,]
       xxx$Mort<-ifelse(date >= xxx[,4] & date <= xxx[,5], 1,0)
       xxx$Start<-ifelse(start >= xxx[,4] & start <= xxx[,5], 1, 0)
-      startdiff<-ifelse(xxx$Start == 1, as.numeric(difftime( xxx[,5],start, units = "days")/30.6), 6)
-      diff<-ifelse(xxx$Mort == 1, as.numeric(difftime(date, xxx[,4], units = "days")/30.6), 6)
-      status<-ifelse(diff == 6 | date == Sys.Date(), 0 , 1)
-      censor<-ifelse(sub$X[p] %in% cause, 1, 0)
+      xxx$startdiff<-ifelse(xxx$Start == 1, as.numeric(difftime( xxx[,5],start, units = "days")/30.6), 6)
+      xxx$diff<-ifelse(xxx$Mort == 1, as.numeric(difftime(date, xxx[,4], units = "days")/30.6), 6)
+      xxx$status<-ifelse(xxx$diff == 6 | date == Sys.Date(), 0 , 1)
+      xxx$censor<-ifelse(sub$X[p] %in% cause, 1, 0)
       
       
       All<-data.frame(AID = sub[,UAIDcol][1], Year = strftime(xxx[,4], format = "%Y"),
-                      StartDate = xxx[,4], EndDate = xxx[,5], Start = xxx$Start, StartTime = startdiff, Time= diff,
-                      Status = ifelse(status == 0 | sub$X[p] %in% cause, 0, 1),
+                      StartDate = xxx[,4], EndDate = xxx[,5], Start = xxx$Start, StartTime = xxx$startdiff, Time= xxx$diff,
+                      Status = ifelse(xxx$status == 0 | sub$X[p] %in% cause, 0, 1),
                       SeasonYr = paste(xxx[,2], strftime(xxx[,4], format = "%Y"), sep = "_"))
       
       
@@ -93,7 +93,7 @@ AdultSeasonalSurv<-function(data, uni, UAIDcol, startcol, mortcol, yearstart, ye
       subsub<-rbind(sub2, subsub)
     }
       
-
+    print(k)
     
     z<-rbind(subsub, z)
    z<-z[complete.cases(z),]

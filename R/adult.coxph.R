@@ -2,7 +2,7 @@
 #' @description Create data with age and IFBFat to model survival
 #' @param data database with age column in it
 #' @param uni vector of unique ids in which survival should be calculated
-#' @param uaidcol column where aids live
+#' @param UAIDcol column where aids live
 #' @param startcol name of column where capture date lives
 #' @param mortcol name of column where mortality date lives
 #' @param yearstart path to study area polygon (where you want to define availability)
@@ -22,7 +22,7 @@
 #' @export
 
 
-adult.coxph<-function(data, uni, uaidcol,startcol,mortcol, yearstart, yearend, seasons, winterstart, winterend, cause, plot, title, grossweightcol, maxthickcol, bcscol, seasoncol){
+adult.coxph<-function(data, uni, UAIDcol,startcol,mortcol, yearstart, yearend, seasons, winterstart, winterend, cause, plot, title, grossweightcol, maxthickcol, bcscol, seasoncol){
 
   survdat<-TediousEcology::AdultSeasonalSurv(data = data, uni = uni, UAIDcol = UAIDcol, startcol = startcol, mortcol = mortcol, yearstart = yearstart,
                                              yearend = yearend, seasons = seasons, winterstart = winterstart, winterend = winterend,

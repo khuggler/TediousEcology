@@ -4,8 +4,7 @@
 \alias{yote.moverates}
 \title{Append AID to GPS data and subset to desired time period}
 \usage{
-yote.moverates(username, password, dirdown, cType = "ATS/IRID", yotedat,
-  startdates, enddates)
+yote.moverates(username, password, dirdown, cType = "ATS/IRID", yotedat)
 }
 \arguments{
 \item{username}{username of account where gps data stored}
@@ -17,10 +16,6 @@ yote.moverates(username, password, dirdown, cType = "ATS/IRID", yotedat,
 \item{cType}{"ATS/IRID". Won't change.}
 
 \item{yotedat}{path to coyote capture database}
-
-\item{startdates}{vector of start dates to subset data}
-
-\item{enddates}{vector of end dates to subset data}
 }
 \value{
 Returns a data.frame with all gps data, AnimalID, Sex,

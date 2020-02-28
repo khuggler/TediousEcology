@@ -121,7 +121,7 @@ for(i in 1:length(uni)){
     for(k in 2:nrow(sub)){
       
       sub$movedist[k]<-sqrt(((sub$Easting[k]-sub$Easting[k-1]))^2)+ sqrt((sub$Northing[k]-sub$Northing[k-1])^2)
-      sub$timediff[k]<-(as.numeric(difftime(sub$TelemDate[k],sub$TelemDate[k-1], units = "hours"))
+      sub$timediff[k]<-as.numeric(difftime(sub$TelemDate[k],sub$TelemDate[k-1], units = "hours"))
       sub$moverate[k]<-ifelse(sub$movedist[k]==0, 0, (sub$movedist[k])/(as.numeric(sub$TelemDate[k]-sub$TelemDate[k-1])))
       
     }

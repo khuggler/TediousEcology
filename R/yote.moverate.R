@@ -5,8 +5,6 @@
 #' @param dirdown temporary directory for data to be downloaded
 #' @param cType "ATS/IRID". Won't change.
 #' @param yotedat path to coyote capture database
-#' @param startdates vector of start dates to subset data
-#' @param enddates vector of end dates to subset data
 #' @return Returns a data.frame with all gps data, AnimalID, Sex,
 #' @keywords coyote, animal id, movement rate
 #' @export
@@ -14,7 +12,7 @@
 #' \donttest{yote.gps<-yote.gps(username = yourusername, password = yourpassword, dirdown = tempdir, cType = "ATS/IRID", yotedat = path, startdates = '2017-05-01', enddates = '2017-09-01')}
 
 
-yote.moverates<-function(username, password,dirdown, cType = "ATS/IRID", yotedat, startdates, enddates){
+yote.moverates<-function(username, password,dirdown, cType = "ATS/IRID", yotedat){
   
 gps<-Part::ColDownload(username = username, password = password, dirdown = dirdown, cType = cType)
 gps<-gps[[1]]

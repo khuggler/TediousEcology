@@ -56,7 +56,7 @@ unisers<-unique(sub$Serial)
    if(i == 2){
      colhist$Ser2[k]<-colsub$Serial[1]
      colhist$Ser2Start[k]<-as.character(colsub$CaptureDate[1])
-     colhist$Ser1End[k]<-as.character(colsub$CaptureDate[1]-1)
+     colhist$Ser1End[k]<-as.character(colsub$CaptureDate[1])
      x<-nrow(colsub)
      colhist$Ser2End[k]<-ifelse(!is.na(colsub$MortalityDate[x]), as.character(colsub$MortalityDate[x]), NA)
 
@@ -67,7 +67,7 @@ unisers<-unique(sub$Serial)
    if(i == 3){
      colhist$Ser3[k]<-colsub$Serial[1]
      colhist$Ser3Start[k]<-as.character(colsub$CaptureDate[1])
-     colhist$Ser2End[k]<-as.character(colsub$CaptureDate[1]-1)
+     colhist$Ser2End[k]<-as.character(colsub$CaptureDate[1])
      x<-nrow(colsub)
      colhist$Ser3End[k]<-ifelse(!is.na(colsub$MortalityDate[x]), as.character(colsub$MortalityDate[x]), NA)
 
@@ -76,7 +76,7 @@ unisers<-unique(sub$Serial)
    if(i == 4){
      colhist$Ser4[k]<-colsub$Serial[1]
      colhist$Ser4Start[k]<-as.character(colsub$CaptureDate[1])
-     colhist$Ser3End[k]<-as.character(colsub$CaptureDate[1]-1)
+     colhist$Ser3End[k]<-as.character(colsub$CaptureDate[1])
      x<-nrow(colsub)
      colhist$Ser4End[k]<-ifelse(!is.na(colsub$MortalityDate[x]), as.character(colsub$MortalityDate[x]), NA)
 
@@ -85,7 +85,7 @@ unisers<-unique(sub$Serial)
    if(i == 5){
      colhist$Ser5[k]<-colsub$Serial[1]
      colhist$Ser5Start[k]<-as.character(colsub$CaptureDate[1])
-     colhist$Ser4End[k]<-as.character(colsub$CaptureDate[1]-1)
+     colhist$Ser4End[k]<-as.character(colsub$CaptureDate[1])
      x<-nrow(colsub)
      colhist$Ser5End[k]<-ifelse(!is.na(colsub$MortalityDate[x]), as.character(colsub$MortalityDate[x]), NA)
 

@@ -1,34 +1,34 @@
 #' @title Read netCDF files, crop, and stack into climate raster
 #' @description Read in netCDF files and manipulate to fit study area
 #' @param root.dir path of root directory where spatial data is located 
-#' @param year year to download (must do one at a time)
 #' @param study path to study area shapefile
-#' @return Returns a raster brick with all climate data for specific year
+#' @return Returns a list of raster bricks with all climate data
 #' @keywords climate, pdsi, temperature, swe
 #' @export
 #' @examples
 #' 
 
-climate.dat<-function(root.dir, year, study){
+climate.dat<-function(root.dir,study){
   
   new.stack<-list()
-  paths<-paste0(root.dir, year, "/")
-  files<-list.files(paths, pattern = ".nc")
-  study<-readOGR(study)
+  files<-list.files(root.dir, pattern = ".nc")
+  paths<-paste0(root.dir, files)
+  study<-rgdal::readOGR(study)
   
-  for(i in 1:length(files)){
-    temp<-raster::stack(paste0(paths, files[i]))
-    temp<-temp[[5:9]]
+  years<-c('2016', '2017', '2018')
+  for(i in 1:length(paths)){
+    temp<-raster::stack(paths[i])
+    temp<-temp[[4:9]]
    
-    months<-c('May', 'June', 'July', 'August', 'September')
-    names(temp)<-paste0(months, year)
+    months<-c('April','May', 'June', 'July', 'August', 'September')
+    names(temp)<-paste0(months, years[i])
     
     study<-spTransform(study, proj4string(temp))
     
     temp<-raster::crop(temp, study)
     
     new.stack[[i]]<-temp
-    names(new.stack)[[i]]<-files[i]
+    
   }
     return(new.stack)
 }

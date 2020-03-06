@@ -20,7 +20,7 @@
 clean.gps<-function(vecdata, vecpath, usernames, passwords, tempdir, ST, STUser, STPass,cType, capdat, dateformat){
 
   if(vecdata == TRUE){
-    gps<-FullCurl::CombDat(vecpath= vecpath,
+    gps<-Part::CombDat(vecpath= vecpath,
                        ATSUsers = usernames,
                        ATSPass = passwords,
                        tempdir = tempdir,
@@ -33,7 +33,7 @@ clean.gps<-function(vecdata, vecpath, usernames, passwords, tempdir, ST, STUser,
                            password = passwords,
                            dirdown = tempdir,
                            cType = cType
-                           
+
 
     )
     gps<-gps[[1]]

@@ -54,7 +54,7 @@ clean.gps<-function(vecdata, vecpath, usernames, passwords, tempdir, ST, STUser,
   x$Ser5Start<-as.Date(x$Ser5Start, "%Y-%m-%d")
   x$Ser5End<-as.Date(x$Ser5End, "%Y-%m-%d")
 
-x<-x[complete.cases(x$AID),]
+  x<-x[complete.cases(x$AID),]
   cap<-read.csv(capdat, stringsAsFactors = F)
 
   for(i in 1:nrow(x)){
@@ -116,5 +116,3 @@ x<-x[complete.cases(x$AID),]
   return(outsp2)
 
 }
-
-

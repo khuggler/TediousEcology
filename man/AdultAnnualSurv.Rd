@@ -5,7 +5,7 @@
 \title{Conversion of adult capture data into the correct format for modeling annual survival}
 \usage{
 AdultAnnualSurv(data, dateformat, uaidcol, capcol, mortcol, yearstart,
-  yearend, cause, plot, title, spp)
+  yearend, cause, plot, title, spp, sex)
 }
 \arguments{
 \item{data}{data.frame that contains a column of unique animal identifier, start date, mortality date, and cause of mortality}
@@ -28,9 +28,9 @@ AdultAnnualSurv(data, dateformat, uaidcol, capcol, mortcol, yearstart,
 
 \item{spp}{species to subset survival data to}
 
-\item{format}{format of mortcol}
-
 \item{sex}{male "M" or females "F"}
+
+\item{format}{format of mortcol}
 }
 \value{
 Returns a data.frame with animal ID, start date of modeling, end date of modeling, status of animal (alive = 0, dead = 1), and number of months alive during time period

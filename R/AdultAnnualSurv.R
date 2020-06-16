@@ -22,7 +22,7 @@
 #' \donttest{AdultSurv<-AdultAnnualSurv(data = yourdata, uni = uniquevector, mortcol = "MortalityDate", yearstart = 2015, yearend = 2019 , cause = "CaptureMort")}
 #'
 
-AdultAnnualSurv<-function(data, dateformat, uaidcol,capcol, mortcol, yearstart, yearend, cause, plot,title, spp){
+AdultAnnualSurv<-function(data, dateformat, uaidcol,capcol, mortcol, yearstart, yearend, cause, plot,title, spp, sex){
   data[,mortcol]<-as.Date(data[,mortcol], format = dateformat)
   Year<-yearstart:yearend
   hist<-data.frame(Year = Year, StartDate = paste("01/01/", Year, sep = ""), EndDate = paste("12/31/", Year, sep = ""))

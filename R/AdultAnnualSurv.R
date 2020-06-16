@@ -14,6 +14,7 @@
 #' @param plot logical. TRUE/FALSE. If TRUE, function will generate bar plot of yearly survival
 #' @param title desired title of survival plot (character)
 #' @param spp species to subset survival data to
+#' @param sex male "M" or females "F"
 #' @return Returns a data.frame with animal ID, start date of modeling, end date of modeling, status of animal (alive = 0, dead = 1), and number of months alive during time period
 #' @keywords adult, annual, survival, kaplan-meier, analysis
 #' @export
@@ -92,14 +93,23 @@ all.surv<-data.frame()
       
 
   if(plot == TRUE){
-    all.surv<-all.surv[all.surv$spp == spp,]
+    all.surv<-all.surv[all.surv$spp == spp & all.surv$sex == sex,]
     surv<-survival::survfit(survival::Surv(time = all.surv$time.alive, event = all.surv$status)~ all.surv$Year)
 
     summ<-summary(surv)
     cols<-lapply(c(2:6, 8:11), function(x) summ[x])
     tbl<-do.call(data.frame, cols)
-
+    
+    
     unistrat<-as.character(unique(tbl$strata))
+    
+    if(length(unistrat) < length(seq(yearstart:yearend)) & spp == "ELK"){
+    ex.dat<-data.frame(time = NA, n.risk = NA, n.event = NA, n.censor = NA, surv = 1.0, strata = "all.surv$Year=2015", std.err = NA, lower = NA, upper = NA) 
+    tbl<-rbind(ex.dat, tbl)
+    }
+    
+    unistrat<-as.character(unique(tbl$strata))
+ 
 
     cumsurv<-data.frame()
 

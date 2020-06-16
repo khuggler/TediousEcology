@@ -29,6 +29,8 @@ AdultAnnualSurv(data, dateformat, uaidcol, capcol, mortcol, yearstart,
 \item{spp}{species to subset survival data to}
 
 \item{format}{format of mortcol}
+
+\item{sex}{male "M" or females "F"}
 }
 \value{
 Returns a data.frame with animal ID, start date of modeling, end date of modeling, status of animal (alive = 0, dead = 1), and number of months alive during time period

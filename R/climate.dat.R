@@ -8,6 +8,8 @@
 #' @examples
 #' 
 
+
+#' this code will read all of the files from the root directory (where netcdfs are stored), create the path names, read them in (raster function), pull out months needed, and then crop to study area and stack. 
 climate.dat<-function(root.dir,study){
   
   new.stack<-list()

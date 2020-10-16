@@ -4,33 +4,31 @@
 \alias{AdultAnnualSurv}
 \title{Conversion of adult capture data into the correct format for modeling annual survival}
 \usage{
-AdultAnnualSurv(data, dateformat, uaidcol, capcol, mortcol, yearstart,
-  yearend, cause, plot, title, spp, sex)
+AdultAnnualSurv(dbpath, mortcol, dateformat, yearstart, yearend, idcol,
+  capcol, fatecol, cause, plot, title, spp, sex)
 }
 \arguments{
-\item{data}{data.frame that contains a column of unique animal identifier, start date, mortality date, and cause of mortality}
+\item{dbpath}{path to data.frame (csv) that contains a column of unique animal identifier, start date, mortality date, and cause of mortality (if applicable). If mortality has not occured, mortality date will be Sys.Date(), and event indicator will be 0}
 
-\item{uaidcol}{name of column where unique animal identifiers are located}
+\item{mortcol}{name of column where mortality date exists}
+
+\item{dateformat}{format of mortality and capture dates}
+
+\item{yearstart}{year (YYYY) to begin modelling survival.}
+
+\item{yearend}{year (YYYY) to end modelling survival}
+
+\item{idcol}{name of column where unique animal identifiers are located}
 
 \item{capcol}{name of column where capture date is stored}
 
-\item{mortcol}{name of column that contains the date of mortality}
-
-\item{yearstart}{year desired to begin modeling survival (e.g. beginning year of study)}
-
-\item{yearend}{year desired to end modeling survival}
-
-\item{cause}{vector of causes that require censoring (e.g. collar_failure, capturemort, etc.)}
+\item{fatecol}{name of column where fate/cause of mortality occurs}
 
 \item{plot}{logical. TRUE/FALSE. If TRUE, function will generate bar plot of yearly survival}
 
 \item{title}{desired title of survival plot (character)}
 
-\item{spp}{species to subset survival data to}
-
-\item{sex}{male "M" or females "F"}
-
-\item{format}{format of mortcol}
+\item{censors}{vector of causes that require censoring (e.g. collarfailure, capturemort, etc.)}
 }
 \value{
 Returns a data.frame with animal ID, start date of modeling, end date of modeling, status of animal (alive = 0, dead = 1), and number of months alive during time period
@@ -41,8 +39,10 @@ that contains start dates and mortality dates of individual animals and transfor
 to model annual survival.
 }
 \examples{
-\donttest{AdultSurv<-AdultAnnualSurv(data = yourdata, uni = uniquevector, mortcol = "MortalityDate", yearstart = 2015, yearend = 2019 , cause = "CaptureMort")}
+\donttest{AdultSurv<-AdultAnnualSurv(dbpath = 'C:/Desktop/yourdb', mortcol = 'MortDate', dateformat = "\%m/\%d/\%Y", yearstart = 2019, yearend = 2020 , idcol = 'AID', capcol = 'CaptureDate',fatecol = 'Cause', censors = c("CollarFailure", "CaptureMort"), plot = TRUE, title = 'Survival of Bighorn Sheep' }
 
+create dataframe with dates 
+this line will give the maximum date of survival (mortality date)
 }
 \keyword{adult,}
 \keyword{analysis}

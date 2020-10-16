@@ -3,18 +3,21 @@
 #' @param atsfold path to folder where ats data is located
 #' @param vecpath path where vec data is located
 #' @param capdat path to capture database
+#' @param spp either "cervid" or "coyote"
 #' @return Returns a data.frame with all gps data, AnimalID, Sex, and Species
 #' @keywords capture, animal ID, gps, append
 #' @export
 
 
 
-clean.gps<-function(atsfold, vecpath, capdat){
+clean.gps<-function(atsfold, vecpath, capdat, spp){
 
 #' =============================
 #' read in ATS data 
 #' =============================
 #' 
+
+  if(spp == "cervid"){
 files<-list.files(atsfold, full.names = T)
 
 atsdat<-data.frame()
@@ -128,5 +131,70 @@ outsp2<-outsp[!duplicated(outsp[,1:4]),]
 outsp2<-outsp2[complete.cases(outsp2$CollarSerialNumber),]
 
 return(outsp2)
+  }
+  
+  if(spp == "coyote"){
+    
+
+      atsdat<-read.table("D:/Box Sync/DEER/Data/GPSData/YoteData/yotedata.txt", sep = ",", header = T)
+      
+     atsdat$Date<-as.Date(atsdat$Date, format = "%m/%d/%Y")
+    atsdat$Hour<-sprintf("%02d", atsdat$Hour)
+    atsdat$Minute<-sprintf("%02d", atsdat$Minute)
+    atsdat$time<-paste0(atsdat$Hour, ":", atsdat$Minute, ":", "00")
+    atsdat$TelemDate<-paste(atsdat$Date, atsdat$time, sep = " ")
+    atsdat$TelemDate<-as.POSIXct(atsdat$TelemDate, format = "%Y-%m-%d %H:%M:%S", tz = "GMT")
+    
+    attributes(atsdat$TelemDate)$tzone<-'MST'
+    gps<-atsdat
+    
+    
+    
+    yote<-read.csv(capdat, stringsAsFactors = F)
+    uni<-unique(yote$Serial)
+    
+    #only pull gps data for animals that were ever captured#
+    data<-subset(gps, CollarSerialNumber %in% uni)
+    
+    # fix dates #
+    yote$Date<-as.Date(yote$Date, format="%m/%d/%Y")
+    yote$MortDate<-as.Date(yote$MortDate, format = "%m/%d/%Y")
+    yote$MortDate<-ifelse(is.na(yote$MortDate), as.character(Sys.Date()), as.character(yote$MortDate))
+    yote$MortDate<-as.Date(yote$MortDate, format = '%Y-%m-%d')
+    
+    f<-data.frame()
+    for(i in 1:length(uni)){
+      
+      if(uni[i] == "39290"){next}
+      
+      sub<-gps[gps$CollarSerialNumber == uni[i],]
+      subsub<-yote[yote$Serial == uni[i],]
+      
+      if(nrow(subsub) == 1){
+        sub<-sub[sub$Date >= subsub$Date & sub$Date <= subsub$MortDate,]
+        sub$AID<-subsub$AID
+        sub$Sex<-subsub$Sex
+      }
+      
+      if(nrow(subsub)> 1){
+        b<-nrow(subsub)
+        for(k in 1:length(b)){
+          sub$AID<-ifelse(sub$Date >= subsub$Date[k]+1 & sub$Date <= subsub$MortDate[k], subsub$AID[k], NA)
+          sub$Sex<-ifelse(sub$Date >= subsub$Date[k]+1 & sub$Date <= subsub$MortDate[k], subsub$Sex[k], NA)
+          sub$AID<-ifelse(sub$Date >= subsub$Date[k+1]+1 & sub$Date <= subsub$MortDate[k+1], subsub$AID[k+1], sub$AID)
+          sub$Sex<-ifelse(sub$Date >= subsub$Date[k+1]+1 & sub$Date <= subsub$MortDate[k+1], subsub$Sex[k+1], sub$Sex)
+          
+        }
+      }
+      
+      f<-rbind(sub, f)
+      f<-f[complete.cases(f$AID),]
+      
+      
+    }
+    
+    return(f)
+    
+  }
 
 }

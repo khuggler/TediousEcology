@@ -4,40 +4,22 @@
 \alias{clean.gps}
 \title{Wrapper function with CombDat and CollarHistory that Merge Animal IDs and Sex, and Species to GPSData}
 \usage{
-clean.gps(vecdata, vecpath, usernames, passwords, tempdir, ST, STUser,
-  STPass, cType, capdat, dateformat)
+clean.gps(atsfold, vecpath, capdat, spp)
 }
 \arguments{
-\item{vecdata}{Logical. TRUE/FALSE. Whether vecdata is needed to be downloaded}
+\item{atsfold}{path to folder where ats data is located}
 
 \item{vecpath}{path where vec data is located}
 
-\item{usernames}{character vector of usernames to download}
+\item{capdat}{path to capture database}
 
-\item{passwords}{character vector of passwords in same order as usernames}
-
-\item{tempdir}{temporary directory for data to download (can be desktop)}
-
-\item{ST}{Logical. TRUE/FALSE. Whether you need SirTrack data}
-
-\item{STUser}{SirTrack Username}
-
-\item{STPass}{SirTrack Password}
-
-\item{cType}{"ATS/IRID" or "ATS/GSTAR"}
-
-\item{capdat}{data.frame with all the capture information}
-
-\item{dateformat}{format of TelemDate in gps data}
+\item{spp}{either "cervid" or "coyote"}
 }
 \value{
 Returns a data.frame with all gps data, AnimalID, Sex, and Species
 }
 \description{
 Merge raw GPS Data with Animal IDs, Sex, and Species
-}
-\examples{
-\donttest{CleanData<-CleanGPSData(gps = yourgpsdata, capdat = yourcapturedata, dateformat = \%Y-\%m-\%d)}
 }
 \keyword{ID,}
 \keyword{animal}

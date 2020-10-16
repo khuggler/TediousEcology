@@ -136,8 +136,8 @@ return(outsp2)
 
   if(spp == "coyote"){
 
-
-      atsdat<-read.table("D:/Box Sync/DEER/Data/GPSData/YoteData/yotedata.txt", sep = ",", header = T)
+      files<-list.files(atsfold, full.names = T)
+      atsdat<-read.table(files, sep = ",", header = T)
 
      atsdat$Date<-as.Date(atsdat$Date, format = "%m/%d/%Y")
     atsdat$Hour<-sprintf("%02d", atsdat$Hour)

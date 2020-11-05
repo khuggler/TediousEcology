@@ -78,6 +78,7 @@ cap<-read.csv(capdat, stringsAsFactors = F)
 for(i in 1:nrow(x)){
   xx<-x[i,]
   print(i)
+  
   for(l in 1:5){
     if(l == 1){
       xxx<-xx[,1:4]

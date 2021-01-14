@@ -1,7 +1,7 @@
 #' @title Wrapper function with CombDat and CollarHistory that Merge Animal IDs and Sex, and Species to GPSData
 #' @description Merge raw GPS Data with Animal IDs, Sex, and Species
 #' @param atsfold path to folder where ats data is located
-#' @param vecpath path where vec data is located
+#' @param vecpath path to where vectronics keys are located
 #' @param capdat path to capture database
 #' @param spp either "cervid" or "coyote"
 #' @param buffer.capture Logical. True if you would like to remove locations surrounding captures (user defined buffer in days) False if you would like to include captures in gps data 
@@ -11,7 +11,7 @@
 #' @export
 #' @examples
 
-cleangps<-function(atsfold, vecpath, capdat, spp, buffer.capture, buffer){
+cleangps<-function(atsfold, veckeys, capdat, spp, buffer.capture, buffer){
 
 #' =============================
 #' read in ATS data
@@ -44,17 +44,32 @@ attributes(atsdat$TelemDate)$tzone<-'MST'
 #' =========================================
 #'
 
-vec<-Part::getVec(vecpath)
+if(!'collar' %in% installed.packages()){
+  devtools::install_github("Huh/collar", force = T)
+}
+
+if('collar' %in% installed.packages()){
+  require(collar)
+}
+
+
+key_path <- collar::get_paths(veckeys)
+vec<-collar::fetch_vectronics(key_path, type = "gps")
 vec<-data.frame(vec)
+
+vec$acquisitiontime<-as.POSIXct(vec$acquisitiontime, format = paste0("%Y-%m-%d", "T", "%H:%M:%S"), tz = "UTC", origin = vec$acquisitiontime)
+vec$acquisitiontime<-format(vec$acquisitiontime, tz = "MST", usetz = FALSE)
+
 
 #' ======================================
 #' merge vectronics and ats data
 #' ======================================
-vec<-vec[, c(1:7)]
-names(vec)[6:7]<-c('Latitude', 'Longitude')
+vec<-vec[, c(2,3,12,13,44,9,10)]
 ats<-atsdat[, c(1,16, 10, 13, 7, 8, 9)]
+names(vec)<-names(ats)
 
 gps<-rbind(vec, ats)
+gps$TelemDate<-as.POSIXct(gps$TelemDate, format = "%Y-%m-%d %H:%M:%S")
 gps$Date<-strftime(gps$TelemDate, format = "%Y-%m-%d")
 
 #' =============================

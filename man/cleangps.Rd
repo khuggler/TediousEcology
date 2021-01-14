@@ -4,7 +4,7 @@
 \alias{cleangps}
 \title{Wrapper function with CombDat and CollarHistory that Merge Animal IDs and Sex, and Species to GPSData}
 \usage{
-cleangps(atsfold, vecpath, capdat, spp)
+cleangps(atsfold, vecpath, capdat, spp, buffer.capture, buffer)
 }
 \arguments{
 \item{atsfold}{path to folder where ats data is located}
@@ -14,6 +14,10 @@ cleangps(atsfold, vecpath, capdat, spp)
 \item{capdat}{path to capture database}
 
 \item{spp}{either "cervid" or "coyote"}
+
+\item{buffer.capture}{Logical. True if you would like to remove locations surrounding captures (user defined buffer in days) False if you would like to include captures in gps data}
+
+\item{buffer}{numeric number of days to buffer around captures}
 }
 \value{
 Returns a data.frame with all gps data, AnimalID, Sex, and Species

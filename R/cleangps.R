@@ -4,12 +4,14 @@
 #' @param vecpath path where vec data is located
 #' @param capdat path to capture database
 #' @param spp either "cervid" or "coyote"
+#' @param buffer.capture Logical. True if you would like to remove locations surrounding captures (user defined buffer in days) False if you would like to include captures in gps data 
+#' @param buffer numeric number of days to buffer around captures
 #' @return Returns a data.frame with all gps data, AnimalID, Sex, and Species
 #' @keywords capture, animal ID, gps, append
 #' @export
 #' @examples
 
-cleangps<-function(atsfold, vecpath, capdat, spp){
+cleangps<-function(atsfold, vecpath, capdat, spp, buffer.capture, buffer){
 
 #' =============================
 #' read in ATS data
@@ -74,6 +76,7 @@ x$Ser5End<-as.Date(x$Ser5End, "%Y-%m-%d")
 
 x<-x[complete.cases(x$AID),]
 cap<-read.csv(capdat, stringsAsFactors = F)
+outsp<-data.frame()
 
 for(i in 1:nrow(x)){
   xx<-x[i,]
@@ -97,9 +100,24 @@ for(i in 1:nrow(x)){
     }
 
     if(is.na(xxx[1,2])){next}
+    
     ss<-gps[gps$CollarSerialNumber==xxx[1,2],]
-    ss<-ss[(ss$Date> xxx[,3] + 7)&ss$Date< (xxx[,4] - 7),]
+    #ss<-ss[complete.cases(ss$CollarSerialNumber),]
+    
+    #if(nrow(ss) == 0){next}
+    
+    #if(nrow(ss) > 0){
+    
+      if(buffer.capture == TRUE){
+      ss<-ss[(ss$Date> xxx[,3] + buffer)&ss$Date< (xxx[,4] - buffer),]
+      }
+      
+      if(buffer.capture == FALSE){
+        ss<-ss[(ss$Date>= xxx[,3])&ss$Date <= (xxx[,4]),]
+      }
+      
     ss<-ss[complete.cases(ss$Latitude),]
+    
 
     c<-cap[cap$UAID == xxx[1,1],]
 
@@ -118,8 +136,13 @@ for(i in 1:nrow(x)){
     if(l>1){
       ald<-rbind(ald,ss)
     }
-
   }
+
+  
+  
+  
+  
+  
   if(i == 1){
     outsp<-ald
   }
@@ -127,12 +150,14 @@ for(i in 1:nrow(x)){
     outsp<-rbind(outsp,ald)
   }
 }
+  
+
 
 outsp<-data.frame(outsp)
-outsp2<-outsp[!duplicated(outsp[,1:4]),]
-outsp2<-outsp2[complete.cases(outsp2$CollarSerialNumber),]
+#outsp2<-outsp[!duplicated(outsp[,1:4]),]
+outsp<-outsp[complete.cases(outsp$CollarSerialNumber),]
 
-return(outsp2)
+return(outsp)
   }
 
   if(spp == "coyote"){

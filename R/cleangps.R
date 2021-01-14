@@ -71,6 +71,7 @@ names(vec)<-names(ats)
 gps<-rbind(vec, ats)
 gps$TelemDate<-as.POSIXct(gps$TelemDate, format = "%Y-%m-%d %H:%M:%S")
 gps$Date<-strftime(gps$TelemDate, format = "%Y-%m-%d")
+gps$Date<-as.Date(gps$Date, format = "%Y-%m-%d")
 
 #' =============================
 #' create collar history table

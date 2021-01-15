@@ -66,7 +66,9 @@ vec$acquisitiontime<-format(vec$acquisitiontime, tz = "MST", usetz = FALSE)
 #' ======================================
 vec<-vec[, c(2,3,12,13,44,9,10)]
 ats<-atsdat[, c(1,16, 10, 13, 7, 8, 9)]
+ats$TelemDate<-as.POSIXct(ats$TelemDate, format = "%Y-%m-%d %H:%M:%S")
 names(vec)<-names(ats)
+vec$TelemDate<-as.POSIXct(vec$TelemDate, format = "%Y-%m-%d %H:%M:%S")
 
 gps<-rbind(vec, ats)
 gps$TelemDate<-as.POSIXct(gps$TelemDate, format = "%Y-%m-%d %H:%M:%S")
@@ -170,7 +172,7 @@ for(i in 1:nrow(x)){
 
 
 outsp<-data.frame(outsp)
-#outsp2<-outsp[!duplicated(outsp[,1:4]),]
+outsp2<-outsp[!duplicated(outsp[,1:4]),]
 outsp<-outsp[complete.cases(outsp$CollarSerialNumber),]
 
 return(outsp)

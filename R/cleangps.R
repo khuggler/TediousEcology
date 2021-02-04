@@ -1,7 +1,7 @@
 #' @title Wrapper function with CombDat and CollarHistory that Merge Animal IDs and Sex, and Species to GPSData
 #' @description Merge raw GPS Data with Animal IDs, Sex, and Species
 #' @param atsfold path to folder where ats data is located
-#' @param vecpath path to where vectronics keys are located
+#' @param veckeys path to where vectronics keys are located
 #' @param capdat path to capture database
 #' @param spp either "cervid" or "coyote"
 #' @param buffer.capture Logical. True if you would like to remove locations surrounding captures (user defined buffer in days) False if you would like to include captures in gps data 
@@ -122,9 +122,9 @@ for(i in 1:nrow(x)){
     ss<-gps[gps$CollarSerialNumber==xxx[1,2],]
     #ss<-ss[complete.cases(ss$CollarSerialNumber),]
     
-    #if(nrow(ss) == 0){next}
+    if(nrow(ss) == 0){next}
     
-    #if(nrow(ss) > 0){
+    if(nrow(ss) > 0){
     
       if(buffer.capture == TRUE){
       ss<-ss[(ss$Date> xxx[,3] + buffer)&ss$Date< (xxx[,4] - buffer),]
@@ -167,6 +167,7 @@ for(i in 1:nrow(x)){
   if(i>1){
     outsp<-rbind(outsp,ald)
   }
+   }
 }
   
 

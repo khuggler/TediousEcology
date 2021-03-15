@@ -5,7 +5,7 @@
 #' @return Returns a data.frame with all gps data, AnimalID, Sex,
 #' @keywords coyote, animal id, movement rate
 #' @export
-#' @examples
+
 
 
 

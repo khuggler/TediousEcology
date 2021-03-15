@@ -1,17 +1,15 @@
 #' @title Append AID to GPS data and subset to desired time period
 #' @description Merge raw GPS Data with Animal IDs, and Sex
 #' @param gps object identifying gps data file
-#' @param dirdown temporary directory for data to be downloaded
-#' @param cType "ATS/IRID". Won't change.
 #' @param yotedat path to coyote capture database
 #' @return Returns a data.frame with all gps data, AnimalID, Sex,
 #' @keywords coyote, animal id, movement rate
 #' @export
 #' @examples
-#' \donttest{yote.gps<-yote.gps(username = yourusername, password = yourpassword, dirdown = tempdir, cType = "ATS/IRID", yotedat = path, startdates = '2017-05-01', enddates = '2017-09-01')}
 
 
-yote.gps<-function(yotedat){
+
+yote.gps<-function(yotedat, gps){
   
   
   

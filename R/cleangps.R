@@ -2,6 +2,8 @@
 #' @description Merge raw GPS Data with Animal IDs, Sex, and Species
 #' @param atsfold path to folder where ats data is located
 #' @param veckeys path to where vectronics keys are located
+#' @param sirtrack path to where sirtrack data is located
+#' @param gstar path to where gstar data is located
 #' @param capdat path to capture database
 #' @param spp either "cervid" or "coyote"
 #' @param buffer.capture Logical. True if you would like to remove locations surrounding captures (user defined buffer in days) False if you would like to include captures in gps data 
@@ -11,7 +13,7 @@
 #' @export
 #' @examples
 
-cleangps<-function(atsfold, veckeys, capdat, spp, buffer.capture, buffer){
+cleangps<-function(atsfold, veckeys, sirtrack, gstar, capdat, spp, buffer.capture, buffer){
 
 #' =============================
 #' read in ATS data
@@ -60,20 +62,70 @@ vec<-data.frame(vec)
 vec$acquisitiontime<-as.POSIXct(vec$acquisitiontime, format = paste0("%Y-%m-%d", "T", "%H:%M:%S"), tz = "UTC", origin = vec$acquisitiontime)
 vec$acquisitiontime<-format(vec$acquisitiontime, tz = "MST", usetz = FALSE)
 
+vec2<-vec
 
 #' ======================================
 #' merge vectronics and ats data
 #' ======================================
-vec<-vec[, c(2,3,12,13,44,9,10)]
+vec2<-vec2[, c(2,3,12,13,44,9,10)]
 ats<-atsdat[, c(1,16, 10, 13, 7, 8, 9)]
 ats$TelemDate<-as.POSIXct(ats$TelemDate, format = "%Y-%m-%d %H:%M:%S")
-names(vec)<-names(ats)
-vec$TelemDate<-as.POSIXct(vec$TelemDate, format = "%Y-%m-%d %H:%M:%S")
+names(vec2)<-names(ats)
+vec2$TelemDate<-as.POSIXct(vec2$TelemDate, format = "%Y-%m-%d %H:%M:%S")
 
-gps<-rbind(vec, ats)
+gps<-rbind(vec2, ats)
 gps$TelemDate<-as.POSIXct(gps$TelemDate, format = "%Y-%m-%d %H:%M:%S")
 gps$Date<-strftime(gps$TelemDate, format = "%Y-%m-%d")
 gps$Date<-as.Date(gps$Date, format = "%Y-%m-%d")
+
+
+# merge sirtrack
+
+stack<-list.files(sirtrack, full.names = T)
+stack<-read.csv(stack)
+
+stack$tdate<-paste(stack$UTC_Date, stack$UTC_Time, sep = " ")
+stack$tdate<-as.POSIXct(stack$tdate, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
+attributes(stack$tdate)$tzone<-'MST'
+
+stack$X2D.3D<-NA
+stack$Date<-as.Date(strftime(stack$tdate, format = "%Y-%m-%d"), format = "%Y-%m-%d")
+
+stack<-stack[, c(1,19,8,20,11,5,6,21)]
+names(stack)<-names(gps)
+
+gps2<-rbind(gps, stack)
+
+# merge gstar
+
+gstar<-list.files(gstar, full.names = T)
+gstar2<-read.table(gstar, sep = ",", header = T)
+
+gstar2$date<-paste0(gstar2$Year, "-", gstar2$Julianday)
+gstar2$date<-as.Date(gstar2$date, format = "%y-%j")
+gstar2$tdate<-paste0(as.character(gstar2$date), " ", gstar2$Hour, ":00:00")
+gstar2$tdate<-as.POSIXct(gstar2$tdate, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
+
+attributes(gstar2$tdate)$tzone<-'MST'
+
+gstar2$temp<-NA
+
+gstar2<-gstar2[, c(1,12, 7, 10,13,5, 6, 11)]
+names(gstar2)<-names(gps2)
+
+final.gps<-rbind(gps2, gstar2)
+
+
+
+
+
+gps<-final.gps
+
+
+
+
+
+
 
 #' =============================
 #' create collar history table

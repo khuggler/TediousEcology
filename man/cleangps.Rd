@@ -4,12 +4,25 @@
 \alias{cleangps}
 \title{Wrapper function with CombDat and CollarHistory that Merge Animal IDs and Sex, and Species to GPSData}
 \usage{
-cleangps(atsfold, veckeys, capdat, spp, buffer.capture, buffer)
+cleangps(
+  atsfold,
+  veckeys,
+  sirtrack,
+  gstar,
+  capdat,
+  spp,
+  buffer.capture,
+  buffer
+)
 }
 \arguments{
 \item{atsfold}{path to folder where ats data is located}
 
 \item{veckeys}{path to where vectronics keys are located}
+
+\item{sirtrack}{path to where sirtrack data is located}
+
+\item{gstar}{path to where gstar data is located}
 
 \item{capdat}{path to capture database}
 

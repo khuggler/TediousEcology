@@ -17,7 +17,7 @@ yote.gps<-function(yotedat, gps){
   yote<-read.csv(yotedat, stringsAsFactors = F)
   
   gps$Date<-as.character(gps$Date)
-  gps$Date<-as.Date(gps$Date, format = "%m/%d/%Y")
+  gps$Date<-as.Date(gps$Date, format = "%Y-%m-%d")
   
   gps$TelemDate<-paste0(gps$Date, " ", gps$Hour, ":", gps$Minute)
   gps$TelemDate<-as.POSIXct(gps$TelemDate, format = "%Y-%m-%d %H:%M", tz = "GMT")

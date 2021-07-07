@@ -21,7 +21,10 @@ yote.gps<-function(yotedat, gps){
   
   gps$TelemDate<-paste0(gps$Date, " ", gps$Hour, ":", gps$Minute)
   gps$TelemDate<-as.POSIXct(gps$TelemDate, format = "%Y-%m-%d %H:%M", tz = "GMT")
-  attr(gps$TelemDate, "tzone")<-"MST"
+  gps$TelemDate<-format(gps$TelemDate, tz = "Etc/GMT+6")
+  
+  gps$Date<-as.Date(strftime(gps$TelemDate, format = "%Y-%m-%d"), format = "%Y-%m-%d")
+ 
   
   uni<-unique(yote$Serial)
   
@@ -45,7 +48,7 @@ yote.gps<-function(yotedat, gps){
     subsub<-yote[yote$Serial == uni[i],]
     
     if(nrow(subsub) == 1){
-      sub<-sub[sub$Date >= subsub$Date & sub$Date <= subsub$MortDate,]
+      sub<-sub[sub$Date >= subsub$Date+1 & sub$Date <= subsub$MortDate-1,]
       sub$AID<-subsub$AID
       sub$Sex<-subsub$Sex
     }
@@ -53,10 +56,10 @@ yote.gps<-function(yotedat, gps){
     if(nrow(subsub)> 1){
       b<-nrow(subsub)
       for(k in 1:length(b)){
-        sub$AID<-ifelse(sub$Date >= subsub$Date[k]+1 & sub$Date <= subsub$MortDate[k], subsub$AID[k], NA)
-        sub$Sex<-ifelse(sub$Date >= subsub$Date[k]+1 & sub$Date <= subsub$MortDate[k], subsub$Sex[k], NA)
-        sub$AID<-ifelse(sub$Date >= subsub$Date[k+1]+1 & sub$Date <= subsub$MortDate[k+1], subsub$AID[k+1], sub$AID)
-        sub$Sex<-ifelse(sub$Date >= subsub$Date[k+1]+1 & sub$Date <= subsub$MortDate[k+1], subsub$Sex[k+1], sub$Sex)
+        sub$AID<-ifelse(sub$Date >= subsub$Date[k]+1 & sub$Date <= subsub$MortDate[k]-1, subsub$AID[k], NA)
+        sub$Sex<-ifelse(sub$Date >= subsub$Date[k]+1 & sub$Date <= subsub$MortDate[k]-1, subsub$Sex[k], NA)
+        sub$AID<-ifelse(sub$Date >= subsub$Date[k+1]+1 & sub$Date <= subsub$MortDate[k+1]-1, subsub$AID[k+1], sub$AID)
+        sub$Sex<-ifelse(sub$Date >= subsub$Date[k+1]+1 & sub$Date <= subsub$MortDate[k+1]-1, subsub$Sex[k+1], sub$Sex)
         
       }
     }
